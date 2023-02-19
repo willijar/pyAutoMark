@@ -26,7 +26,7 @@ def main():
                             ('generate-template', generate_template),
                             ('find-duplicates', find_duplicates)):
         sub = subparsers.add_parser(command)
-        sub.add_argument(dest='command', default=module)
+        sub.set_defaults(command=module)
         module.add_args(sub)
     #execute main from selected module
     args = parser.parse_args()
