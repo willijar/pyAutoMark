@@ -23,7 +23,7 @@ from pathlib import Path
 from config import CONFIG
 from cohort import get_cohort,current_cohort_name
 
-pytest_plugins = ["vhdl_test", "mock_test"]
+pytest_plugins = ["vhdl_test", "mock_test", "python_test"]
 
 NODEID_LENGTH_TRESHOLD = 60
 
