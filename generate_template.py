@@ -9,8 +9,8 @@ as PASSED or FAILED from the students reports and a mark as per the test
 manifest
 """
 import argparse
-import openpyxl
 from pathlib import Path
+import openpyxl
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.utils import quote_sheetname, absolute_coordinate
 from config import CONFIG
@@ -19,17 +19,19 @@ from cohort import get_cohort
 
 
 def main(args=None):
+    """Main routing - generates a cohort template from template-template"""
     if args is None:
-        parser=argparse.ArgumentParser(description=__doc__)
+        parser = argparse.ArgumentParser(description=__doc__)
         add_args(parser)
-        args=parser.parse_args()
+        args = parser.parse_args()
     cohort = get_cohort(args.cohort)
     destination = cohort.report_path / "template.xlsx"
     if args.output:
         destination = args.output
     if not (args.overwrite) and destination.exists():
         raise FileExistsError(destination)
-    cohort.start_log_section(f"generate template {destination}")
+    cohort.start_log_section(
+        f"Generate template {destination.relative_to(CONFIG.root_path)}")
     template = openpyxl.load_workbook(filename=str(CONFIG.tests_path /
                                                    "template-template.xlsx"))
     worksheet = template.worksheets[0]
