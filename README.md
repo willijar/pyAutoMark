@@ -41,6 +41,26 @@ The toolset automates the following steps
 
 9. The automated filling in of a csv file from the marking sheet for sending marks to the office.
 
+## The tools
+
+extract_downloads.py
+: Extracts files for given list of archive files (from a Blackboard download) into student directories under cohort
+
+github_retrieve.py
+: Retrieve student files from github classroom
+
+run_tests.py
+: Run a set of tests for a cohort of students and produce reports files
+
+generate_template.py
+: Generate template marking spreadsheet from template-template.xlsx
+
+mark.py
+: Fill in mark spreadsheets for each student from report files
+
+find_duplicates.py
+: Find duplicates files from students (possibly across cohorts)
+
 ## Requirements
 
 ### Software
@@ -67,7 +87,16 @@ The toolset automates the following steps
 
 ## TODO
 
-* Test/sort so tests can be in separate folder to pyAutoMark
-* Add in Python fixtures and test with EE1CPS
-* Add in linting (for C and Python) as relevant fixtures
-* File finding using matching patterns -in manifest and in tests
+### Improvements
+
+* [X] Test/sort so tests can be in separate folder to pyAutoMark - No - that is not how pytest works
+* [ ] Document how to install
+* [ ] --collect-only - how to determine nodeids
+* [ ] Controller script to run commands use main(parser) in scripts
+* [ ] Config class reads json  using data class
+
+### Additonal Functionality
+
+* [ ] Add in Python fixtures and test with EE1CPS
+* [ ] Add in linting (for C and Python) as relevant fixtures
+* [ ] File finding using matching patterns -in manifest and in tests

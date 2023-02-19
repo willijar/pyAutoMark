@@ -10,9 +10,12 @@ import config
 from args import add_common_args
 
 
-def main():
+def main(args=None):
     # pylint: disable=W1510
-    args = get_args()
+    if args is None:
+        parser=argparse.ArgumentParser(description=__doc__)
+        add_args(parser)
+        args=parser.parse_args()
     cohort = cohortlib.get_cohort(args.cohort)
     cohort.start_log_section(
         f"Running tests {args.test} for {args.students or 'all'}")
@@ -48,7 +51,7 @@ def main():
                                report_path.relative_to(config.ROOT_PATH))
 
 
-def get_args(parser=argparse.ArgumentParser(description=__doc__)):
+def add_args(parser):
     """Parse Args and return them for this script"""
     add_common_args(parser)
     parser.add_argument('-t',
@@ -67,7 +70,6 @@ def get_args(parser=argparse.ArgumentParser(description=__doc__)):
         help=
         "Selected mark tests when testing e.g. 'no slow' to not run slow tests"
     )
-    return parser.parse_args()
 
 
 if __name__ == "__main__":

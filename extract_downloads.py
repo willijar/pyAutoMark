@@ -13,7 +13,7 @@ from args import add_common_args
 import files
 
 
-def get_args(parser):
+def add_args(parser):
     """Get and parse arguments for this script"""
     add_common_args(parser)
     parser.add_argument('--files',
@@ -22,7 +22,6 @@ def get_args(parser):
                         type=Path,
                         default=[],
                         help="list of workbooks files to be processed")
-    return parser.parse_args()
 
 _gradecentre_re=re.compile(".+_(.+?)_attempt_(.+?)[_.](.+)")
 
@@ -35,9 +34,12 @@ def extract_details(file,log=None):
                 datetime.strptime(match.group(2), "%Y-%m-%d-%H-%M-%S")) # date
 
 
-def main(parser=argparse.ArgumentParser(description=__doc__)):
+def main(args=None):
     """Extract the files"""
-    args = get_args(parser)
+    if args is None:
+        parser=argparse.ArgumentParser(description=__doc__)
+        add_args(parser)
+        args=parser.parse_args()
     cohort = cohortlib.get_cohort(args.cohort)
     cohort.path.mkdir(exist_ok=True)
     cohort.start_log_section(f"Extracting downloads for Cohort {args.cohort}")

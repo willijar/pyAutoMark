@@ -21,8 +21,11 @@ from cohort import get_cohort
 from args import add_common_args
 
 
-def main():
-    args = get_args()
+def main(args=None):
+    if args is None:
+        parser=argparse.ArgumentParser(description=__doc__)
+        add_args(parser)
+        args=parser.parse_args()
     cohort = get_cohort(args.cohort)
     if not args.template:
         args.template = str(cohort.report_path / "template.xlsx")
@@ -93,7 +96,7 @@ def analyse_report(report_path: Path, tests: dict, log=None):
     return results
 
 
-def get_args(parser=argparse.ArgumentParser(description=__doc__)):
+def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     """Add and parse args for this script"""
     add_common_args(parser)
     parser.add_argument('-t',
@@ -109,7 +112,6 @@ def get_args(parser=argparse.ArgumentParser(description=__doc__)):
                         type=Path,
                         default=[],
                         help="list of workbooks files to be processed")
-    return parser.parse_args()
 
 
 if __name__ == "__main__":

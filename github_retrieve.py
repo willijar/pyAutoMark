@@ -14,14 +14,17 @@ from cohort import get_cohort
 #     spec.loader.exec_module(module)
 
 
-def get_args(parser=argparse.ArgumentParser(description=__doc__)):
+def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     "Parse and return args for this script"
     add_common_args(parser)
-    return parser.parse_args()
 
 
-def main():
-    args = get_args()
+
+def main(args=None):
+    if args is None:
+        parser=argparse.ArgumentParser(description=__doc__)
+        add_args(parser)
+        args=parser.parse_args()
     cohort = get_cohort(args.cohort)
     cohort.start_log_section(f"Github retrieve {args.students or 'all'}")
     students = cohort.student(args.students)

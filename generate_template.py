@@ -18,8 +18,11 @@ from args import add_common_args
 from cohort import get_cohort
 
 
-def main():
-    args = get_args()
+def main(args=None):
+    if args is None:
+        parser=argparse.ArgumentParser(description=__doc__)
+        add_args(parser)
+        args=parser.parse_args()
     cohort = get_cohort(args.cohort)
     destination = cohort.report_path / "template.xlsx"
     if args.output:
@@ -47,7 +50,7 @@ def main():
     template.save(destination)
 
 
-def get_args(parser=argparse.ArgumentParser(description=__doc__)):
+def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     """Return args for this script"""
     add_common_args(parser)
     parser.add_argument('-o',
@@ -58,7 +61,6 @@ def get_args(parser=argparse.ArgumentParser(description=__doc__)):
                         type=int,
                         default=14,
                         help="Row to start filling up fields from")
-    return parser.parse_args()
 
 
 if __name__ == "__main__":

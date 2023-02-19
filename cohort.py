@@ -231,12 +231,15 @@ class Student:
         return False
 
 
-def main():
+def main(args=None):
     cohort = get_cohort(current_cohort_name())
     for student in cohort.students:
         missing = student.check_manifest(cohort.manifest, log=False)
         if missing:
             print(f'"{student.name()}" missing {missing}')
+
+def add_args(parser):
+    pass
 
 
 if __name__ == "__main__":

@@ -37,8 +37,12 @@ class FileRecord:
         self.digest = sha.hexdigest()
 
 
-def main():
-    records = get_records(get_args().cohorts)
+def main(args=None):
+    if args is None:
+        parser=argparse.ArgumentParser(description=__doc__)
+        add_args(parser)
+        args=parser.parse_args()
+    records = get_records(args.cohorts)
     groups = group_records(records)
     for records in groups.values():
         if len(records) == 1: 
@@ -84,17 +88,14 @@ def group_records(records: List[FileRecord]) -> Dict:
             groups[key] = [record]
     return groups
 
-def get_args(parser=argparse.ArgumentParser(description=__doc__)):
+def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     """Return Parsed arguments for find-duplicates"""
-
-    args.add_common_args(parser)
     parser.add_argument(
         '--cohorts',
         type=str,
         default=[cohort.current_cohort_name()],
         nargs="+",
         help="List of cohorts to scan across - default is current only")
-    return parser.parse_args()
 
 
 if __name__ == "__main__":
