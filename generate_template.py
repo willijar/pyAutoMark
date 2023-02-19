@@ -13,7 +13,7 @@ import openpyxl
 from pathlib import Path
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.utils import quote_sheetname, absolute_coordinate
-import config
+from config import CONFIG
 from args import add_common_args
 from cohort import get_cohort
 
@@ -30,7 +30,7 @@ def main(args=None):
     if not (args.overwrite) and destination.exists():
         raise FileExistsError(destination)
     cohort.start_log_section(f"generate template {destination}")
-    template = openpyxl.load_workbook(filename=str(config.TESTS_PATH /
+    template = openpyxl.load_workbook(filename=str(CONFIG.tests_path /
                                                    "template-template.xlsx"))
     worksheet = template.worksheets[0]
     worksheet["A2"].value = cohort.manifest.get("module_code", "")

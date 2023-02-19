@@ -15,8 +15,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Sequence, List, Dict
 import cohort
-import config
-import args
+from  config import CONFIG
 
 
 @dataclass
@@ -55,9 +54,9 @@ def main(args=None):
         msg = f"Duplicate files found."
         for coh in cohorts:
             coh.start_log_section(msg)
-        config.log.warning(msg)
+        CONFIG.log.warning(msg)
         for record in records:
-            msg = f"Duplicate file {record.file.relative_to(config.ROOT_PATH)} '{record.student.name()}'"\
+            msg = f"Duplicate file {record.file.relative_to(CONFIG.root_path)} '{record.student.name()}'"\
             + f" : modified {datetime.fromtimestamp(record.stat.st_mtime)}"
             for coh in cohorts:
                 coh.log.warning(msg)

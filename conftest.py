@@ -20,7 +20,7 @@ Defines fixtures:
 """
 import pytest
 from pathlib import Path
-import config
+from config import CONFIG
 from cohort import get_cohort,current_cohort_name
 
 pytest_plugins = ["vhdl_test", "mock_test"]
@@ -66,7 +66,7 @@ def compiler(request):
 @pytest.fixture
 def build_path():
     "Directory path for out of source build (executables, libs and object files)"
-    return config.BUILD_PATH
+    return CONFIG.build_path
 
 
 @pytest.fixture

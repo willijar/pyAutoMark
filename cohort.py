@@ -8,7 +8,7 @@ import logging
 import json
 from datetime import date
 from pathlib import Path
-import config
+from config import CONFIG
 from files import read_csv
 
 COHORT = None  # current cohort being processed
@@ -47,9 +47,9 @@ class Cohort:
     def __init__(self, name: str = current_cohort_name()):
         self.name = name
         student_list = []
-        self.path = config.COHORTS_PATH / name
-        self.test_path = config.TESTS_PATH / name
-        self.report_path = config.REPORTS_PATH / name
+        self.path = CONFIG.cohorts_path / name
+        self.test_path = CONFIG.tests_path / name
+        self.report_path = CONFIG.reports_path / name
         self.report_path.mkdir(exist_ok=True)
         self.log = logging.getLogger("cohort")
         self.log.handlers.clear()
@@ -206,7 +206,7 @@ class Student:
             action = ["git", "pull"]
             cwd = self.path
         elif not self.repository_url():
-            self.cohort.log.error(f"No repository known for '{self.name()}'")
+            self.cohort.log.warning(f"No repository known for '{self.name()}'")
             return False
         else:
             action = ["git", "clone", self.repository_url(), self.path]
@@ -219,13 +219,13 @@ class Student:
         if proc.returncode == 0:  # successful
             self.cohort.log.info(
                 f"Successful {action[:2]} {self.repository_name()}"\
-                 + f" to {self.path.relative_to(self.cohort.path)}"\
+                 + f" to '{self.path.relative_to(self.cohort.path)}'"\
                  + f" for '{self.name()}': {proc.stdout.strip()}"
             )
             return True
         self.cohort.log.error(
             f"Unable to {action[:2]} {self.repository_name()}"\
-            + f" to {self.path.relative_to(self.cohort.path)}"\
+            + f" to '{self.path.relative_to(self.cohort.path)}'"\
             +f" for '{self.name()}: {proc.stdout} {proc.stderr}"
         )
         return False

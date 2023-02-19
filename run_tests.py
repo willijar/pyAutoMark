@@ -6,7 +6,7 @@ import argparse
 import datetime
 from subprocess import STDOUT, run
 import cohort as cohortlib
-import config
+from config import CONFIG
 from args import add_common_args
 
 
@@ -44,11 +44,11 @@ def main(args=None):
         if result.returncode == 0:
             cohort.log.info("Passed all tests : '%s' - report '%s'.",
                             student.name(),
-                            report_path.relative_to(config.ROOT_PATH))
+                            report_path.relative_to(CONFIG.root_path))
         else:
             cohort.log.warning("Failed test: '%s' - report '%s'.",
                                student.name(),
-                               report_path.relative_to(config.ROOT_PATH))
+                               report_path.relative_to(CONFIG.root_path))
 
 
 def add_args(parser):

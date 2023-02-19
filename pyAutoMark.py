@@ -10,6 +10,7 @@ import extract_downloads
 import mark
 import generate_template
 import find_duplicates
+import config
 
 
 def main():
@@ -19,16 +20,16 @@ def main():
         """)
     #add subparsers for each command
     subparsers = parser.add_subparsers(title="subcommands")
-    for command, module in (('run', run_tests),
-                            ('retrieve', github_retrieve),
-                            ('extract', extract_downloads),
-                            ('mark', mark),
-                            ('generate-template', generate_template),
-                            ('find-duplicates', find_duplicates)):
-        sub = subparsers.add_parser(command)
-        sub.add_argument(dest='command', default=module)
+    for command, module,help in (('run', run_tests,"Run automated tests and generate reports"),
+                            ('retrieve', github_retrieve,"Retrieve student files from github"),
+                            ('extract', extract_downloads,"Extract student files from downloads"),
+                            ('mark', mark,"Generate mark spreadsheets from reports and template spreadsheet"),
+                            ('generate-template', generate_template, "Generate a template spreadsheet"),
+                            ('find-duplicates', find_duplicates, "Find duplicate students files"),
+                            ('config', config, "Set or read configration")):
+        sub = subparsers.add_parser(command,help=help)
         module.add_args(sub)
-    #execute main from selected module
+        sub.set_defaults(command=module)
     args = parser.parse_args()
     args.command.main(args)
 
