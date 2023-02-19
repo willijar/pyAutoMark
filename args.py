@@ -8,6 +8,7 @@ Typeical Usage:
 """
 import argparse
 import cohort
+from config import CONFIG
 
 
 def add_common_args(parser: argparse.ArgumentParser) -> None:
@@ -15,7 +16,8 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
 
     parser.add_argument('-c',
                         '--cohort',
-                        default=cohort.current_cohort_name(),
+                        default=CONFIG.get("cohort",
+                                           cohort.current_cohort_name()),
                         help="Name of student cohort")
     parser.add_argument(
         '-s',

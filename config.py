@@ -12,6 +12,7 @@ _HERE = Path(__file__).resolve().parent
 # pylint: disable=C0103
 CONFIG = None
 
+
 class ConfigManager:
     """Base class for entities which have configuration files"""
     domain: str
@@ -49,16 +50,15 @@ class ConfigManager:
         for key in keys[:-1]:
             dic = dic[key]
         return dic[keys[-1]]
-    
-    def __setitem__(self,index,newvalue):
+
+    def __setitem__(self, index, newvalue):
         keys = index.split(".")
         dic = self.manifest
         for key in keys[:-1]:
-            if dic.get(key,None)==None:
-                dic[key]={}
-            dic=dic[key]
-        dic[keys[-1]]=newvalue
-
+            if dic.get(key, None) is None:
+                dic[key] = {}
+            dic = dic[key]
+        dic[keys[-1]] = newvalue
 
     def get(self, index, default=CONFIG):
         """Given a configuration index return a value
@@ -120,42 +120,46 @@ class Config(ConfigManager):
         self.log.addHandler(self.error_log)
         self.log.addHandler(self.console_log)
         logging.getLogger("cohort").setLevel(logging.INFO)
+        self.cohort = None
+
 
 CONFIG = Config()
 
+
 def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     """Return Parsed arguments for find-duplicates"""
-    parser.add_argument(
-        'key', help="Key of value to be set")
-    parser.add_argument(
-        'value', help='value to be set', nargs='?',default=None
-    )
-    parser.add_argument(
-        '--type',help="Type conversion to perform e.g. int or float"
-    )
-
+    parser.add_argument('key', help="Key of value to be set")
+    parser.add_argument('value',
+                        help='value to be set',
+                        nargs='?',
+                        default=None)
+    parser.add_argument('--type',
+                        help="Type conversion to perform e.g. int or float")
 
 
 def main(args=None):
+    """Main program - set configuration using command line arguments"""
     if args is None:
-        parser=argparse.ArgumentParser(description=__doc__)
+        parser = argparse.ArgumentParser(description=__doc__)
         add_args(parser)
-        args=parser.parse_args()
-    components=args.key.split('.')
-    domain=components[0]
-    remainder=".".join(components[1:])
-    if domain=='global':
-        conf=CONFIG
+        args = parser.parse_args()
+    components = args.key.split('.')
+    domain = components[0]
+    remainder = ".".join(components[1:])
+    if domain == 'global':
+        conf = CONFIG
     else:
-        path=CONFIG.cohorts_path / domain
+        path = CONFIG.cohorts_path / domain
         if not path.exists():
             raise KeyError(f"Configuration Path {domain}")
-        conf=ConfigManager(path / "manifest.json", "cohort")
-    if args.value!=None:
-        conf[remainder]=args.value
+        conf = ConfigManager(path / "manifest.json", "cohort")
+    if args.value is not None:
+        conf[remainder] = args.value
         conf.store()
-        if conf==CONFIG and conf.config_path.parent != _HERE:
-            conf.log.warning("Writing to global configuration file %s:%s at %s",args.key,args.value,conf.config_path)
+        if conf == CONFIG and conf.config_path.parent != _HERE:
+            conf.log.warning(
+                "Writing to global configuration file %s:%s at %s", args.key,
+                args.value, conf.config_path)
     else:
         print(conf[remainder])
 

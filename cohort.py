@@ -11,16 +11,13 @@ from pathlib import Path
 from config import CONFIG
 from files import read_csv
 
-COHORT = None  # current cohort being processed
 
-
-def get_cohort(name: str = None):
+def get_cohort(name=CONFIG.get("cohort", None)):
     """Return cohort for given name or current cohort if name=None"""
-    global COHORT
-    assert name or COHORT
-    if (not (COHORT) or COHORT.name != name):
-        COHORT = Cohort(name)
-    return COHORT
+    assert name is not None or CONFIG.cohort
+    if (not (CONFIG.cohort) or CONFIG.cohort.name != name):
+        CONFIG.cohort = Cohort(name)
+    return CONFIG.cohort
 
 
 def current_cohort_name():
@@ -44,7 +41,7 @@ class Cohort:
     test_path: Path
     test_manifest: dict
 
-    def __init__(self, name: str = current_cohort_name()):
+    def __init__(self, name):
         self.name = name
         student_list = []
         self.path = CONFIG.cohorts_path / name
@@ -106,19 +103,17 @@ class Cohort:
                 self.test_manifest = json.load(fid).get(
                     "tests", self.test_manifest)
         if not self.test_manifest:
-            subprocess.run(["pytest", '-sv', '-m', 'not slow', 
-                            '--cohort', self.name, 
-                            '--student', self.manifest.get("solution","solution")],
-                           stdout=subprocess.DEVNULL,
-                           stderr=subprocess.DEVNULL,
-                           cwd=self.test_path,
-                           check=True)
-            with open(self.test_path / ".pytest_cache/v/cache/nodeids",
-                      "r") as fid:
-                tests = json.load(fid)
+            result = subprocess.run(
+                ["pytest", '--collect-only', '-q', '--cohort', self.name],
+                cwd=self.test_path,
+                text=True,
+                capture_output=True,
+                check=True)
             self.test_manifest = {}
-            for test in tests:
-                self.test_manifest[test] = {}
+            for line in result.stdout.splitlines():
+                if len(line) == 0:
+                    break
+                self.test_manifest[line] = {}
         return self.test_manifest
 
 
@@ -156,7 +151,7 @@ class Student:
     def __hash__(self):
         "Hash by username"
         return self.username.__hash__()
-    
+
     def __str__(self):
         return f"<Student {self.cohort.name}/{self.name()}>"
 
@@ -231,7 +226,9 @@ class Student:
         return False
 
 
+# pylint: disable=W0613
 def main(args=None):
+    """Main routine - checks student manifest in a cohort"""
     cohort = get_cohort(current_cohort_name())
     for student in cohort.students:
         missing = student.check_manifest(cohort.manifest, log=False)
@@ -239,7 +236,7 @@ def main(args=None):
             print(f'"{student.name()}" missing {missing}')
 
 def add_args(parser):
-    pass
+    """Add args for this command - none"""
 
 
 if __name__ == "__main__":
