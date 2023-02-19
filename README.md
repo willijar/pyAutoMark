@@ -43,23 +43,23 @@ The toolset automates the following steps
 
 ## The tools
 
-extract_downloads.py
-: Extracts files for given list of archive files (from a Blackboard download) into student directories under cohort
+    usage: pyAutoMark [-h] {run,retrieve,extract,mark,generate-template,check-submission,find-duplicates,config} ...
 
-github_retrieve.py
-: Retrieve student files from github classroom
+    Automatically retrieve, mark and provide feedback for digital student submissions
 
-run_tests.py
-: Run a set of tests for a cohort of students and produce reports files
+    optional arguments:
+      -h, --help            show this help message and exit
 
-generate_template.py
-: Generate template marking spreadsheet from template-template.xlsx
-
-mark.py
-: Fill in mark spreadsheets for each student from report files
-
-find_duplicates.py
-: Find duplicates files from students (possibly across cohorts)
+    subcommands:
+      {run,retrieve,extract,mark,generate-template,check-submission,find-duplicates,config}
+        run                 Run automated tests and generate reports
+        retrieve            Retrieve student files from github
+        extract             Extract student files from downloads
+        mark                Generate mark spreadsheets from reports and template spreadsheet
+        generate-template   Generate a template spreadsheet
+        check-submission    Check students have submitted files listed in manifest
+        find-duplicates     Find duplicate students files
+        config              Set or read configration
 
 ## Requirements
 
@@ -91,12 +91,13 @@ find_duplicates.py
 
 * [X] Test/sort so tests can be in separate folder to pyAutoMark - No - that is not how pytest works
 * [ ] Document how to install
-* [ ] --collect-only - how to determine nodeids
-* [ ] Controller script to run commands use main(parser) in scripts
-* [ ] Config class reads json  using data class
+* [X] --collect-only - how to determine nodeids
+* [X] Controller script to run commands use main(parser) in scripts
+* [X] Config class reads json  using data class
 
 ### Additonal Functionality
 
-* [ ] Add in Python fixtures and test with EE1CPS
+* [X] Add in Python fixtures and test with EE1CPS
+* [ ] Test calling function in a script for python
 * [ ] Add in linting (for C and Python) as relevant fixtures
 * [ ] File finding using matching patterns -in manifest and in tests
