@@ -1,6 +1,8 @@
 import sys
 import pytest
 from subprocess import PIPE, STDOUT, run
+import importlib
+
 
 class PythonRunError(Exception):
     "Base Python related errors"
@@ -26,3 +28,15 @@ def run_script(student,timeout):
         return result.stdout.strip()
     
     return _run_script
+
+@pytest.fixture
+def module_name(student):
+    """Module name under test"""
+
+@pytest.fixture
+def student_module(student,module_name):
+    """Return function to import a module from a student file - returns module instance"""
+    spec = importlib.util.spec_from_file_location(module_name, student.path / (module_name+".py"))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module

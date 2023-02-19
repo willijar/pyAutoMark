@@ -6,19 +6,9 @@ import argparse
 from args import add_common_args
 from cohort import get_cohort
 
-#import importlib
-
-# def import_py(self,module_name):
-#     spec = importlib.util.spec_from_file_location(module_name, self.path(module_name+".py"))
-#     module = importlib.util.module_from_spec(spec)
-#     spec.loader.exec_module(module)
-
-
 def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     "Parse and return args for this script"
     add_common_args(parser)
-
-
 
 def main(args=None):
     if args is None:
