@@ -11,6 +11,7 @@ import mark
 import generate_template
 import find_duplicates
 import config
+import cohort
 
 
 def main():
@@ -25,6 +26,7 @@ def main():
                             ('extract', extract_downloads,"Extract student files from downloads"),
                             ('mark', mark,"Generate mark spreadsheets from reports and template spreadsheet"),
                             ('generate-template', generate_template, "Generate a template spreadsheet"),
+                            ('check-submission', cohort, "Check students have submitted files listed in manifest"),
                             ('find-duplicates', find_duplicates, "Find duplicate students files"),
                             ('config', config, "Set or read configration")):
         sub = subparsers.add_parser(command,help=help)
