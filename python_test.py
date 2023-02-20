@@ -2,10 +2,14 @@ import sys
 import pytest
 from subprocess import PIPE, STDOUT, run
 import importlib
+import re
 
 
 class PythonRunError(Exception):
     "Base Python related errors"
+
+class PythonStyleError(Exception):
+    "pylint Score too low"
 
 @pytest.fixture
 def timeout():
@@ -40,3 +44,14 @@ def student_module(student,module_name):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+def python_lint(python_file, score_threshold):
+    "Return function to provide pylint diagnostics on sutdents code"
+    # pylint: disable=W1510
+    result = run(("pylint", python_file), capture_output=True, text=True)
+    print(result.stdout)
+    if ((result.returncode & 1) | (result.returncode & 2)): # Fatal or Error Python return codes
+        raise PythonRunError(result.stderr)
+    score=float(re.search(r"([-\d\.]+)/10",result.stdout).group(1))
+    if score<score_threshold:
+        raise PythonStyleError(f"Code Rating of {score} lower than {score_threshold}")
