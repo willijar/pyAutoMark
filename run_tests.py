@@ -11,11 +11,12 @@ from args import add_common_args
 
 
 def main(args=None):
+    """Run the test suite for specified cohort and students"""
     # pylint: disable=W1510
     if args is None:
-        parser=argparse.ArgumentParser(description=__doc__)
+        parser = argparse.ArgumentParser(description=__doc__)
         add_args(parser)
-        args=parser.parse_args()
+        args = parser.parse_args()
     cohort = cohortlib.get_cohort(args.cohort)
     cohort.start_log_section(
         f"Running tests {args.test} for {args.students or 'all'}")
@@ -32,7 +33,7 @@ def main(args=None):
             extras = ['-m', args.mark]
         with open(report_path, "w") as fid:
             fid.write(f"Report generated {datetime.datetime.now().strftime('%Y/%m/%d %H:%M')}"\
-                      + f" for {student.name()} by {cohort.manifest['assessor']['name']}\n")
+                      + f" for {student.name()} by {cohort.get('assessor.name')}\n")
             fid.flush()
             result = run([
                 "pytest", '--no-header', '-rA', '--tb=short', '-v', *extras,

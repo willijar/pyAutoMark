@@ -15,7 +15,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Sequence, List, Dict
 import cohort
-from  config import CONFIG
+from config import CONFIG
 
 
 @dataclass
@@ -38,13 +38,13 @@ class FileRecord:
 
 def main(args=None):
     if args is None:
-        parser=argparse.ArgumentParser(description=__doc__)
+        parser = argparse.ArgumentParser(description=__doc__)
         add_args(parser)
-        args=parser.parse_args()
+        args = parser.parse_args()
     records = get_records(args.cohorts)
     groups = group_records(records)
     for records in groups.values():
-        if len(records) == 1: 
+        if len(records) == 1:
             continue
         #Get all unique cohorts
         cohorts = []
@@ -61,19 +61,21 @@ def main(args=None):
             for coh in cohorts:
                 coh.log.warning(msg)
 
+
 def get_records(cohort_names: Sequence[str]) -> List[FileRecord]:
     """Given a list of cohort names return a list of FileRecords for each student
        and file in a manifest"""
     records = []
     for name in cohort_names:
         coh = cohort.get_cohort(name)
-        files: dict = coh.manifest["files"]
+        files: dict = coh.get("files", ())
         for student in coh.students:
             for file in files.keys():
                 filepath = student.path / file[0]
                 if filepath.exists():
                     records.append(FileRecord(student=student, file=filepath))
     return records
+
 
 def group_records(records: List[FileRecord]) -> Dict:
     """GIve a list of file records group them by digest.
@@ -86,6 +88,7 @@ def group_records(records: List[FileRecord]) -> Dict:
         else:
             groups[key] = [record]
     return groups
+
 
 def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     """Return Parsed arguments for find-duplicates"""

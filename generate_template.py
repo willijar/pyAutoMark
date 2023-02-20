@@ -35,8 +35,8 @@ def main(args=None):
     template = openpyxl.load_workbook(filename=str(CONFIG.tests_path /
                                                    "template-template.xlsx"))
     worksheet = template.worksheets[0]
-    worksheet["A2"].value = cohort.manifest.get("module_code", "")
-    worksheet["A3"].value = cohort.manifest.get("assessment", "")
+    worksheet["A2"].value = cohort.get("module_code")
+    worksheet["A3"].value = cohort.get("assessment")
     row = args.start_row
     for test, details in cohort.tests().items():
         bcell = worksheet.cell(row=row, column=2)

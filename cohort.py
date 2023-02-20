@@ -8,6 +8,7 @@ import logging
 import json
 from datetime import date
 from pathlib import Path
+import config
 from config import CONFIG
 from files import read_csv
 
@@ -31,12 +32,11 @@ def current_cohort_name():
     return str(year)
 
 
-class Cohort:
+class Cohort(config.ConfigManager):
     """Class representing a cohort of students"""
     name: str  # cohort name (academic year)
     practical: str  # practical name (on github classroom)
     students: tuple  # list of students in this cohort
-    manifest: tuple  # manifest
     path: Path  # Path to this cohort
     test_path: Path
     test_manifest: dict
@@ -48,6 +48,7 @@ class Cohort:
         self.test_path = CONFIG.tests_path / name
         self.report_path = CONFIG.reports_path / name
         self.report_path.mkdir(exist_ok=True)
+        super().__init__(self.path / "manifest.json", "cohort")
         self.log = logging.getLogger("cohort")
         self.log.handlers.clear()
         handler = logging.FileHandler(filename=self.report_path / "info.log",
@@ -60,8 +61,6 @@ class Cohort:
             raise FileNotFoundError(self.path)
         for path in (self.test_path, self.report_path):
             path.mkdir(exist_ok=True)
-        with open(self.path / "manifest.json", "r") as fid:
-            self.manifest = json.load(fid)
         for rec in read_csv(self.path / "students.csv", columns=True):
             student_list.append(Student(self, rec))
         self.students = tuple(student_list)
@@ -137,11 +136,9 @@ class Student:
         self.student_id = rec["Student ID"]
         self.last_name = rec["Last Name"]
         self.first_name = rec["First Name"]
-        self.course = rec.get(
-            "Child Course ID",
-            self.cohort.manifest.get("course", "Not Specified"))
+        self.course = rec.get("Child Course ID", self.cohort.get("course"))
         self.github_username = rec.get("Github Username", None)
-        folder = cohort.manifest.get("student-folder-name")
+        folder = cohort.get("student-folder-name")
         if folder:
             folder = self.rec[folder]
         else:
@@ -166,11 +163,10 @@ class Student:
                 return f"{self.username} ({self.last_name}, {self.first_name})"
         return f"{self.last_name}, {self.first_name}"
 
-    def check_manifest(self, manifest=None, log=False):
+    def check_manifest(self, files=None, log=False):
         "Check if student directory contains all files on cohort manifest"
-        if not manifest:
-            manifest = self.cohort.manifest
-        files = manifest["files"]
+        if not files:
+            files = self.cohort.get("files", ())
         missing = []
         for rec in files.keys():
             if not (self.path / rec).exists():
@@ -183,7 +179,7 @@ class Student:
     def repository_name(self):
         """Github repository name if applicable else None"""
         if self.github_username:
-            github = self.cohort.manifest.get("github", None)
+            github = self.cohort.get("github", None)
             if github:
                 return f"{github['practical']}-{self.github_username}"
         return False
@@ -192,7 +188,7 @@ class Student:
         """Return students github repository url"""
         name = self.repository_name()
         if name:
-            return f"{self.cohort.manifest['github']['url']}/{self.repository_name()}"
+            return f"{self.cohort['github.url']}/{self.repository_name()}"
         return False
 
     def github_retrieve(self):
@@ -231,9 +227,10 @@ def main(args=None):
     """Main routine - checks student manifest in a cohort"""
     cohort = get_cohort(current_cohort_name())
     for student in cohort.students:
-        missing = student.check_manifest(cohort.manifest, log=False)
+        missing = student.check_manifest(cohort.get("Files", None), log=False)
         if missing:
             print(f'"{student.name()}" missing {missing}')
+
 
 def add_args(parser):
     """Add args for this command - none"""

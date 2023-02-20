@@ -22,10 +22,11 @@ from args import add_common_args
 
 
 def main(args=None):
+    """Iterate through student reports to generate mark spreadhseets from template spreadsheet"""
     if args is None:
-        parser=argparse.ArgumentParser(description=__doc__)
+        parser = argparse.ArgumentParser(description=__doc__)
         add_args(parser)
-        args=parser.parse_args()
+        args = parser.parse_args()
     cohort = get_cohort(args.cohort)
     if not args.template:
         args.template = str(cohort.report_path / "template.xlsx")
@@ -48,19 +49,20 @@ def main(args=None):
         args.reports = reports
     else:
         args.reports = {}
-        for student in cohort.students:
-            args.reports[
-                student] = cohort.report_path / f"{args.prefix}{student.username}.txt"
-            if not args.reports[student].exists():
+        for student in students:
+            report = cohort.report_path / f"{args.prefix}{student.username}.txt"
+            if not report.exists():
                 cohort.log.warning("No report file found for %s'",
                                    student.name())
+            else:
+                args.reports[student] = report
     for student, report in args.reports.items():
         workbook = template.worksheets[0]
         workbook["B4"] = student.name()
         workbook["B5"] = student.student_id
-        workbook["B6"] = student.username+cohort.manifest.get("domain","")
-        workbook["B8"] = cohort.manifest['assessor']['name']
-        workbook["B9"] = cohort.manifest['assessor']['email']
+        workbook["B6"] = student.username + cohort.get("domain")
+        workbook["B8"] = cohort.get('assessor.name')
+        workbook["B9"] = cohort.get('assessor.email')
         workbook["B10"] = str(date.today())
         for key, value in analyse_report(report, cohort.tests(),
                                          cohort.log).items():
