@@ -13,6 +13,7 @@ Fixtures:
 
 from pathlib import Path
 from typing import Sequence
+from subprocess import run
 import pytest
 import cunit
 
@@ -84,3 +85,32 @@ def c_exec(c_compile):
             raise err
 
     return _exec
+
+@pytest.fixture
+def c_lint_checks():
+    """Return C -lint checks to appy - default is * (all)"""
+    return "*"
+
+@pytest.fixture
+def c_lint(student,test_path,build_path,c_lint_checks):
+    "Return function to provide lint ouput on students C file"
+    includes=[(lambda s: f"-I{s}")(s) for s in (test_path, build_path, student.path)]
+
+    def _c_lint(source_file, max_warnings=0):
+        result = run(
+            ("clang-tidy", student.path/source_file, f"-checks={c_lint_checks}", "--quiet",
+              "--", *includes),
+              capture_output=True,
+              text=True)
+        print(result.stdout)
+        
+        if result.returncode == 0:
+            count=int(result.stderr.split(" ")[0])
+            if count>max_warnings:
+                raise cunit.LintError(result.stderr)
+        else:
+            raise cunit.CompilationError(result.stderr)
+        
+    return _c_lint
+
+   # clang-tidy Q2b.c -checks=* --quiet -- -I../../../tests/2022/

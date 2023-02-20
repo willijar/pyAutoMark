@@ -20,6 +20,9 @@ class CompilationError(Exception):
 class RunTimeError(Exception):
     """Error in binary executation"""
 
+class LintError(Exception):
+    """Exceeded maximum number of lint warnings"""
+
 
 def c_compile(binary: Union[Path, str],
               sources: Sequence,
