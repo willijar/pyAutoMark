@@ -82,7 +82,7 @@ class ConfigManager:
             dic = dic[key]
         dic[keys[-1]] = newvalue
 
-    def get(self, index: str, default: Any = CONFIG) -> Any:
+    def get(self, index: str, default: Any = []) -> Any:
         """Given a configuration index return a value
 
         If default is given return that if not in configurations.
@@ -98,7 +98,7 @@ class ConfigManager:
         try:
             return self[index]
         except KeyError:
-            if default != CONFIG:
+            if default is not self.get.__defaults__[0]:
                 return default
             try:
                 return CONFIG[index]

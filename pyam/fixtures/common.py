@@ -1,15 +1,7 @@
 # Copyright 2023, Dr John A.R. Williams
 # SPDX-License-Identifier: GPL-3.0-only
-"""pytest configuration options
-
-Defines the following command line options:
-    --cohort: Name of cohort to be processed
-    --student: Name of student to be tested
-    --c-compiler: Name of C compiler to use
-
-Loads in pytest plugins:
-    vhdl_test: For testing VHDL code
-    mock_test: for testing embedded C using mocking
+"""
+Common fixtures for pyam to provide cohort and student information
 
 Defines fixtures:
     cohort: the cohort under test
@@ -24,9 +16,6 @@ import pytest
 from pyam.config import CONFIG
 from pyam.cohort import get_cohort
 
-# pylint: disable=C0103
-pytest_plugins = ["pyam.fixtures.vhdl", "pyam.fixtures.c_mock", "pyam.fixtures.python"]
-
 
 def pytest_addoption(parser):
     """Add in pyAutoTest control options for pytest"""
@@ -38,8 +27,7 @@ def pytest_addoption(parser):
 def pytest_configure(config):
     """Add in pyAutoTest markers for pytest"""
     config.addinivalue_line("markers", "slow: mark test as slow")
-
-
+    
 # pylint: disable=W0621
 @pytest.fixture
 def cohort(request):
@@ -109,6 +97,7 @@ def student_files(student):
         return files
 
     return __student_files
+
 
 # @pytest.fixture(autouse=True)
 # def run_before_and_after_tests(build_dir,request):
