@@ -13,9 +13,9 @@ from pathlib import Path
 import openpyxl
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.utils import quote_sheetname, absolute_coordinate
-from config import CONFIG
-from args import add_common_args
-from cohort import get_cohort
+from pyam.config import CONFIG
+from pyam.args import add_common_args
+from pyam.cohort import get_cohort
 
 
 def main(args=None):
@@ -32,8 +32,8 @@ def main(args=None):
         raise FileExistsError(destination)
     cohort.start_log_section(
         f"Generate template {destination.relative_to(CONFIG.root_path)}")
-    template = openpyxl.load_workbook(filename=str(CONFIG.tests_path /
-                                                   "template-template.xlsx"))
+    template = openpyxl.load_workbook(
+        filename=str(Path(__file__).parent / "template-template.xlsx"))
     worksheet = template.worksheets[0]
     worksheet["A2"].value = cohort.get("module_code")
     worksheet["A3"].value = cohort.get("assessment")

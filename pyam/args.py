@@ -6,8 +6,8 @@ Functions:
   add_common_args(parser): Adds common arguments to parser
 """
 import argparse
-import cohort
-from config import CONFIG
+import pyam.cohort as cohort
+from pyam.config import CONFIG
 
 
 def add_common_args(parser: argparse.ArgumentParser) -> None:

@@ -21,11 +21,11 @@ Defines fixtures:
 from pathlib import Path
 from typing import Union
 import pytest
-from config import CONFIG
-from cohort import get_cohort
+from pyam.config import CONFIG
+from pyam.cohort import get_cohort
 
 # pylint: disable=C0103
-pytest_plugins = ["vhdl_test", "mock_test", "python_test"]
+pytest_plugins = ["pyam.fixtures.vhdl", "pyam.fixtures.c_mock", "pyam.fixtures.python"]
 
 
 def pytest_addoption(parser):

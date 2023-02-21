@@ -8,8 +8,8 @@ import re
 import argparse
 from pathlib import Path
 from datetime import datetime
-import cohort as cohortlib
-from args import add_common_args
+import pyam.cohort
+from pyam.args import add_common_args
 import files
 
 
@@ -40,7 +40,7 @@ def main(args=None):
         parser=argparse.ArgumentParser(description=__doc__)
         add_args(parser)
         args=parser.parse_args()
-    cohort = cohortlib.get_cohort(args.cohort)
+    cohort = pyam.cohort.get_cohort(args.cohort)
     cohort.path.mkdir(exist_ok=True)
     cohort.start_log_section(f"Extracting downloads for Cohort {args.cohort}")
     students = list(cohort.students)

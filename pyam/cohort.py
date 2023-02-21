@@ -20,9 +20,9 @@ import re
 from typing import Union
 from datetime import date
 from pathlib import Path
-import config
-from config import CONFIG
-from files import read_csv
+import pyam.config as config
+from pyam.config import CONFIG
+from pyam.files import read_csv
 
 
 def current_academic_year() -> str:

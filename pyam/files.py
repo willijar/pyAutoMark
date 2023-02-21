@@ -84,6 +84,4 @@ def set_csv_column(filename,column_name,key_name,get_value):
         writer.writerow(coltitles)
         for row in rows:
             writer.writerow(row)
-    
-
 

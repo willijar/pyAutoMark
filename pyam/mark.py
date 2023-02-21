@@ -17,8 +17,8 @@ import argparse
 from datetime import date
 from pathlib import Path
 import openpyxl
-from cohort import get_cohort
-from args import add_common_args
+from pyam.cohort import get_cohort
+from pyam.args import add_common_args
 
 
 def main(args=None):
@@ -103,8 +103,9 @@ def analyse_report(report_path: Path, tests: dict, log=None):
         #check we have all expected results in report
         for test in tests.keys():
             if test not in results:
-                log.warn("Missing test result %s in report %s", test,
-                         report_path)
+                results[test]="Unknown"
+                log.warning("Missing test result %s in '%s'", test,
+                         report_path.name)
     return results
 
 

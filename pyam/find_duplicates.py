@@ -14,8 +14,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from datetime import datetime
 from typing import Sequence, List, Dict
-import cohort
-from config import CONFIG
+import pyam.cohort as cohort
+from pyam.config import CONFIG
 
 
 @dataclass

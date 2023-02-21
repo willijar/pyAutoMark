@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """Retrieve student files from github"""
 import argparse
-from config import CONFIG
-from cohort import get_cohort, current_academic_year
+from pyam.config import CONFIG
+from pyam.cohort import get_cohort, current_academic_year
 
 def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     "Parse and return args for this script"

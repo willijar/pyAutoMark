@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Sequence
 from subprocess import run
 import pytest
-import cunit
+import pyam.cunit as cunit
 
 
 @pytest.fixture

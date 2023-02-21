@@ -9,13 +9,12 @@ Classes:
   ConfigManager: Base class for loading and managing configuration files
 """
 
+import pathlib
 from pathlib import Path
 import logging
 import json
 import argparse
 from typing import Any
-
-_HERE = Path(__file__).resolve().parent
 
 # Gobal configuration
 CONFIG = None
@@ -120,24 +119,22 @@ class _Config(ConfigManager):
       cohort: The current cohort being processed
     """
 
-    def __init__(self):
+    def __init__(self, current_dir=pathlib.Path.cwd()):
         # find a configuration path up to home directory
-        path = _HERE
-        while not (path / "pyAutoMark.json").exists():
-            if path == path.home():
-                path = _HERE
-                break
-            path = path.parent
-        path = path / "pyAutoMark.json"
-        super().__init__(path, "global")
-        self.root_path: Path = self.get("root_path", _HERE.parent)
-        self.tests_path: Path = self.get("test_path", _HERE)
-        self.cohorts_path: Path = self.get("cohort_path",
-                                           self.root_path / "cohorts")
-        self.build_path: Path = self.get("build_path",
-                                         self.root_path / "build")
-        self.reports_path: Path = self.get("report_path",
-                                           self.root_path / "reports")
+        self.root_path = current_dir
+        while not (self.root_path / "pyAutoMark.json").exists():
+            if self.root_path == self.root_path.home():
+                raise FileNotFoundError("pyAutoMark.json")
+            self.root_path=self.root_path.parent
+        super().__init__(self.root_path / "pyAutoMark.json", "global")
+        self.root_path: Path = self.get("root_path", self.root_path)
+        self.tests_path: Path = self.get("test_path", self.root_path / "tests")
+        self.cohorts_path: Path = self.get(
+            "cohort_path", self.root_path / "cohorts")
+        self.build_path: Path = self.get(
+            "build_path",  self.root_path / "build")
+        self.reports_path: Path = self.get(
+            "report_path", self.root_path / "reports")
         for path in (self.cohorts_path, self.tests_path, self.build_path,
                      self.reports_path):
             path.mkdir(exist_ok=True)
@@ -155,14 +152,13 @@ class _Config(ConfigManager):
             logging.Formatter('%(name)-8s: %(levelname)-8s %(message)s'))
 
         self.log: logging.Logger = logging.getLogger()
+        self.log.handlers.clear()
         self.log.addHandler(self.error_log)
         self.log.addHandler(self.console_log)
         logging.getLogger("cohort").setLevel(logging.INFO)
         self.cohort = None
 
-
 CONFIG = _Config()
-
 
 def add_args(parser: argparse.ArgumentParser = argparse.ArgumentParser(description=__doc__)) -> None:
     """Add arguments for config command"""
@@ -198,10 +194,6 @@ def main(args: argparse.Namespace = None) -> None:
     if args.value is not None:
         conf[remainder] = args.value
         conf.store()
-        if conf == CONFIG and conf.config_path.parent != _HERE:
-            conf.log.warning(
-                "Writing to global configuration file %s:%s at %s", args.key,
-                args.value, conf.config_path)
     else:
         print(conf[remainder])
 

@@ -1,6 +1,6 @@
 import sys
 import pytest
-from subprocess import PIPE, STDOUT, run
+from subprocess import run
 import importlib
 import re
 

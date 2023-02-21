@@ -24,7 +24,7 @@ Configuration fixtures:
 from subprocess import PIPE, STDOUT, run
 from io import StringIO
 import pytest
-from files import find_executable
+from pyam.files import find_executable
 
 
 class VHDLError(Exception):

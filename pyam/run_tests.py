@@ -5,9 +5,9 @@
 import argparse
 import datetime
 from subprocess import STDOUT, run
-import cohort as cohortlib
-from config import CONFIG
-from args import add_common_args
+import pyam.cohort as cohortlib
+from pyam.config import CONFIG
+from pyam.args import add_common_args
 
 
 def main(args=None):
