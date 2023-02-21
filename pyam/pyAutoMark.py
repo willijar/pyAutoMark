@@ -3,14 +3,14 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """Automatically retrieve, mark and provide feedback for digital student submissions"""
 import argparse
-import run_tests
-import github_retrieve
-import extract_downloads
-import mark
-import generate_template
-import find_duplicates
-import config
-import cohort
+import pyam.run_tests
+import pyam.github_retrieve
+import pyam.extract_downloads
+import pyam.mark
+import pyam.generate_template
+import pyam.find_duplicates
+import pyam.config
+import pyam.cohort
 
 
 def main():
@@ -22,14 +22,14 @@ def main():
     #add subparsers for each command
     subparsers = parser.add_subparsers(title="subcommands")
     for command, module, doc in (
-            ('run', run_tests, "Run automated tests and generate reports"),
-            ('retrieve', github_retrieve, "Retrieve student files from github"),
-            ('extract', extract_downloads, "Extract student files from downloads"),
-            ('mark', mark, "Generate mark spreadsheets from reports and template spreadsheet"),
-            ('generate-template', generate_template, "Generate a template spreadsheet"),
-            ('check-submission', cohort, "Check students have submitted files listed in manifest"),
-            ('find-duplicates', find_duplicates, "Find duplicate students files"),
-            ('config', config, "Set or read configration")):
+            ('run', pyam.run_tests, "Run automated tests and generate reports"),
+            ('retrieve', pyam.github_retrieve, "Retrieve student files from github"),
+            ('extract', pyam.extract_downloads, "Extract student files from downloads"),
+            ('mark', pyam.mark, "Generate mark spreadsheets from reports and template spreadsheet"),
+            ('generate-template', pyam.generate_template, "Generate a template spreadsheet"),
+            ('check-submission', pyam.cohort, "Check students have submitted files listed in manifest"),
+            ('find-duplicates', pyam.find_duplicates, "Find duplicate students files"),
+            ('config', pyam.config, "Set or read configration")):
         sub = subparsers.add_parser(
             command,
             description=module.main.__doc__,

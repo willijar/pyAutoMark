@@ -10,7 +10,7 @@ from pathlib import Path
 from datetime import datetime
 import pyam.cohort
 from pyam.args import add_common_args
-import files
+import pyam.files
 
 
 def add_args(parser):
