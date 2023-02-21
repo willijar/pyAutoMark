@@ -1,0 +1,206 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyam.find_duplicates &#8212; pyAutoMark 0.3.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyam.find_duplicates</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># Copyright 2023, Dr John A.R. Williams</span>
+<span class="c1"># SPDX-License-Identifier: GPL-3.0-only</span>
+<span class="sd">&quot;&quot;&quot;Test to see if any students have submitted identical files across cohorts</span>
+<span class="sd">Only check files listed in cohort manifests.</span>
+
+<span class="sd">Typical Usage:</span>
+
+<span class="sd">find_duplicates.py --cohorts 2022 2021</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">import</span> <span class="nn">pyam.cohort</span> <span class="k">as</span> <span class="nn">cohort</span>
+<span class="kn">from</span> <span class="nn">pyam.config</span> <span class="kn">import</span> <span class="n">CONFIG</span>
+
+
+<div class="viewcode-block" id="FileRecord"><a class="viewcode-back" href="../../pyam.html#pyam.find_duplicates.FileRecord">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">FileRecord</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Record of path with student owner, stats and digest</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">      student: The Student for this file</span>
+<span class="sd">      stat: The file.stat for the file</span>
+<span class="sd">      file: The Path to the file</span>
+<span class="sd">      digest: The identifying digest of the file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">student</span><span class="p">:</span> <span class="n">cohort</span><span class="o">.</span><span class="n">Student</span>
+    <span class="n">file</span><span class="p">:</span> <span class="n">Path</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span>
+        <span class="n">sha</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
+        <span class="n">blocksize</span> <span class="o">=</span> <span class="n">sha</span><span class="o">.</span><span class="n">block_size</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+            <span class="n">block</span> <span class="o">=</span> <span class="n">fid</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">block</span> <span class="o">!=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="n">sha</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+                <span class="n">block</span> <span class="o">=</span> <span class="n">fid</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">digest</span> <span class="o">=</span> <span class="n">sha</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../pyam.html#pyam.find_duplicates.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find Duplicate files from students across cohorts&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="vm">__doc__</span><span class="p">)</span>
+        <span class="n">add_args</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">records</span> <span class="o">=</span> <span class="n">get_records</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">cohorts</span><span class="p">)</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="n">group_records</span><span class="p">(</span><span class="n">records</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">records</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">records</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="c1">#Get all unique cohorts</span>
+        <span class="n">cohorts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">record</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">cohort</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cohorts</span><span class="p">:</span>
+                <span class="n">cohorts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">cohort</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Duplicate files found.&quot;</span>
+        <span class="k">for</span> <span class="n">coh</span> <span class="ow">in</span> <span class="n">cohorts</span><span class="p">:</span>
+            <span class="n">coh</span><span class="o">.</span><span class="n">start_log_section</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">CONFIG</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Duplicate file </span><span class="si">{</span><span class="n">record</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">CONFIG</span><span class="o">.</span><span class="n">root_path</span><span class="p">)</span><span class="si">}</span><span class="s2"> &#39;</span><span class="si">{</span><span class="n">record</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span>\
+            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; : modified </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">stat</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">coh</span> <span class="ow">in</span> <span class="n">cohorts</span><span class="p">:</span>
+                <span class="n">coh</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_records"><a class="viewcode-back" href="../../pyam.html#pyam.find_duplicates.get_records">[docs]</a><span class="k">def</span> <span class="nf">get_records</span><span class="p">(</span><span class="n">cohort_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">FileRecord</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Given a list of cohort names return a list of FileRecords for each student</span>
+<span class="sd">       and file in a manifest&quot;&quot;&quot;</span>
+    <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">cohort_names</span><span class="p">:</span>
+        <span class="n">coh</span> <span class="o">=</span> <span class="n">cohort</span><span class="o">.</span><span class="n">get_cohort</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">files</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">coh</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;files&quot;</span><span class="p">,</span> <span class="p">())</span>
+        <span class="k">for</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">coh</span><span class="o">.</span><span class="n">students</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">filepath</span> <span class="o">=</span> <span class="n">student</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="n">file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">filepath</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FileRecord</span><span class="p">(</span><span class="n">student</span><span class="o">=</span><span class="n">student</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">filepath</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">records</span></div>
+
+
+<div class="viewcode-block" id="group_records"><a class="viewcode-back" href="../../pyam.html#pyam.find_duplicates.group_records">[docs]</a><span class="k">def</span> <span class="nf">group_records</span><span class="p">(</span><span class="n">records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FileRecord</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;GIve a list of file records group them by digest.</span>
+<span class="sd">    Return a dictionary of matching records indexed by digest&quot;&quot;&quot;</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">digest</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+            <span class="n">groups</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">groups</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">record</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">groups</span></div>
+
+
+<div class="viewcode-block" id="add_args"><a class="viewcode-back" href="../../pyam.html#pyam.find_duplicates.add_args">[docs]</a><span class="k">def</span> <span class="nf">add_args</span><span class="p">(</span><span class="n">parser</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="vm">__doc__</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;Add find_duplicates command arguments to parser&quot;&quot;&quot;</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">&#39;--cohorts&#39;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="n">CONFIG</span><span class="p">[</span><span class="s2">&quot;cohort&quot;</span><span class="p">]],</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;List of cohorts to scan across - defaults to current only&quot;</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">pyAutoMark</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">pyam</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, John Williams.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
