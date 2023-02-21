@@ -32,10 +32,22 @@ def main(args=None):
         args.template = str(cohort.report_path / "template.xlsx")
     template = openpyxl.load_workbook(args.template)
     cohort.start_log_section(f"Generating mark sheets from {args.template}")
-    students = cohort.student(args.students)
-    if args.reports:
-        reports = {}
-        for path in args.reports:
+    students = cohort.students(args.students)
+    reports = get_reports(cohort, students, args.reports, args.prefix)
+    for student, report in reports.items():
+        fill_workbook(template, student, report)
+        report_path = cohort.report_path / f"{args.prefix}{student.username}.xlsx"
+        if not (args.overwrite) and report_path.exists():
+            raise FileExistsError(report_path)
+        template.save(report_path)
+        cohort.log.info("Generated mark sheet %s.", report_path)
+
+
+def get_reports(cohort, students, paths, prefix) -> dict:
+    """Returns a reports dictionary for given students and reports list"""
+    reports = {}
+    if paths:
+        for path in paths:
             found = False
             for student in students:
                 if student.username in str(path):
@@ -46,33 +58,31 @@ def main(args=None):
                 cohort.log.warning(
                     "Report file %s does not correspond to known student",
                     path)
-        args.reports = reports
     else:
-        args.reports = {}
         for student in students:
-            report = cohort.report_path / f"{args.prefix}{student.username}.txt"
+            report = cohort.report_path / f"{prefix}{student.username}.txt"
             if not report.exists():
                 cohort.log.warning("No report file found for %s'",
                                    student.name())
             else:
-                args.reports[student] = report
-    for student, report in args.reports.items():
-        workbook = template.worksheets[0]
-        workbook["B4"] = student.name()
-        workbook["B5"] = student.student_id
-        workbook["B6"] = student.username + cohort.get("domain")
-        workbook["B8"] = cohort.get('assessor.name')
-        workbook["B9"] = cohort.get('assessor.email')
-        workbook["B10"] = str(date.today())
-        for key, value in analyse_report(report, cohort.tests(),
-                                         cohort.log).items():
-            for title, coord in template.defined_names[key].destinations:
-                template[title][coord] = value
-        report_path = cohort.report_path / f"{args.prefix}{student.username}.xlsx"
-        if not (args.overwrite) and report_path.exists():
-            raise FileExistsError(report_path)
-        template.save(report_path)
-        cohort.log.info("Generated mark sheet %s.", report_path)
+                reports[student] = report
+    return reports
+
+
+def fill_workbook(template, student, report):
+    """Fill in workbook 0 of template with student and report details"""
+    workbook = template.worksheets[0]
+    cohort = student.cohort
+    workbook["B4"] = student.name()
+    workbook["B5"] = student.student_id
+    workbook["B6"] = student.username + cohort.get("domain")
+    workbook["B8"] = cohort.get('assessor.name')
+    workbook["B9"] = cohort.get('assessor.email')
+    workbook["B10"] = str(date.today())
+    for key, value in analyse_report(report, cohort.tests(),
+                                     cohort.log).items():
+        for title, coord in template.defined_names[key].destinations:
+            template[title][coord] = value
 
 
 def analyse_report(report_path: Path, tests: dict, log=None):
@@ -101,19 +111,25 @@ def analyse_report(report_path: Path, tests: dict, log=None):
 def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     """Add and parse args for this script"""
     add_common_args(parser)
-    parser.add_argument('-t',
-                        '--template',
-                        type=Path,
-                        help="Template mark file")
-    parser.add_argument('-o',
-                        '--output',
-                        type=Path,
-                        help="Destination path for mark sheets")
-    parser.add_argument('--reports',
-                        nargs=argparse.REMAINDER,
-                        type=Path,
-                        default=[],
-                        help="list of workbooks files to be processed")
+    parser.add_argument(
+        '-t',
+        '--template',
+        type=Path,
+        help="Template mark file to use. Defaults to one in cohort directory")
+    parser.add_argument(
+        '-o',
+        '--output',
+        type=Path,
+        help=
+        "Destination path for mark sheets. Defaults to cohort report directory"
+    )
+    parser.add_argument(
+        '--reports',
+        nargs=argparse.REMAINDER,
+        type=Path,
+        default=[],
+        help="list of workbooks files to be processed. "
+        "Defaults to those in report directory with matching prefix")
 
 
 if __name__ == "__main__":

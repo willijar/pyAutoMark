@@ -20,7 +20,7 @@ def main(args=None):
     cohort = cohortlib.get_cohort(args.cohort)
     cohort.start_log_section(
         f"Running tests {args.test} for {args.students or 'all'}")
-    students = cohort.student(args.students)
+    students = cohort.students(args.students)
     for student in students:
         report_path = cohort.report_path / f"{args.prefix}{student.username}.txt"
         if report_path.exists():

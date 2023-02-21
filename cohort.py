@@ -1,11 +1,23 @@
 # Copyright 2023, Dr John A.R. Williams
 # SPDX-License-Identifier: GPL-3.0-only
 """Support functions for assessing students and running tests by cohort
- reads student details from CSV file, checks manifest etc
- Only one cohort can be active at once - use getCohort(name) to get/set root level cohort"""
+
+Classes:
+  Cohort: representing a specific cohort
+  Student: representing a student in a cohort
+
+Functions:
+  get_cohort:
+    Gets a cohort by name (or default cohort)
+  current_academic_year:
+    returns a generated default cohort name by current (UK style) academic year
+"""
 import subprocess
 import logging
 import json
+import glob
+import re
+from typing import Union
 from datetime import date
 from pathlib import Path
 import config
@@ -13,16 +25,19 @@ from config import CONFIG
 from files import read_csv
 
 
-def get_cohort(name=CONFIG.get("cohort", None)):
-    """Return cohort for given name or current cohort if name=None"""
-    assert name is not None or CONFIG.cohort
-    if (not (CONFIG.cohort) or CONFIG.cohort.name != name):
-        CONFIG.cohort = Cohort(name)
-    return CONFIG.cohort
+def current_academic_year() -> str:
+    """Current (by date) academic year to use as a cohort name
 
+    This is based on common UK naming where the academic year starts in late September
+    and finished in June with referred assessments are in July/August
 
-def current_cohort_name():
-    """Return current (by date) cohort name"""
+      September--December it returns the current year
+      January to June return previous year
+      July-August returns <previous year>-referred
+
+    Returns:
+       academic_year: The academic year
+    """
     today = date.today()
     year = today.year
     if today.month < 9:
@@ -32,24 +47,36 @@ def current_cohort_name():
     return str(year)
 
 
+
 class Cohort(config.ConfigManager):
-    """Class representing a cohort of students"""
-    name: str  # cohort name (academic year)
-    practical: str  # practical name (on github classroom)
-    students: tuple  # list of students in this cohort
-    path: Path  # Path to this cohort
-    test_path: Path
-    test_manifest: dict
+    """Class representing a cohort of students with associated tests and reports
+
+    Inherits from:
+      config.ConfigManager:
+        To load configuration from manifest.json in Cohort directory and provide log handling
+
+    Attributes:
+      name: The cohort name (subdirectory name) (e.g. academic year of study)
+      path: The Path to this cohort
+      test_path: The Path to the tests for this cohort
+      report_path: The Path to report directory for this cohort
+      log: The Logger for cohort.
+
+    Methods:
+      students: Return students matching a specified name or names
+      start_log_section: Starts a new named section in the cohort log
+      tests: Returns the dictionary of tests for this cohort
+    """
+
 
     def __init__(self, name):
-        self.name = name
-        student_list = []
-        self.path = CONFIG.cohorts_path / name
-        self.test_path = CONFIG.tests_path / name
-        self.report_path = CONFIG.reports_path / name
+        self.name: str = name
+        self.path: Path = CONFIG.cohorts_path / name
+        self.test_path: Path = CONFIG.tests_path / name
+        self.report_path: Path = CONFIG.reports_path / name
         self.report_path.mkdir(exist_ok=True)
         super().__init__(self.path / "manifest.json", "cohort")
-        self.log = logging.getLogger("cohort")
+        self.log: logging.Logger = logging.getLogger("cohort")
         self.log.handlers.clear()
         handler = logging.FileHandler(filename=self.report_path / "info.log",
                                       mode="a")
@@ -61,75 +88,94 @@ class Cohort(config.ConfigManager):
             raise FileNotFoundError(self.path)
         for path in (self.test_path, self.report_path):
             path.mkdir(exist_ok=True)
+        student_list = []
         for rec in read_csv(self.path / "students.csv", columns=True):
             student_list.append(Student(self, rec))
-        self.students = tuple(student_list)
+        self._students: 'tuple[Student]' = tuple(student_list)
 
-    def student(self, name):
-        """Find student by full name, student id or username in cohort.
-        If an iterable type is given return list of students"""
+    def students(self,
+                 name: 'Union[str, None, list[str]]' = None
+                 )-> 'Union[Student, list[Student]]':
+        """Return student or students from a cohort.
+
+        Finds students by full name, student id or username in cohort.
+
+        Args:
+          name:
+            Name or names to be found in the cohort. May be username, student_id or common name
+
+        Returns:
+          If name is not given prodes list of all students in cohort
+          If name is a string returns the first matching student found
+          If name is a list return list of students corresponding to list of names
+        """
         if not name:
-            return tuple(self.students)
+            return list(self._students)
         if isinstance(name, str):
-            for student in self.students:
+            for student in self._students:
                 if name in (student.username, student.student_id,
                             student.name()):
                     return student
             raise KeyError(f"Student {name} not found in {self.name} cohort.")
         students = []
         for i in name:
-            students.append(self.student(i))
+            students.append(self.students(i))
         return students
 
-    def start_log_section(self, title):
+    def start_log_section(self, title: str) -> None:
         "Write a section header in cohort log file"
         fix = "=" * (40 - len(title) // 2)
         self.log.info("%s %s %s", fix, title, fix)
 
-    # def import_py(self, module_name):
-    #     spec = importlib.util.spec_from_file_location(
-    #         module_name, self.path(module_name + ".py"))
-    #     module = importlib.util.module_from_spec(spec)
-    #     spec.loader.exec_module(module)
+    def tests(self) -> dict:
+        """Return dictionary of tests for this cohort indexed by pytest nodeids
 
-    def tests(self):
-        """Return hash of tests to be considered - dictionary by nodeids
-        - either from test manifest or from pytest cache"""
+        If a manifest.json is provided in the test directory then this is the "tests"
+        value from that file. Otherwise the nodeids are collected by pytest and the values
+        fields are empty dictionaies. Future implementations may use the values.
+        """
         test_manifest_path = self.test_path / "manifest.json"
-        self.test_manifest = None
+        test_manifest = None
         if test_manifest_path.exists():
-            with open(self.path / "manifest.json", "r") as fid:
-                self.test_manifest = json.load(fid).get(
-                    "tests", self.test_manifest)
-        if not self.test_manifest:
+            with open(test_manifest_path, "r") as fid:
+                test_manifest = json.load(fid).get("tests", None)
+        if not test_manifest:
             result = subprocess.run(
                 ["pytest", '--collect-only', '-q', '--cohort', self.name],
                 cwd=self.test_path,
                 text=True,
                 capture_output=True,
                 check=True)
-            self.test_manifest = {}
+            test_manifest = {}
             for line in result.stdout.splitlines():
                 if len(line) == 0:
                     break
-                self.test_manifest[line] = {}
-        return self.test_manifest
+                test_manifest[line] = {}
+        return test_manifest
 
 
 class Student:
-    """Class representing student work"""
-    username: str  # Blackboard username
-    student_id: str  # Aston student id
-    last_name: str
-    first_name: str
-    rec: dict
-    cohort: Cohort  # Cohort to which this student belongs
-    course: str = None  #child course id from blackboard (if set)
-    github_username: str = None  #github username if specified
-    path: Path = None
+    """A student in a cohort. Initialised from students.csv file in cohort
+
+    Attributes:
+      username: Their username
+      path: The Path to where the students submission resides.
+      student_id: Their official student id
+      last_name: Their family name
+      first_name: their first name
+      cohort: The Cohort in which they reside
+      course: Possible subcohort course name
+      github_username: Github username if specified
+    """
+
 
     def __init__(self, cohort: Cohort, rec: dict):
-        """Initialise from a csv record"""
+        """Initialise student into cohort from a csv record rec
+
+        Args:
+          cohort: The Cohort object to which this student belongs
+          rec: A dictionary of values from csv file to initialise student from
+        """
         self.rec = rec
         self.cohort = cohort
         self.username = rec["Username"]
@@ -146,14 +192,23 @@ class Student:
         self.path = self.cohort.path / folder
 
     def __hash__(self):
-        "Hash by username"
-        return self.username.__hash__()
+        return hash((self.cohort.name, self.username))
+
+    def __repr__(self):
+        return f"<Student {self.cohort.name}/{self.student_id}>"
 
     def __str__(self):
-        return f"<Student {self.cohort.name}/{self.name()}>"
+        return self.name()
 
-    def name(self, style="ref"):
-        "Return common name formats"
+    def name(self, style: str = "ref") -> str:
+        """Return common name formats - default is student id first name, last name
+
+        Args:
+          style: Style - can be a field from csv file, username or ref(default)
+
+        Returns:
+          name string in given style. Default is ref - student username, Lastname and firstname
+        """
         if style:
             if style in self.rec:
                 return self.rec[style]
@@ -163,8 +218,16 @@ class Student:
                 return f"{self.username} ({self.last_name}, {self.first_name})"
         return f"{self.last_name}, {self.first_name}"
 
-    def check_manifest(self, files=None, log=False):
-        "Check if student directory contains all files on cohort manifest"
+    def check_manifest(self, files: Union[list, None] = None, log: bool = False):
+        """Check if student directory contains all files on cohort manifest
+
+        Args:
+          files: (optional) List of files to find. If not given use cohort manifest
+          log (bool): If True log missing files in cohort logger
+
+        Returns:
+          List of missing files
+        """
         if not files:
             files = self.cohort.get("files", ())
         missing = []
@@ -177,22 +240,22 @@ class Student:
         return missing
 
     def repository_name(self):
-        """Github repository name if applicable else None"""
+        """Github repository name if applicable else False"""
         if self.github_username:
-            github = self.cohort.get("github", None)
+            github = self.cohort.get("github.template", None)
             if github:
-                return f"{github['practical']}-{self.github_username}"
+                return f"{github}-{self.github_username}"
         return False
 
     def repository_url(self):
-        """Return students github repository url"""
+        """Return students github repository url if present else False"""
         name = self.repository_name()
         if name:
             return f"{self.cohort['github.url']}/{self.repository_name()}"
         return False
 
     def github_retrieve(self):
-        """Clone or pull asssessments for each student in studentlist"""
+        """Clone or pull asssessments for this student from their repository."""
         if self.path.exists():
             action = ["git", "pull"]
             cwd = self.path
@@ -221,12 +284,51 @@ class Student:
         )
         return False
 
+    def find_files(self, pathname: str, containing: str = None, recursive: bool = False) -> list:
+        """Return filtered list of files found in student directory.
+
+        If containing is given also filter to files containing this regexp
+        If recursive is true also recurse subdirectories looking for matches
+
+        Args:
+          pathname: Unix style pathaname glob
+          containing: An optional regexp to match against file contents
+          recursive: If true also look in subdirectories
+
+        Returns:
+          List of files found - may be empty list
+        """
+        files = glob.glob(str(self.path) + "/" + pathname, recursive=recursive)
+        if not containing:
+            return files
+        matching = []
+        matcher = re.compile(containing)
+        for file in files:
+            with open(file, 'r') as fid:
+                if matcher.findall(fid.read()):
+                    matching.append(file)
+        return matching
+
+
+def get_cohort(name: str = CONFIG.get("cohort", current_academic_year())) -> Cohort:
+    """Return cohort for given name or current defaultcohort if name=None
+
+    Args:
+      name:
+        Optional name of cohort to load.
+        If not present will use default - "cohort" field from configuration
+        Or use calculated current_academic_year
+    """
+    assert name is not None or CONFIG.cohort
+    if (not (CONFIG.cohort) or CONFIG.cohort.name != name):
+        CONFIG.cohort = Cohort(name)
+    return CONFIG.cohort
 
 # pylint: disable=W0613
 def main(args=None):
     """Main routine - checks student manifest in a cohort"""
-    cohort = get_cohort(current_cohort_name())
-    for student in cohort.students:
+    cohort = get_cohort()
+    for student in cohort.students():
         missing = student.check_manifest(cohort.get("Files", None), log=False)
         if missing:
             print(f'"{student.name()}" missing {missing}')

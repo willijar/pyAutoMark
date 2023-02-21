@@ -20,7 +20,14 @@ from config import CONFIG
 
 @dataclass
 class FileRecord:
-    """Record of path with student owner, stats and digest"""
+    """Record of path with student owner, stats and digest
+    
+    Attributes:
+      student: The Student for this file
+      stat: The file.stat for the file
+      file: The Path to the file
+      digest: The identifying digest of the file
+    """
     student: cohort.Student
     file: Path
 
@@ -37,6 +44,7 @@ class FileRecord:
 
 
 def main(args=None):
+    """Find Duplicate files from students across cohorts"""
     if args is None:
         parser = argparse.ArgumentParser(description=__doc__)
         add_args(parser)
@@ -60,6 +68,7 @@ def main(args=None):
             + f" : modified {datetime.fromtimestamp(record.stat.st_mtime)}"
             for coh in cohorts:
                 coh.log.warning(msg)
+            print(msg)
 
 
 def get_records(cohort_names: Sequence[str]) -> List[FileRecord]:
@@ -69,7 +78,7 @@ def get_records(cohort_names: Sequence[str]) -> List[FileRecord]:
     for name in cohort_names:
         coh = cohort.get_cohort(name)
         files: dict = coh.get("files", ())
-        for student in coh.students:
+        for student in coh.students():
             for file in files.keys():
                 filepath = student.path / file[0]
                 if filepath.exists():
@@ -91,13 +100,13 @@ def group_records(records: List[FileRecord]) -> Dict:
 
 
 def add_args(parser=argparse.ArgumentParser(description=__doc__)):
-    """Return Parsed arguments for find-duplicates"""
+    """Add find_duplicates command arguments to parser"""
     parser.add_argument(
         '--cohorts',
         type=str,
-        default=[cohort.current_cohort_name()],
+        default=[CONFIG["cohort"]],
         nargs="+",
-        help="List of cohorts to scan across - default is current only")
+        help="List of cohorts to scan across - defaults to current only")
 
 
 if __name__ == "__main__":
