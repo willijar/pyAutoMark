@@ -3,7 +3,6 @@ __pycache__
 .pytest_cache
 .vscode
 /20*/
-docs
 # Prerequisites
 *.d
 

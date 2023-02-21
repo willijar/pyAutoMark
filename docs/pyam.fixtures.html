@@ -1,0 +1,495 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyam.fixtures package &#8212; pyAutoMark 0.3.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="pyam package" href="pyam.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyam-fixtures-package">
+<h1>pyam.fixtures package<a class="headerlink" href="#pyam-fixtures-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyam.fixtures.c_mock">
+<span id="pyam-fixtures-c-mock-module"></span><h2>pyam.fixtures.c_mock module<a class="headerlink" href="#module-pyam.fixtures.c_mock" title="Permalink to this headline">¶</a></h2>
+<p>pytest fixtures to support running C tests using mocking</p>
+<dl class="docutils">
+<dt>Fixtures:</dt>
+<dd>binary_name: Path for executable
+student_c_file: Path to student C file under test
+mock_c_file: path to the mock C file with tests
+compile_flags (Sequence[str]): Additional flags to use during compilation
+c_compile: Function which takes sequence of declarations to compile mock test
+c_exec: Function to execute and compile mock test, given list of declarations</dd>
+</dl>
+<dl class="function">
+<dt id="pyam.fixtures.c_mock.binary_name">
+<code class="descclassname">pyam.fixtures.c_mock.</code><code class="descname">binary_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/pyam/fixtures/c_mock.html#binary_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.c_mock.binary_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Binary Executable name to use for compiled tests</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.c_mock.c_compile">
+<code class="descclassname">pyam.fixtures.c_mock.</code><code class="descname">c_compile</code><span class="sig-paren">(</span><em>student</em>, <em>test_path</em>, <em>build_path</em>, <em>mock_c_file</em>, <em>binary_name</em>, <em>compile_flags</em>, <em>compiler</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/c_mock.html#c_compile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.c_mock.c_compile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return compile function for this test suite which takes declarations as argument</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.c_mock.c_exec">
+<code class="descclassname">pyam.fixtures.c_mock.</code><code class="descname">c_exec</code><span class="sig-paren">(</span><em>c_compile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/c_mock.html#c_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.c_mock.c_exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Exec function for this test suite which takes declarations as argument</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.c_mock.c_lint">
+<code class="descclassname">pyam.fixtures.c_mock.</code><code class="descname">c_lint</code><span class="sig-paren">(</span><em>student</em>, <em>test_path</em>, <em>build_path</em>, <em>c_lint_checks</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/c_mock.html#c_lint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.c_mock.c_lint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return function to provide lint ouput on students C file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.c_mock.c_lint_checks">
+<code class="descclassname">pyam.fixtures.c_mock.</code><code class="descname">c_lint_checks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/c_mock.html#c_lint_checks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.c_mock.c_lint_checks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return C -lint checks to appy - default is * (all)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.c_mock.compile_flags">
+<code class="descclassname">pyam.fixtures.c_mock.</code><code class="descname">compile_flags</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Sequence[str]<a class="reference internal" href="_modules/pyam/fixtures/c_mock.html#compile_flags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.c_mock.compile_flags" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of additional compile flags (style) to use across tests</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.c_mock.mock_c_file">
+<code class="descclassname">pyam.fixtures.c_mock.</code><code class="descname">mock_c_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/pyam/fixtures/c_mock.html#mock_c_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.c_mock.mock_c_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>The mock code C file currently under test - should be set in module or class</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.c_mock.student_c_file">
+<code class="descclassname">pyam.fixtures.c_mock.</code><code class="descname">student_c_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/pyam/fixtures/c_mock.html#student_c_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.c_mock.student_c_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>student C file currently under test - should be set in module or class</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.c_mock.write_header">
+<code class="descclassname">pyam.fixtures.c_mock.</code><code class="descname">write_header</code><span class="sig-paren">(</span><em>build_path</em>, <em>student_c_file</em><span class="sig-paren">)</span> &#x2192; pathlib.Path<a class="reference internal" href="_modules/pyam/fixtures/c_mock.html#write_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.c_mock.write_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup up header file to include students c_file - return path of the generated header file</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyam.fixtures.common">
+<span id="pyam-fixtures-common-module"></span><h2>pyam.fixtures.common module<a class="headerlink" href="#module-pyam.fixtures.common" title="Permalink to this headline">¶</a></h2>
+<p>Common fixtures for pyam to provide cohort and student information</p>
+<dl class="docutils">
+<dt>Defines fixtures:</dt>
+<dd>cohort: the cohort under test
+student: the stundet being tested
+compiler: the C compiler begin used
+build_path: directory for temporary build files
+test_path: The path where the tests are kept</dd>
+</dl>
+<dl class="function">
+<dt id="pyam.fixtures.common.build_path">
+<code class="descclassname">pyam.fixtures.common.</code><code class="descname">build_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/common.html#build_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.common.build_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directory path for out of source build (executables, libs and object files)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.common.cohort">
+<code class="descclassname">pyam.fixtures.common.</code><code class="descname">cohort</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/common.html#cohort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.common.cohort" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cohort where student is to be found - specified using –cohort option</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.common.compiler">
+<code class="descclassname">pyam.fixtures.common.</code><code class="descname">compiler</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/common.html#compiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.common.compiler" title="Permalink to this definition">¶</a></dt>
+<dd><p>The C Compiler to use</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.common.pytest_addoption">
+<code class="descclassname">pyam.fixtures.common.</code><code class="descname">pytest_addoption</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/common.html#pytest_addoption"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.common.pytest_addoption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add in pyAutoTest control options for pytest</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.common.pytest_configure">
+<code class="descclassname">pyam.fixtures.common.</code><code class="descname">pytest_configure</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/common.html#pytest_configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.common.pytest_configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add in pyAutoTest markers for pytest</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.common.student">
+<code class="descclassname">pyam.fixtures.common.</code><code class="descname">student</code><span class="sig-paren">(</span><em>request</em>, <em>cohort</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/common.html#student"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.common.student" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current student under test - specified using –student option</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.common.student_files">
+<code class="descclassname">pyam.fixtures.common.</code><code class="descname">student_files</code><span class="sig-paren">(</span><em>student</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/common.html#student_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.common.student_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fixture is function to find files for student</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pathname</strong> – Unix style pathaname glob (or list of same)</li>
+<li><strong>containing</strong> – An optional regexp to match against file contents</li>
+<li><strong>recursive</strong> – If true also look in subdirectories</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>File Path or list of File Paths found.</dt>
+<dd><p class="first last">If multiple then first found will be given (or list)</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">Path(s)</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">FileNotFoundError</span></code> – if no matching file found</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.common.test_path">
+<code class="descclassname">pyam.fixtures.common.</code><code class="descname">test_path</code><span class="sig-paren">(</span><em>cohort</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/common.html#test_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.common.test_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directory path containing test files</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyam.fixtures.python">
+<span id="pyam-fixtures-python-module"></span><h2>pyam.fixtures.python module<a class="headerlink" href="#module-pyam.fixtures.python" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="pyam.fixtures.python.PythonRunError">
+<em class="property">exception </em><code class="descclassname">pyam.fixtures.python.</code><code class="descname">PythonRunError</code><a class="reference internal" href="_modules/pyam/fixtures/python.html#PythonRunError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.python.PythonRunError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Base Python related errors</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyam.fixtures.python.PythonStyleError">
+<em class="property">exception </em><code class="descclassname">pyam.fixtures.python.</code><code class="descname">PythonStyleError</code><a class="reference internal" href="_modules/pyam/fixtures/python.html#PythonStyleError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.python.PythonStyleError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>pylint Score too low</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.python.module_name">
+<code class="descclassname">pyam.fixtures.python.</code><code class="descname">module_name</code><span class="sig-paren">(</span><em>student</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/python.html#module_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.python.module_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Module name under test</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.python.python_lint">
+<code class="descclassname">pyam.fixtures.python.</code><code class="descname">python_lint</code><span class="sig-paren">(</span><em>python_file</em>, <em>score_threshold</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/python.html#python_lint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.python.python_lint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return function to provide pylint diagnostics on sutdents code</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.python.run_script">
+<code class="descclassname">pyam.fixtures.python.</code><code class="descname">run_script</code><span class="sig-paren">(</span><em>student</em>, <em>timeout</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/python.html#run_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.python.run_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return script runner function for this student</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.python.student_module">
+<code class="descclassname">pyam.fixtures.python.</code><code class="descname">student_module</code><span class="sig-paren">(</span><em>student</em>, <em>module_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/python.html#student_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.python.student_module" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return function to import a module from a student file - returns module instance</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.python.timeout">
+<code class="descclassname">pyam.fixtures.python.</code><code class="descname">timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/python.html#timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.python.timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timeout for scripts</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyam.fixtures.vhdl">
+<span id="pyam-fixtures-vhdl-module"></span><h2>pyam.fixtures.vhdl module<a class="headerlink" href="#module-pyam.fixtures.vhdl" title="Permalink to this headline">¶</a></h2>
+<p>Test Fixtures for Simulating and synthesising VHDL designs:</p>
+<dl class="docutils">
+<dt>Main testing fixtures:</dt>
+<dd>vhdl_simulate: returns a function to run a tutors vhdl testbench against student VHDL files
+vhdl_synthesise: return a function to test synthesisis of a student VHDl design</dd>
+<dt>Support fixtures:</dt>
+<dd>ghdl: returns function to run the ghdl simulator
+vivdao: run function to run Vivado</dd>
+<dt>Configuration fixtures:</dt>
+<dd>search_paths: paths to dsearch for ghdl and vviado executables (if no on path)
+vivado_exec: the (found) vivado executable path
+ghdl_exec: the (found) ghdl executable path
+partnumber: Vivado parnumber to synthesise for
+ghdl_options: Standard list op options to pass ghdl
+vivado_options: standard list of options to pass vivado</dd>
+</dl>
+<dl class="exception">
+<dt id="pyam.fixtures.vhdl.VHDLAnalysisError">
+<em class="property">exception </em><code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">VHDLAnalysisError</code><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#VHDLAnalysisError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.VHDLAnalysisError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyam.fixtures.vhdl.VHDLError" title="pyam.fixtures.vhdl.VHDLError"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyam.fixtures.vhdl.VHDLError</span></code></a></p>
+<p>Error at VHDL Analysis stage</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyam.fixtures.vhdl.VHDLError">
+<em class="property">exception </em><code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">VHDLError</code><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#VHDLError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.VHDLError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Base for all VHDL related errors</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyam.fixtures.vhdl.VHDLRunError">
+<em class="property">exception </em><code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">VHDLRunError</code><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#VHDLRunError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.VHDLRunError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyam.fixtures.vhdl.VHDLError" title="pyam.fixtures.vhdl.VHDLError"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyam.fixtures.vhdl.VHDLError</span></code></a></p>
+<p>Error at chdl simulation/run time</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyam.fixtures.vhdl.VHDLSynthesisError">
+<em class="property">exception </em><code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">VHDLSynthesisError</code><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#VHDLSynthesisError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.VHDLSynthesisError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyam.fixtures.vhdl.VHDLError" title="pyam.fixtures.vhdl.VHDLError"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyam.fixtures.vhdl.VHDLError</span></code></a></p>
+<p>Error with VHDL Synthesis</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.vhdl.clean">
+<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">clean</code><span class="sig-paren">(</span><em>ghdl_exec</em>, <em>build_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#clean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean files at start of test</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.vhdl.ghdl">
+<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">ghdl</code><span class="sig-paren">(</span><em>ghdl_exec</em>, <em>ghdl_options</em>, <em>build_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#ghdl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.ghdl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fixture returns function to run a test using ghdl.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>command</strong> – the ghdl command string to use e.g. -a to analyse or –elab-run to run simulation</li>
+<li><strong>options</strong> – sequence of additional options to pass to ghdl, defaults to ghdl_options fixture</li>
+<li><strong>unit</strong> – the ghdl unit to execute command on</li>
+<li><strong>run_options</strong> – Additional run time ghdl options to give after unit</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="#pyam.fixtures.vhdl.VHDLAnalysisError" title="pyam.fixtures.vhdl.VHDLAnalysisError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">VHDLAnalysisError</span></code></a> – if analysis (-a) command failed</li>
+<li><a class="reference internal" href="#pyam.fixtures.vhdl.VHDLRunError" title="pyam.fixtures.vhdl.VHDLRunError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">VHDLRunError</span></code></a> – if -r or –elab-run command faild</li>
+<li><a class="reference internal" href="#pyam.fixtures.vhdl.VHDLError" title="pyam.fixtures.vhdl.VHDLError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">VHDLError</span></code></a> – if ghdl failed but netiehr of above commands</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.vhdl.ghdl_exec">
+<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">ghdl_exec</code><span class="sig-paren">(</span><em>search_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#ghdl_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.ghdl_exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to ghdl executable</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.vhdl.ghdl_options">
+<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">ghdl_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#ghdl_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.ghdl_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of additional ghdl flags (style) to use across tests</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.vhdl.partnumber">
+<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">partnumber</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#partnumber"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.partnumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partnumber for synthesis</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.vhdl.search_paths">
+<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">search_paths</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#search_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.search_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of additional paths to search for executables</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.vhdl.vhdl_simulate">
+<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">vhdl_simulate</code><span class="sig-paren">(</span><em>ghdl</em>, <em>student</em>, <em>test_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#vhdl_simulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.vhdl_simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fixture returns function to analyse student against tutors testbench.
+Uses ghdl fixture to run simulations</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>top</strong> – the top level (tutors) testbench to run</li>
+<li><strong>student_files</strong> – List of files in student directory to analyse first</li>
+<li><strong>test_files</strong> – List of files in test directory to analyse before student files
+e.g. to provide working implementations for student work to use</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">see ghdl</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.vhdl.vhdl_synthesise">
+<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">vhdl_synthesise</code><span class="sig-paren">(</span><em>student</em>, <em>build_path</em>, <em>vivado</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#vhdl_synthesise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.vhdl_synthesise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fixture returns function to synthesise a vhdl design and generate a bitstream - raising an
+error if vivado throughs an error or bit files is not present</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>top</strong> – Name of top level entity in design</li>
+<li><strong>student_files</strong> – list of vhdl filenames in student directory for design</li>
+<li><strong>constraints_file</strong> – Name of students constraints file to use in design - defaul top.xdc</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.vhdl.vivado">
+<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">vivado</code><span class="sig-paren">(</span><em>vivado_exec</em>, <em>build_path</em>, <em>student</em>, <em>vivado_options</em>, <em>partnumber</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#vivado"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.vivado" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fixture returns function to run vivado synthesis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>bitfile</strong> – path to where bitfile should be written</li>
+<li><strong>top</strong> – Name of top level entity in design</li>
+<li><strong>sources</strong> – vhdl source files</li>
+<li><strong>constraint</strong> – list of constraints files</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#pyam.fixtures.vhdl.VHDLSynthesisError" title="pyam.fixtures.vhdl.VHDLSynthesisError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">VHDLSynthesisError</span></code></a> – If vivado exits with an error</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.vhdl.vivado_exec">
+<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">vivado_exec</code><span class="sig-paren">(</span><em>search_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#vivado_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.vivado_exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fixture returns pat to Vivado executable for synthesis</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.vhdl.vivado_options">
+<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">vivado_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#vivado_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.vivado_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fixture return additional vivado options to use across tests</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyam.fixtures">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyam.fixtures" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pyAutoMark</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pyam</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pyam.html">pyam package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">pyam</a><ul>
+  <li><a href="pyam.html">pyam package</a><ul>
+      <li>Previous: <a href="pyam.html" title="previous chapter">pyam package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, John Williams.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/pyam.fixtures.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
