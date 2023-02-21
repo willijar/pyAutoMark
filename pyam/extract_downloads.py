@@ -67,7 +67,7 @@ def main(args=None):
             submission_dates[username]=date
             if student in students:
                 students.remove(student)
-    files.set_csv_column(cohort.path / "students.csv","Submission Date","Username",lambda x: submission_dates.get(x,None))
+    pyam.files.set_csv_column(cohort.path / "students.csv","Submission Date","Username",lambda x: submission_dates.get(x,None))
     for student in cohort.students:
         if student not in students:
             student.check_manifest(log=True)
