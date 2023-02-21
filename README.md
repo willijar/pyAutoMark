@@ -84,20 +84,3 @@ The toolset automates the following steps
 | C/C++ Extension Pack     | Microsoft   |
 | Python Test Explorer     | Little Fox Team |
 | Github Classroom         | Github      |
-
-## TODO
-
-### Improvements
-
-* [X] Test/sort so tests can be in separate folder to pyAutoMark - No - that is not how pytest works
-* [ ] Document how to install
-* [X] --collect-only - how to determine nodeids
-* [X] Controller script to run commands use main(parser) in scripts
-* [X] Config class reads json  using data class
-
-### Additonal Functionality
-
-* [X] Add in Python fixtures and test with EE1CPS
-* [ ] Test calling function in a script for python
-* [ ] Add in linting (for C and Python) as relevant fixtures
-* [ ] File finding using matching patterns -in manifest and in tests
