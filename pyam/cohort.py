@@ -359,9 +359,28 @@ def main(args=None):
             print("Default cohort is now: ", CONFIG["cohort"])
     cohort=get_cohort(CONFIG.get("cohort", current_academic_year()))
     if args.list_students:
+        today=datetime.today().astimezone()
+        deadline=cohort.get("deadline",None)
+        if deadline:
+            deadline=datetime.fromisoformat(deadline).astimezone()
+        print(f"Deadline: {deadline}")
         for student in cohort.students():
-            missing=student.check_manifest(cohort.get("Files", None), log=False)
-            print(f"{student.name():40}: {student.path.exists()}: {len(missing):3}")
+            if not student.path.exists():
+                print(f"{student.name():40}: No submission")
+                continue
+            submission_time=student.rec.get("Submission Date",None)
+            if submission_time:
+                submission_time=datetime.fromisoformat(submission_time)
+                days_ago=(today-submission_time).days
+                days_ago=f"{days_ago} days ago."
+                past_deadline=(submission_time-deadline)
+                if past_deadline.days>0:
+                    past_deadline=f"Late {past_deadline.days} days"
+                else:
+                    past_deadline=""
+                print(f"{student.name():40}: {submission_time.strftime('%c')}: {days_ago:15} {past_deadline}")
+            else:
+                print(f"{student.name():40}: Unknown Submission Time")
     elif args.list_files:
         for file,value in cohort["files"].items():
             print(f"{file:30}: {value['description']}")
