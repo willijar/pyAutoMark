@@ -104,7 +104,7 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     parser.add_argument(
         '--cohorts',
         type=str,
-        default=[CONFIG["cohort"]],
+        default=[CONFIG.get("cohort", cohort.current_academic_year())],
         nargs="+",
         help="List of cohorts to scan across - defaults to current only")
 
