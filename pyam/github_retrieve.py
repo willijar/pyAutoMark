@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """Retrieve student files from github"""
 import argparse
+import pyam.files
 from pyam.config import CONFIG
 from pyam.cohort import get_cohort, current_academic_year
 
@@ -37,6 +38,12 @@ def main(args=None):
     students = cohort.students(args.students)
     for student in students:
         student.github_retrieve()
+    submission_dates={}
+    for student in students:
+        submission_dates[student.username]=student.github_lastcommit()
+        print(submission_dates[student.username])
+    pyam.files.set_csv_column(cohort.path / "students.csv","Submission Date","Username",lambda x: submission_dates.get(x,None))
+
 
 
 if __name__ == "__main__":

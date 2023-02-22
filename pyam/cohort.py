@@ -17,9 +17,11 @@ import logging
 import json
 import glob
 import re
+import argparse
 from typing import Union
 from datetime import date
 from pathlib import Path
+from datetime import datetime
 import pyam.config as config
 from pyam.config import CONFIG
 from pyam.files import read_csv
@@ -280,6 +282,20 @@ class Student:
             +f" for '{self.name()}: {proc.stdout} {proc.stderr}"
         )
         return False
+    
+    def github_lastcommit(self) -> datetime:
+        "Return last github commit time or None"
+        if self.path.exists():
+            result = subprocess.run(
+                ("git", "log", "-1", r"--format=%cd"),
+                cwd=self.path,
+                capture_output=True,
+                text=True,
+                check=True)
+            if result.returncode ==0:
+                return datetime.strptime(result.stdout,"%a %b %d %H:%M:%S %Y %z\n")
+            else:
+                raise ValueError(result.stderr)
 
     def find_files(self, pathname: str, containing: str = None, recursive: bool = False) -> list:
         """Return filtered list of files found in student directory.
@@ -321,18 +337,92 @@ def get_cohort(name: str = CONFIG.get("cohort", current_academic_year())) -> Coh
         CONFIG.cohort = Cohort(name)
     return CONFIG.cohort
 
+def list_cohorts():
+    """Returns a list of valid cohorts - subdirectories of cohorts which have student.csv and manifest.json files"""
+    results=[]
+    for path in CONFIG.cohorts_path.iterdir():
+        if path.is_dir():
+            if (path / "manifest.json").exists() and (path / "students.csv").exists():
+                results.append(str(path.stem))
+    return results
+
+
+
 # pylint: disable=W0613
 def main(args=None):
     """Main routine - checks student manifest in a cohort"""
-    cohort = get_cohort()
-    for student in cohort.students():
-        missing = student.check_manifest(cohort.get("Files", None), log=False)
-        if missing:
-            print(f'"{student.name()}" missing {missing}')
+    if args.cohort:
+        if args.value:
+            get_cohort(args.value)
+            CONFIG["cohort"]=args.value
+            CONFIG.store()
+            print("Default cohort is now: ", CONFIG["cohort"])
+    cohort=get_cohort(CONFIG.get("cohort", current_academic_year()))
+    if args.list_students:
+        today=datetime.today().astimezone()
+        deadline=cohort.get("deadline",None)
+        if deadline:
+            deadline=datetime.fromisoformat(deadline).astimezone()
+        print(f"Deadline: {deadline}")
+        for student in cohort.students():
+            if not student.path.exists():
+                print(f"{student.name():40}: No submission")
+                continue
+            submission_time=student.rec.get("Submission Date",None)
+            if submission_time:
+                submission_time=datetime.fromisoformat(submission_time)
+                days_ago=(today-submission_time).days
+                days_ago=f"{days_ago} days ago."
+                past_deadline=(submission_time-deadline)
+                if past_deadline.days>0:
+                    past_deadline=f"Late {past_deadline.days} days"
+                else:
+                    past_deadline=""
+                print(f"{student.name():40}: {submission_time.strftime('%c')}: {days_ago:15} {past_deadline}")
+            else:
+                print(f"{student.name():40}: Unknown Submission Time")
+    elif args.list_files:
+        for file,value in cohort["files"].items():
+            print(f"{file:30}: {value['description']}")
+    elif args.list_tests:
+        for test in cohort.tests().keys():
+            print(test)
+    else:
+        for name in list_cohorts():
+            if name==CONFIG.get("cohort"):
+                name+=" <-"
+            print(name)
+        
+
+    # cohort = get_cohort()
+    # for student in cohort.students():
+    #     missing = student.check_manifest(cohort.get("Files", None), log=False)
+    #     if missing:
+    #         print(f'"{student.name()}" missing {missing}')
 
 
-def add_args(parser):
+def add_args(parser: argparse.ArgumentParser):
     """Add args for this command - none"""
+    parser.add_argument(
+        dest="cohort", nargs="?", default=None,
+        help="Name of cohort to set as default"
+    )
+    parser.add_argument(
+        dest="value", nargs="?", default=None,
+        help="Name of cohort to set as default"
+    )
+    parser.add_argument(
+        '--list-students', action="store_true",
+        help="If set print out student details in current cohort"
+    )
+    parser.add_argument(
+        '--list-files', action="store_true",
+        help="If set print out student details in current cohort"
+    )
+    parser.add_argument(
+        '--list-tests', action="store_true",
+        help="If set print out student details in current cohort"
+    )
 
 
 if __name__ == "__main__":

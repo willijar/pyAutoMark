@@ -75,7 +75,7 @@ def fill_workbook(template, student, report):
     cohort = student.cohort
     workbook["B4"] = student.name()
     workbook["B5"] = student.student_id
-    workbook["B6"] = student.username + cohort.get("domain")
+    workbook["B6"] = student.username + cohort.get("domain","")
     workbook["B8"] = cohort.get('assessor.name')
     workbook["B9"] = cohort.get('assessor.email')
     workbook["B10"] = str(date.today())

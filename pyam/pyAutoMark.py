@@ -29,7 +29,8 @@ def main():
             ('generate-template', pyam.generate_template, "Generate a template spreadsheet"),
             ('check-submission', pyam.cohort, "Check students have submitted files listed in manifest"),
             ('find-duplicates', pyam.find_duplicates, "Find duplicate students files"),
-            ('config', pyam.config, "Set or read configration")):
+            ('config', pyam.config, "Set or read configration"),
+            ('cohort', pyam.cohort, "Set default cohort, query cohort")):
         sub = subparsers.add_parser(
             command,
             description=module.main.__doc__,
