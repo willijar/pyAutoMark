@@ -15,8 +15,10 @@
 * [X] Add in linting (for C and Python) as relevant fixtures e.g.
      clang-tidy Q2b.c -checks=* -- -I../../../tests/2022/ -- stderr has 70 warnings generated and stdout has warnings list
      pylint filename
-* [ ] cohort  command tpo checkout cohorts and list students/files/submissions
-* [ ] Student query command (maybe using config cohort.student as special case)
+* [X] cohort  command tpo checkout cohorts and list students/files/submissions
+* [X] Student query command (maybe using config cohort.student as special case)
+* [X] github retrieve update submission date "git log -1 --format=%cd" -> datetime.strptime("Wed Feb 22 08:03:06 2023 +0000","%a %b %d %H:%M:%S %Y %z")
+* [ ] Dislay submission dates, days late and days ago for students
 
 ## Improvements
 
