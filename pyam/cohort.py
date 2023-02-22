@@ -23,6 +23,7 @@ from pathlib import Path
 import pyam.config as config
 from pyam.config import CONFIG
 from pyam.files import read_csv
+from pyam.run_pytest import run_pytest
 
 
 def current_academic_year() -> str:
@@ -127,6 +128,7 @@ class Cohort(config.ConfigManager):
         fix = "=" * (40 - len(title) // 2)
         self.log.info("%s %s %s", fix, title, fix)
 
+
     def tests(self) -> dict:
         """Return dictionary of tests for this cohort indexed by pytest nodeids
 
@@ -140,12 +142,7 @@ class Cohort(config.ConfigManager):
             with open(test_manifest_path, "r") as fid:
                 test_manifest = json.load(fid).get("tests", None)
         if not test_manifest:
-            result = subprocess.run(
-                ["pytest", '--collect-only', '-q', '--cohort', self.name],
-                cwd=self.test_path,
-                text=True,
-                capture_output=True,
-                check=True)
+            result = run_pytest(self, '--collect-only', '-q')
             test_manifest = {}
             for line in result.stdout.splitlines():
                 if len(line) == 0:
