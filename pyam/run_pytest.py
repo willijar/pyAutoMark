@@ -25,8 +25,7 @@ def run_pytest(cohort, *extras: 'list[str]') -> subprocess.CompletedProcess:
     # pylint: disable=W1510
     #Ensure pyam is in Python search path for pytest
     env = os.environ.copy()
-    env["PYTHONPATH"] = ":" + str(
-        Path(__file__).parent.parent.resolve()) + env["PYTHONPATH"]
+    env["PYTHONPATH"] = ":" + str(Path(__file__).parent.parent.resolve()) +":" + env["PYTHONPATH"]
     #set up fixtures argument
     extras = list(extras)
     #Get fixtures list -either from config or all
