@@ -24,7 +24,6 @@ Configuration fixtures:
 from subprocess import PIPE, STDOUT, run
 from io import StringIO
 import pytest
-import pyam.fixtures.common
 from pyam.files import find_executable
 
 
