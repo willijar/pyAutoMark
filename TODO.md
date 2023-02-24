@@ -4,7 +4,6 @@
 * [ ] Test under Windows (using c-mock example)
 * [ ] Test and install from github
 
-
 ## Bug Fixes
 
 ## Documentation
