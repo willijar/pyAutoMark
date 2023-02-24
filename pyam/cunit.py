@@ -9,7 +9,7 @@ ran_ok=c_exec(binary_path, "option1", "option2" )
 """
 
 from pathlib import Path
-from subprocess import PIPE, STDOUT, run
+from subprocess import run
 from typing import Union, Sequence
 
 
@@ -52,14 +52,14 @@ def c_compile(binary: Union[Path, str],
     for dec in declarations:
         cflags = cflags + ["-D", dec]
     result = run(
-        [compiler, *cflags, "-o",
-         str(binary), *include, *sources],
-        stdout=PIPE,
-        stderr=STDOUT,
+        (compiler, *cflags, "-o",
+         str(binary), *include, *sources),
+        text=True,
+        capture_output=True
     )
     if result.returncode == 0:
         return binary
-    raise CompilationError(result.stdout.decode())
+    raise CompilationError(result.stdout)
 
 
 def c_exec(binary: Union[Path, str], *flags: Sequence[str]):
@@ -73,10 +73,10 @@ def c_exec(binary: Union[Path, str], *flags: Sequence[str]):
     """
     # pylint: disable=W1510
     result = run(
-        [str(binary), *flags],
-        stdout=PIPE,
-        stderr=STDOUT,
+        (str(binary), *flags),
+        text=True,
+        capture_output=True
     )
     if result.returncode != 0:
-        raise RunTimeError(result.stdout.decode())
+        raise RunTimeError(result.stdout+result.stderr)
     return True
