@@ -10,7 +10,7 @@ import pyam.mark
 import pyam.generate_template
 import pyam.find_duplicates
 import pyam.config
-import pyam.cohort
+import pyam.cmd.cohort
 
 
 def main():
@@ -27,13 +27,15 @@ def main():
             ('extract', pyam.extract_downloads, "Extract student files from downloads"),
             ('mark', pyam.mark, "Generate mark spreadsheets from reports and template spreadsheet"),
             ('generate-template', pyam.generate_template, "Generate a template spreadsheet"),
-            ('check-submission', pyam.cohort, "Check students have submitted files listed in manifest"),
+            ('check-submission', pyam.cmd.cohort, "Check students have submitted files listed in manifest"),
             ('find-duplicates', pyam.find_duplicates, "Find duplicate students files"),
             ('config', pyam.config, "Set or read configration"),
             ('cohort', pyam.cohort, "Set default cohort, query cohort")):
+        description=module.main.__doc__
+        doc=description.splitlines()[0]
         sub = subparsers.add_parser(
             command,
-            description=module.main.__doc__,
+            description=description,
             help=doc,
             formatter_class=argparse.RawDescriptionHelpFormatter)
         module.add_args(sub)
