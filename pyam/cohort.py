@@ -149,6 +149,8 @@ class Cohort(config.ConfigManager):
             for line in result.stdout.splitlines():
                 if len(line) == 0:
                     break
+                if line.startswith(self.name+"/"):
+                    line=line[len(self.name)+1:]
                 test_manifest[line] = {}
         return test_manifest
 
