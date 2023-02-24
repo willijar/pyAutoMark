@@ -27,20 +27,19 @@ def find_executable(name,paths):
                 return match
     raise FileNotFoundError(f"Executable {name} not found")
 
-def read_csv(filename, columns=()):
+def read_csv(filename, columns=[]):
     """Read a csv file.
     If columns is a list - return as dictionary using these as column names
     Else if columns is true use first line as column names.
     Else return just as list of lists"""
-    with open(filename, "rt") as fid:
-        rows = []
-        for line in fid.readlines():
-            if len(line) == 0: 
-                break
-            rows.append([a.strip().strip('"') for a in line.split(",")])
-    if not columns:
+    rows=[]
+    with open(filename,'r') as fid:
+        reader=csv.reader(fid, delimiter=',',quotechar='"')
+        for row in reader:
+            rows.append(row)
+    if columns == read_csv.__defaults__[0]:
         return rows
-    if columns:
+    if columns == True:
         columns = rows[0]
         rows = rows[1:]
     result = []

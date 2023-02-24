@@ -92,7 +92,7 @@ class Cohort(config.ConfigManager):
         for path in (self.test_path, self.report_path):
             path.mkdir(exist_ok=True)
         student_list = []
-        for rec in read_csv(self.path / "students.csv", columns=True):
+        for rec in read_csv(self.path / "students.csv",True):
             student_list.append(Student(self, rec))
         self._students: 'tuple[Student]' = tuple(student_list)
 
@@ -373,11 +373,11 @@ def main(args=None):
                 submission_time=datetime.fromisoformat(submission_time)
                 days_ago=(today-submission_time).days
                 days_ago=f"{days_ago} days ago."
-                past_deadline=(submission_time-deadline)
-                if past_deadline.days>0:
-                    past_deadline=f"Late {past_deadline.days} days"
-                else:
-                    past_deadline=""
+                past_deadline=""
+                if deadline:
+                    past_deadline=(submission_time-deadline)
+                    if past_deadline.days>0:
+                        past_deadline=f"Late {past_deadline.days} days"
                 print(f"{student.name():40}: {submission_time.strftime('%c')}: {days_ago:15} {past_deadline}")
             else:
                 print(f"{student.name():40}: Unknown Submission Time")
