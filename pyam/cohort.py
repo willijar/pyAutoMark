@@ -351,12 +351,6 @@ def list_cohorts():
 # pylint: disable=W0613
 def main(args=None):
     """Main routine - checks student manifest in a cohort"""
-    if args.cohort:
-        if args.value:
-            get_cohort(args.value)
-            CONFIG["cohort"]=args.value
-            CONFIG.store()
-            print("Default cohort is now: ", CONFIG["cohort"])
     cohort=get_cohort(CONFIG.get("cohort", current_academic_year()))
     if args.list_students:
         today=datetime.today().astimezone()
@@ -387,28 +381,21 @@ def main(args=None):
     elif args.list_tests:
         for test in cohort.tests().keys():
             print(test)
+    elif args.cohort:
+        get_cohort(args.cohort)
+        CONFIG["cohort"]=args.cohort
+        CONFIG.store()
+        print("Default cohort is now: ", CONFIG["cohort"])
     else:
         for name in list_cohorts():
             if name==CONFIG.get("cohort"):
                 name+=" <-"
             print(name)
-        
-
-    # cohort = get_cohort()
-    # for student in cohort.students():
-    #     missing = student.check_manifest(cohort.get("Files", None), log=False)
-    #     if missing:
-    #         print(f'"{student.name()}" missing {missing}')
-
 
 def add_args(parser: argparse.ArgumentParser):
     """Add args for this command - none"""
     parser.add_argument(
         dest="cohort", nargs="?", default=None,
-        help="Name of cohort to set as default"
-    )
-    parser.add_argument(
-        dest="value", nargs="?", default=None,
         help="Name of cohort to set as default"
     )
     parser.add_argument(
