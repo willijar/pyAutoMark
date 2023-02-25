@@ -11,6 +11,7 @@ setuptools.setup(
     license='GPL-3.0-Only',
     packages=['pyam','pyam.fixtures','pyam.cmd'],
     package_dir={'pyam':'pyam'},
+    package_data={'pyam': ['*.xlsx']},
     install_requires=['openpyxl>=3.0',
                       'pytest>=7.2.1',                     
                       ],
