@@ -21,7 +21,7 @@ Configuration fixtures:
 
 """
 
-from subprocess import PIPE, STDOUT, run
+from subprocess import run
 from io import StringIO
 import pytest
 from pyam.files import find_executable
@@ -80,7 +80,7 @@ def ghdl_options():
 
 
 @pytest.fixture
-def ghdl(ghdl_exec, ghdl_options, build_path):
+def ghdl(ghdl_exec, ghdl_options, build_path, request):
     """Fixture returns function to run a test using ghdl.
 
     Args:
@@ -94,6 +94,8 @@ def ghdl(ghdl_exec, ghdl_options, build_path):
       VHDLRunError: if -r or --elab-run command faild
       VHDLError: if ghdl failed but netiehr of above commands
     """
+    marker = request.node.get_closest_marker("timeout")
+    timeout=None if marker is None else marker.args[0]
     # pylint: disable=W1510
     def _ghdl(command, unit="", options=ghdl_options, run_options=()):
         result = run(
@@ -102,11 +104,12 @@ def ghdl(ghdl_exec, ghdl_options, build_path):
                 *run_options
             ],
             cwd=build_path,
-            stdout=PIPE,
-            stderr=STDOUT,
+            text=True,
+            capture_output=True,
+            timeout=timeout
         )
         if result.returncode != 0:
-            msg = result.stdout.decode()
+            msg = result.stdout
             if command == "-a":
                 raise VHDLAnalysisError(msg)
             if command in ("--elab-run", "-r"):
@@ -130,7 +133,6 @@ def vhdl_simulate(ghdl, student, test_path):
     Raises:
        see ghdl:
 """
-
     def _vhdl_simulate(top, student_files, test_files=None):
         if test_files is None:
             ghdl("-a", test_path / f"{top}.vhd")
@@ -155,7 +157,7 @@ def vivado_options():
 
 
 @pytest.fixture
-def vivado(vivado_exec, build_path, student, vivado_options, partnumber):
+def vivado(request,vivado_exec, build_path, student, vivado_options, partnumber):
     """Fixture returns function to run vivado synthesis
 
     Args:
@@ -167,6 +169,8 @@ def vivado(vivado_exec, build_path, student, vivado_options, partnumber):
     Raises:
       VHDLSynthesisError: If vivado exits with an error
     """
+    marker = request.node.get_closest_marker("timeout")
+    timeout=None if marker is None else marker.args[0]
     def _vivado(bitfile, top, sources, constraints):
         # pylint: disable=W1510
         tcl = StringIO()
@@ -185,11 +189,12 @@ def vivado(vivado_exec, build_path, student, vivado_options, partnumber):
             "-tempDir", build_path, "-mode", "tcl"
         ],
                      cwd=student.path,
-                     stdout=PIPE,
-                     stderr=STDOUT,
-                     input=tcl.encode())
+                     capture_output=True,
+                     text=True,
+                     timeout=timeout,
+                     input=tcl)
         if result.returncode != 0:
-            print(result.stdout.decode())
+            print(result.stdout)
             raise VHDLSynthesisError
         return bitfile
 

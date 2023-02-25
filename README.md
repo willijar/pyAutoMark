@@ -71,12 +71,15 @@ The toolset automates the following steps
 | Python                   | 3.10.9      | <https://www.python.org/downloads/windows/>  |
 | pytest                   | 7.2.1       | pip install pytest |
 | git                      | 2.39.0.windows.2 | <https://gitforwindows.org/> |
+| clang-tidy (Optional)    | 10.0        |  <https://learn.microsoft.com/en-us/cpp/code-quality/clang-tidy?view=msvc-170> |
 
 ### Common ComponentsLibraries
 
 | Python Libraries         | Version     |
 |--------------------------|-------------|
 | openpyxl                 | 3.0.10      |
+| pylint (Optional)        | 2.4.4       |
+| pytest-timeout (Optional)| |
 
 | VSCode Extensions        | Author      |
 |--------------------------|-------------|

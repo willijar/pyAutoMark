@@ -1,16 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2023, Dr John A.R. Williams
 # SPDX-License-Identifier: GPL-3.0-only
-"""Generate mark spreadsheets for each student
-
-Reads in test reports and a template spreadsheet
-Creates a mark spreadsheet for each student from template
-with the cells named by the test ids set to PASSED or FAILED
-based on the report.
-
-Typical Usage:
-
-mark.py --cohort 2022
+"""Main routine for mark command.
 """
 
 import argparse
@@ -18,18 +9,32 @@ from datetime import date
 from pathlib import Path
 import openpyxl
 from pyam.cohort import get_cohort
-from pyam.args import add_common_args
+from pyam.cmd.args import add_common_args
 
 
 def main(args=None):
-    """Iterate through student reports to generate mark spreadhseets from template spreadsheet"""
+    """Generate mark spreadsheets for each student
+
+    Reads in test reports and a template spreadsheet.
+    Creates a mark spreadsheet for each student from template
+    with the cells named by the test ids set to PASSED or FAILED
+    based on the report.
+
+    Completes the following additional defined names in the template for
+    each student:
+        student_name
+        student_id
+        student_email
+        student_course
+        date
+    """
     if args is None:
         parser = argparse.ArgumentParser(description=__doc__)
         add_args(parser)
         args = parser.parse_args()
     cohort = get_cohort(args.cohort)
     if not args.template:
-        args.template = str(cohort.report_path / "template.xlsx")
+        args.template = str(cohort.report_path / f"{args.prefix}template.xlsx")
     template = openpyxl.load_workbook(args.template)
     cohort.start_log_section(f"Generating mark sheets from {args.template}")
     students = cohort.students(args.students)
@@ -71,18 +76,24 @@ def get_reports(cohort, students, paths, prefix) -> dict:
 
 def fill_workbook(template, student, report):
     """Fill in workbook 0 of template with student and report details"""
-    workbook = template.worksheets[0]
+    def set_field(name,value):
+        try:
+            for title, coord in template.defined_names[name].destinations:
+                    template[title][coord] = value
+        except KeyError as e:
+            print(e)
     cohort = student.cohort
-    workbook["B4"] = student.name()
-    workbook["B5"] = student.student_id
-    workbook["B6"] = student.username + cohort.get("domain","")
-    workbook["B8"] = cohort.get('assessor.name')
-    workbook["B9"] = cohort.get('assessor.email')
-    workbook["B10"] = str(date.today())
+    set_field("student_name",student.name(None))
+    set_field("student_id",student.student_id)
+    set_field("student_email", student.username + "@"+ cohort.get("institution.domain"))
+    set_field("date",date.today())
+    course=student.rec.get("Course")
+    if course:
+        set_field("student_course",course)
+
     for key, value in analyse_report(report, cohort.tests(),
                                      cohort.log).items():
-        for title, coord in template.defined_names[key].destinations:
-            template[title][coord] = value
+        set_field(key,value)
 
 
 def analyse_report(report_path: Path, tests: dict, log=None):
@@ -103,9 +114,9 @@ def analyse_report(report_path: Path, tests: dict, log=None):
         #check we have all expected results in report
         for test in tests.keys():
             if test not in results:
-                results[test]="Unknown"
+                results[test] = "Unknown"
                 log.warning("Missing test result %s in '%s'", test,
-                         report_path.name)
+                            report_path.name)
     return results
 
 

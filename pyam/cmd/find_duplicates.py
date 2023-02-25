@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2023, Dr John A.R. Williams
 # SPDX-License-Identifier: GPL-3.0-only
-"""Test to see if any students have submitted identical files across cohorts
-Only check files listed in cohort manifests.
-
-Typical Usage:
-
-find_duplicates.py --cohorts 2022 2021
+"""Main routing for find-duplicates command
 """
 import argparse
 import hashlib
@@ -21,7 +16,7 @@ from pyam.config import CONFIG
 @dataclass
 class FileRecord:
     """Record of path with student owner, stats and digest
-    
+
     Attributes:
       student: The Student for this file
       stat: The file.stat for the file
@@ -44,7 +39,7 @@ class FileRecord:
 
 
 def main(args=None):
-    """Find Duplicate files from students across cohorts"""
+    """Find duplicate files from students across cohorts"""
     if args is None:
         parser = argparse.ArgumentParser(description=__doc__)
         add_args(parser)
@@ -105,7 +100,7 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
         '--cohorts',
         type=str,
         default=[CONFIG.get("cohort", cohort.current_academic_year())],
-        nargs="+",
+        nargs=argparse.REMAINDER,
         help="List of cohorts to scan across - defaults to current only")
 
 

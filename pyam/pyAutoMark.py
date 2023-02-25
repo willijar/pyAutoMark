@@ -3,14 +3,14 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """Automatically retrieve, mark and provide feedback for digital student submissions"""
 import argparse
-import pyam.run_tests
-import pyam.github_retrieve
-import pyam.extract_downloads
-import pyam.mark
-import pyam.generate_template
-import pyam.find_duplicates
-import pyam.config
-import pyam.cohort
+import pyam.cmd.run
+import pyam.cmd.github_retrieve
+import pyam.cmd.extract_downloads
+import pyam.cmd.mark
+import pyam.cmd.generate_template
+import pyam.cmd.find_duplicates
+import pyam.cmd.config
+import pyam.cmd.cohort
 
 
 def main():
@@ -21,19 +21,20 @@ def main():
         """)
     #add subparsers for each command
     subparsers = parser.add_subparsers(title="subcommands")
-    for command, module, doc in (
-            ('run', pyam.run_tests, "Run automated tests and generate reports"),
-            ('retrieve', pyam.github_retrieve, "Retrieve student files from github"),
-            ('extract', pyam.extract_downloads, "Extract student files from downloads"),
-            ('mark', pyam.mark, "Generate mark spreadsheets from reports and template spreadsheet"),
-            ('generate-template', pyam.generate_template, "Generate a template spreadsheet"),
-            ('check-submission', pyam.cohort, "Check students have submitted files listed in manifest"),
-            ('find-duplicates', pyam.find_duplicates, "Find duplicate students files"),
-            ('config', pyam.config, "Set or read configration"),
-            ('cohort', pyam.cohort, "Set default cohort, query cohort")):
+    for command, module in (
+            ('run', pyam.cmd.run),
+            ('retrieve', pyam.cmd.github_retrieve),
+            ('extract', pyam.cmd.extract_downloads),
+            ('mark', pyam.cmd.mark),
+            ('generate-template', pyam.cmd.generate_template),
+            ('find-duplicates', pyam.cmd.find_duplicates),
+            ('config', pyam.cmd.config),
+            ('cohort', pyam.cmd.cohort)):
+        description=module.main.__doc__
+        doc=description.splitlines()[0]
         sub = subparsers.add_parser(
             command,
-            description=module.main.__doc__,
+            description=description,
             help=doc,
             formatter_class=argparse.RawDescriptionHelpFormatter)
         module.add_args(sub)
