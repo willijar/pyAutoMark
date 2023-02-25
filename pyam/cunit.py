@@ -62,7 +62,7 @@ def c_compile(binary: Union[Path, str],
     raise CompilationError(result.stdout)
 
 
-def c_exec(binary: Union[Path, str], *flags: Sequence[str]):
+def c_exec(binary: Union[Path, str], *flags: Sequence[str], timeout: float = None):
     """Execute a binary executable with given flags.
 
     Args:
@@ -75,7 +75,8 @@ def c_exec(binary: Union[Path, str], *flags: Sequence[str]):
     result = run(
         (str(binary), *flags),
         text=True,
-        capture_output=True
+        capture_output=True,
+        timeout=timeout
     )
     if result.returncode != 0:
         raise RunTimeError(result.stdout+result.stderr)

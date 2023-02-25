@@ -21,12 +21,12 @@ def pytest_addoption(parser):
     """Add in pyAutoTest control options for pytest"""
     parser.addoption("--cohort", action="store", default=None)
     parser.addoption("--student", action="store", default="solution")
-    parser.addoption("--c-compiler", action="store", default="gcc")
 
 
 def pytest_configure(config):
     """Add in pyAutoTest markers for pytest"""
     config.addinivalue_line("markers", "slow: mark test as slow")
+    config.addinivalue_line("markers", "timeout: set timeout for a test.")
     
 # pylint: disable=W0621
 @pytest.fixture

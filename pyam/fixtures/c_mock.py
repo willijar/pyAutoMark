@@ -74,12 +74,13 @@ def c_compile(student, test_path, build_path, mock_c_file, binary_name,
 
 
 @pytest.fixture
-def c_exec(c_compile):
+def c_exec(request,c_compile):
     "Return Exec function for this test suite which takes declarations as argument"
-
+    marker = request.node.get_closest_marker("timeout")
+    timeout=None if marker is None else marker.args[0]
     def _exec(declarations: Sequence[str] = ()):
         try:
-            return cunit.c_exec(c_compile(declarations))
+            return cunit.c_exec(c_compile(declarations),timeout)
         except cunit.RunTimeError as err:
             print(err)
             raise err
