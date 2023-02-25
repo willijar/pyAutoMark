@@ -22,11 +22,12 @@ def main(args=None):
 
     Completes the following additional defined names in the template for
     each student:
-        student_name
-        student_id
-        student_email
-        student_course
-        date
+
+    * student_name
+    * student_id
+    * student_email
+    * student_course
+    * date
     """
     if args is None:
         parser = argparse.ArgumentParser(description=__doc__)
