@@ -61,7 +61,7 @@ c_exec: Function to execute and compile mock test, given list of declarations</d
 
 <dl class="function">
 <dt id="pyam.fixtures.c_mock.c_exec">
-<code class="descclassname">pyam.fixtures.c_mock.</code><code class="descname">c_exec</code><span class="sig-paren">(</span><em>c_compile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/c_mock.html#c_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.c_mock.c_exec" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyam.fixtures.c_mock.</code><code class="descname">c_exec</code><span class="sig-paren">(</span><em>request</em>, <em>c_compile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/c_mock.html#c_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.c_mock.c_exec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Exec function for this test suite which takes declarations as argument</p>
 </dd></dl>
 
@@ -219,7 +219,7 @@ test_path: The path where the tests are kept</dd>
 
 <dl class="function">
 <dt id="pyam.fixtures.python.run_script">
-<code class="descclassname">pyam.fixtures.python.</code><code class="descname">run_script</code><span class="sig-paren">(</span><em>student</em>, <em>timeout</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/python.html#run_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.python.run_script" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyam.fixtures.python.</code><code class="descname">run_script</code><span class="sig-paren">(</span><em>student</em>, <em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/python.html#run_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.python.run_script" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return script runner function for this student</p>
 </dd></dl>
 
@@ -227,12 +227,6 @@ test_path: The path where the tests are kept</dd>
 <dt id="pyam.fixtures.python.student_module">
 <code class="descclassname">pyam.fixtures.python.</code><code class="descname">student_module</code><span class="sig-paren">(</span><em>student</em>, <em>module_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/python.html#student_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.python.student_module" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return function to import a module from a student file - returns module instance</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.fixtures.python.timeout">
-<code class="descclassname">pyam.fixtures.python.</code><code class="descname">timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/python.html#timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.python.timeout" title="Permalink to this definition">¶</a></dt>
-<dd><p>Timeout for scripts</p>
 </dd></dl>
 
 </div>
@@ -290,7 +284,7 @@ vivado_options: standard list of options to pass vivado</dd>
 
 <dl class="function">
 <dt id="pyam.fixtures.vhdl.ghdl">
-<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">ghdl</code><span class="sig-paren">(</span><em>ghdl_exec</em>, <em>ghdl_options</em>, <em>build_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#ghdl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.ghdl" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">ghdl</code><span class="sig-paren">(</span><em>ghdl_exec</em>, <em>ghdl_options</em>, <em>build_path</em>, <em>request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#ghdl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.ghdl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fixture returns function to run a test using ghdl.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -385,7 +379,7 @@ error if vivado throughs an error or bit files is not present</p>
 
 <dl class="function">
 <dt id="pyam.fixtures.vhdl.vivado">
-<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">vivado</code><span class="sig-paren">(</span><em>vivado_exec</em>, <em>build_path</em>, <em>student</em>, <em>vivado_options</em>, <em>partnumber</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#vivado"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.vivado" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyam.fixtures.vhdl.</code><code class="descname">vivado</code><span class="sig-paren">(</span><em>request</em>, <em>vivado_exec</em>, <em>build_path</em>, <em>student</em>, <em>vivado_options</em>, <em>partnumber</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/vhdl.html#vivado"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.vhdl.vivado" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fixture returns function to run vivado synthesis</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

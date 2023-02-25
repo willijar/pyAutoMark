@@ -6,6 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SOURCEDIR     = source
 BUILDDIR      = build
+SPHINXAPIDOC  = sphinx-apidoc
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -15,6 +16,7 @@ help:
 
 
 github:
+	@$(SPHINXAPIDOC) -o "$(SOURCEDIR)" ../pyam 
 	@make html
 	@cp -a build/html/. ../docs
 

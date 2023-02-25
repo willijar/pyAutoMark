@@ -6,18 +6,11 @@ Subpackages
 
 .. toctree::
 
+    pyam.cmd
     pyam.fixtures
 
 Submodules
 ----------
-
-pyam.args module
-----------------
-
-.. automodule:: pyam.args
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 pyam.cohort module
 ------------------
@@ -43,50 +36,10 @@ pyam.cunit module
     :undoc-members:
     :show-inheritance:
 
-pyam.extract\_downloads module
-------------------------------
-
-.. automodule:: pyam.extract_downloads
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 pyam.files module
 -----------------
 
 .. automodule:: pyam.files
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pyam.find\_duplicates module
-----------------------------
-
-.. automodule:: pyam.find_duplicates
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pyam.generate\_template module
-------------------------------
-
-.. automodule:: pyam.generate_template
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pyam.github\_retrieve module
-----------------------------
-
-.. automodule:: pyam.github_retrieve
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pyam.mark module
-----------------
-
-.. automodule:: pyam.mark
     :members:
     :undoc-members:
     :show-inheritance:
@@ -99,10 +52,10 @@ pyam.pyAutoMark module
     :undoc-members:
     :show-inheritance:
 
-pyam.run\_tests module
-----------------------
+pyam.run\_pytest module
+-----------------------
 
-.. automodule:: pyam.run_tests
+.. automodule:: pyam.run_pytest
     :members:
     :undoc-members:
     :show-inheritance:

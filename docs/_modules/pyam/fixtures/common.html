@@ -52,13 +52,13 @@
 <div class="viewcode-block" id="pytest_addoption"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.common.pytest_addoption">[docs]</a><span class="k">def</span> <span class="nf">pytest_addoption</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Add in pyAutoTest control options for pytest&quot;&quot;&quot;</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">addoption</span><span class="p">(</span><span class="s2">&quot;--cohort&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">addoption</span><span class="p">(</span><span class="s2">&quot;--student&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;solution&quot;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">addoption</span><span class="p">(</span><span class="s2">&quot;--c-compiler&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;gcc&quot;</span><span class="p">)</span></div>
+    <span class="n">parser</span><span class="o">.</span><span class="n">addoption</span><span class="p">(</span><span class="s2">&quot;--student&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;solution&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="pytest_configure"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.common.pytest_configure">[docs]</a><span class="k">def</span> <span class="nf">pytest_configure</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Add in pyAutoTest markers for pytest&quot;&quot;&quot;</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">addinivalue_line</span><span class="p">(</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span> <span class="s2">&quot;slow: mark test as slow&quot;</span><span class="p">)</span></div>
+    <span class="n">config</span><span class="o">.</span><span class="n">addinivalue_line</span><span class="p">(</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span> <span class="s2">&quot;slow: mark test as slow&quot;</span><span class="p">)</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">addinivalue_line</span><span class="p">(</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span> <span class="s2">&quot;timeout: set timeout for a test.&quot;</span><span class="p">)</span></div>
     
 <span class="c1"># pylint: disable=W0621</span>
 <div class="viewcode-block" id="cohort"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.common.cohort">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
@@ -159,6 +159,7 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing pyAutoMark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pyam</a></li>
 </ul>
 

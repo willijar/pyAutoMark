@@ -16,7 +16,7 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="pyam.fixtures package" href="pyam.fixtures.html" />
+    <link rel="next" title="pyam.cmd package" href="pyam.cmd.html" />
     <link rel="prev" title="pyam" href="modules.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -37,6 +37,20 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="pyam.cmd.html">pyam.cmd package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyam.cmd.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyam.cmd.html#module-pyam.cmd.args">pyam.cmd.args module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyam.cmd.html#module-pyam.cmd.cohort">pyam.cmd.cohort module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyam.cmd.html#module-pyam.cmd.config">pyam.cmd.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyam.cmd.html#module-pyam.cmd.extract_downloads">pyam.cmd.extract_downloads module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyam.cmd.html#module-pyam.cmd.find_duplicates">pyam.cmd.find_duplicates module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyam.cmd.html#module-pyam.cmd.generate_template">pyam.cmd.generate_template module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyam.cmd.html#module-pyam.cmd.github_retrieve">pyam.cmd.github_retrieve module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyam.cmd.html#module-pyam.cmd.mark">pyam.cmd.mark module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyam.cmd.html#module-pyam.cmd.run">pyam.cmd.run module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyam.cmd.html#module-pyam.cmd">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="pyam.fixtures.html">pyam.fixtures package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pyam.fixtures.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyam.fixtures.html#module-pyam.fixtures.c_mock">pyam.fixtures.c_mock module</a></li>
@@ -51,20 +65,6 @@
 </div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-pyam.args">
-<span id="pyam-args-module"></span><h2>pyam.args module<a class="headerlink" href="#module-pyam.args" title="Permalink to this headline">¶</a></h2>
-<p>Standard argumments for sub command scripts</p>
-<dl class="docutils">
-<dt>Functions:</dt>
-<dd>add_common_args(parser): Adds common arguments to parser</dd>
-</dl>
-<dl class="function">
-<dt id="pyam.args.add_common_args">
-<code class="descclassname">pyam.args.</code><code class="descname">add_common_args</code><span class="sig-paren">(</span><em>parser: argparse.ArgumentParser</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/pyam/args.html#add_common_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.args.add_common_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add standard arguments to parser</p>
-</dd></dl>
-
 </div>
 <div class="section" id="module-pyam.cohort">
 <span id="pyam-cohort-module"></span><h2>pyam.cohort module<a class="headerlink" href="#module-pyam.cohort" title="Permalink to this headline">¶</a></h2>
@@ -278,6 +278,12 @@ If recursive is true also recurse subdirectories looking for matches</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyam.cohort.Student.github_lastcommit">
+<code class="descname">github_lastcommit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional[datetime.datetime]<a class="reference internal" href="_modules/pyam/cohort.html#Student.github_lastcommit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.cohort.Student.github_lastcommit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return last github commit time or None</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyam.cohort.Student.github_retrieve">
 <code class="descname">github_retrieve</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/cohort.html#Student.github_retrieve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.cohort.Student.github_retrieve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clone or pull asssessments for this student from their repository.</p>
@@ -311,12 +317,6 @@ If recursive is true also recurse subdirectories looking for matches</p>
 <dd><p>Return students github repository url if present else False</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.cohort.add_args">
-<code class="descclassname">pyam.cohort.</code><code class="descname">add_args</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/cohort.html#add_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.cohort.add_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add args for this command - none</p>
 </dd></dl>
 
 <dl class="function">
@@ -358,9 +358,10 @@ Or use calculated current_academic_year</td>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyam.cohort.main">
-<code class="descclassname">pyam.cohort.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/cohort.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.cohort.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main routine - checks student manifest in a cohort</p>
+<dt id="pyam.cohort.list_cohorts">
+<code class="descclassname">pyam.cohort.</code><code class="descname">list_cohorts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/cohort.html#list_cohorts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.cohort.list_cohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of valid cohorts</p>
+<p>Subdirectories of cohorts which have student.csv and manifest.json files</p>
 </dd></dl>
 
 </div>
@@ -451,21 +452,6 @@ If no default is given loop it up in global config - return None if not found</p
 
 </dd></dl>
 
-<dl class="function">
-<dt id="pyam.config.add_args">
-<code class="descclassname">pyam.config.</code><code class="descname">add_args</code><span class="sig-paren">(</span><em>parser: argparse.ArgumentParser = ArgumentParser(prog='sphinx-build'</em>, <em>usage=None</em>, <em>description='Top level configuration handling for the assessment marking scripts\n\nAttributes:\n  CONFIG: A ConfigManager with the global configuration data\n\nClasses:\n  ConfigManager: Base class for loading and managing configuration files\n'</em>, <em>formatter_class=&lt;class 'argparse.HelpFormatter'&gt;</em>, <em>conflict_handler='error'</em>, <em>add_help=True)</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/pyam/config.html#add_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.config.add_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add arguments for config command</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.config.main">
-<code class="descclassname">pyam.config.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args: argparse.Namespace = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/pyam/config.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.config.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set configuration parameters.</p>
-<p>Keys may be in ‘.’ format e.g. 2022.assessor.username sets assessor.username in cohort 2022
-global name may be used to set global parameters across all cohorts (unless set locally).
-If no value is given print out current value.</p>
-</dd></dl>
-
 </div>
 <div class="section" id="module-pyam.cunit">
 <span id="pyam-cunit-module"></span><h2>pyam.cunit module<a class="headerlink" href="#module-pyam.cunit" title="Permalink to this headline">¶</a></h2>
@@ -527,7 +513,7 @@ ran_ok=c_exec(binary_path, “option1”, “option2” )</p>
 
 <dl class="function">
 <dt id="pyam.cunit.c_exec">
-<code class="descclassname">pyam.cunit.</code><code class="descname">c_exec</code><span class="sig-paren">(</span><em>binary: Union[pathlib.Path, str], *flags</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/cunit.html#c_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.cunit.c_exec" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyam.cunit.</code><code class="descname">c_exec</code><span class="sig-paren">(</span><em>binary: Union[pathlib.Path, str], *flags, timeout: float = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/cunit.html#c_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.cunit.c_exec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute a binary executable with given flags.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -539,27 +525,6 @@ ran_ok=c_exec(binary_path, “option1”, “option2” )</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyam.extract_downloads">
-<span id="pyam-extract-downloads-module"></span><h2>pyam.extract_downloads module<a class="headerlink" href="#module-pyam.extract_downloads" title="Permalink to this headline">¶</a></h2>
-<p>Extracts files for given list of archive files into student directories under cohort</p>
-<dl class="function">
-<dt id="pyam.extract_downloads.add_args">
-<code class="descclassname">pyam.extract_downloads.</code><code class="descname">add_args</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/extract_downloads.html#add_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.extract_downloads.add_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get and parse arguments for this script</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.extract_downloads.extract_details">
-<code class="descclassname">pyam.extract_downloads.</code><code class="descname">extract_details</code><span class="sig-paren">(</span><em>file</em>, <em>log=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/extract_downloads.html#extract_details"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.extract_downloads.extract_details" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyam.extract_downloads.main">
-<code class="descclassname">pyam.extract_downloads.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/extract_downloads.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.extract_downloads.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract the files</p>
 </dd></dl>
 
 </div>
@@ -578,7 +543,7 @@ ran_ok=c_exec(binary_path, “option1”, “option2” )</p>
 
 <dl class="function">
 <dt id="pyam.files.read_csv">
-<code class="descclassname">pyam.files.</code><code class="descname">read_csv</code><span class="sig-paren">(</span><em>filename</em>, <em>columns=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/files.html#read_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.files.read_csv" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyam.files.</code><code class="descname">read_csv</code><span class="sig-paren">(</span><em>filename</em>, <em>columns=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/files.html#read_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.files.read_csv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a csv file.
 If columns is a list - return as dictionary using these as column names
 Else if columns is true use first line as column names.
@@ -607,156 +572,6 @@ if it returns None old value is kept</li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-pyam.find_duplicates">
-<span id="pyam-find-duplicates-module"></span><h2>pyam.find_duplicates module<a class="headerlink" href="#module-pyam.find_duplicates" title="Permalink to this headline">¶</a></h2>
-<p>Test to see if any students have submitted identical files across cohorts
-Only check files listed in cohort manifests.</p>
-<p>Typical Usage:</p>
-<p>find_duplicates.py –cohorts 2022 2021</p>
-<dl class="class">
-<dt id="pyam.find_duplicates.FileRecord">
-<em class="property">class </em><code class="descclassname">pyam.find_duplicates.</code><code class="descname">FileRecord</code><span class="sig-paren">(</span><em>student: pyam.cohort.Student</em>, <em>file: pathlib.Path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/find_duplicates.html#FileRecord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.find_duplicates.FileRecord" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Record of path with student owner, stats and digest</p>
-<dl class="attribute">
-<dt id="pyam.find_duplicates.FileRecord.student">
-<code class="descname">student</code><a class="headerlink" href="#pyam.find_duplicates.FileRecord.student" title="Permalink to this definition">¶</a></dt>
-<dd><p>The Student for this file</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pyam.find_duplicates.FileRecord.stat">
-<code class="descname">stat</code><a class="headerlink" href="#pyam.find_duplicates.FileRecord.stat" title="Permalink to this definition">¶</a></dt>
-<dd><p>The file.stat for the file</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pyam.find_duplicates.FileRecord.file">
-<code class="descname">file</code><a class="headerlink" href="#pyam.find_duplicates.FileRecord.file" title="Permalink to this definition">¶</a></dt>
-<dd><p>The Path to the file</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pyam.find_duplicates.FileRecord.digest">
-<code class="descname">digest</code><a class="headerlink" href="#pyam.find_duplicates.FileRecord.digest" title="Permalink to this definition">¶</a></dt>
-<dd><p>The identifying digest of the file</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.find_duplicates.add_args">
-<code class="descclassname">pyam.find_duplicates.</code><code class="descname">add_args</code><span class="sig-paren">(</span><em>parser=ArgumentParser(prog='sphinx-build'</em>, <em>usage=None</em>, <em>description='Test to see if any students have submitted identical files across cohorts\nOnly check files listed in cohort manifests.\n\nTypical Usage:\n\nfind_duplicates.py --cohorts 2022 2021\n'</em>, <em>formatter_class=&lt;class 'argparse.HelpFormatter'&gt;</em>, <em>conflict_handler='error'</em>, <em>add_help=True)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/find_duplicates.html#add_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.find_duplicates.add_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add find_duplicates command arguments to parser</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.find_duplicates.get_records">
-<code class="descclassname">pyam.find_duplicates.</code><code class="descname">get_records</code><span class="sig-paren">(</span><em>cohort_names: Sequence[str]</em><span class="sig-paren">)</span> &#x2192; List[pyam.find_duplicates.FileRecord]<a class="reference internal" href="_modules/pyam/find_duplicates.html#get_records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.find_duplicates.get_records" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a list of cohort names return a list of FileRecords for each student
-and file in a manifest</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.find_duplicates.group_records">
-<code class="descclassname">pyam.find_duplicates.</code><code class="descname">group_records</code><span class="sig-paren">(</span><em>records: List[pyam.find_duplicates.FileRecord]</em><span class="sig-paren">)</span> &#x2192; Dict[KT, VT]<a class="reference internal" href="_modules/pyam/find_duplicates.html#group_records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.find_duplicates.group_records" title="Permalink to this definition">¶</a></dt>
-<dd><p>GIve a list of file records group them by digest.
-Return a dictionary of matching records indexed by digest</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.find_duplicates.main">
-<code class="descclassname">pyam.find_duplicates.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/find_duplicates.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.find_duplicates.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find Duplicate files from students across cohorts</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyam.generate_template">
-<span id="pyam-generate-template-module"></span><h2>pyam.generate_template module<a class="headerlink" href="#module-pyam.generate_template" title="Permalink to this headline">¶</a></h2>
-<p>Generate template marking spreadsheet</p>
-<p>Starts from from template-template.xlsx
-and adds in a row per test with the description, a named cell to filled in
-as PASSED or FAILED from the students reports and a mark as per the test
-manifest</p>
-<dl class="function">
-<dt id="pyam.generate_template.add_args">
-<code class="descclassname">pyam.generate_template.</code><code class="descname">add_args</code><span class="sig-paren">(</span><em>parser=ArgumentParser(prog='sphinx-build'</em>, <em>usage=None</em>, <em>description='Generate template marking spreadsheet\n\nStarts from from template-template.xlsx\nand adds in a row per test with the description</em>, <em>a named cell to filled in\nas PASSED or FAILED from the students reports and a mark as per the test\nmanifest\n'</em>, <em>formatter_class=&lt;class 'argparse.HelpFormatter'&gt;</em>, <em>conflict_handler='error'</em>, <em>add_help=True)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/generate_template.html#add_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.generate_template.add_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return args for this script</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.generate_template.main">
-<code class="descclassname">pyam.generate_template.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/generate_template.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.generate_template.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main routing - generates a cohort template from template-template</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyam.github_retrieve">
-<span id="pyam-github-retrieve-module"></span><h2>pyam.github_retrieve module<a class="headerlink" href="#module-pyam.github_retrieve" title="Permalink to this headline">¶</a></h2>
-<p>Retrieve student files from github</p>
-<dl class="function">
-<dt id="pyam.github_retrieve.add_args">
-<code class="descclassname">pyam.github_retrieve.</code><code class="descname">add_args</code><span class="sig-paren">(</span><em>parser=ArgumentParser(prog='sphinx-build'</em>, <em>usage=None</em>, <em>description='Retrieve student files from github'</em>, <em>formatter_class=&lt;class 'argparse.HelpFormatter'&gt;</em>, <em>conflict_handler='error'</em>, <em>add_help=True)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/github_retrieve.html#add_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.github_retrieve.add_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse and return args for this script</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.github_retrieve.main">
-<code class="descclassname">pyam.github_retrieve.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/github_retrieve.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.github_retrieve.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieve files from student repositories on github (classroom).</p>
-<dl class="docutils">
-<dt>Cohort manifest be configured with:</dt>
-<dd><dl class="first docutils">
-<dt>github.template: The name of the template repository</dt>
-<dd>(prefix for student repositories)</dd>
-</dl>
-<p class="last">github.url: URL to github organisation where repositories reside</p>
-</dd>
-</dl>
-<p>Students must have ‘Github Username’ field in csv file.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pyam.mark">
-<span id="pyam-mark-module"></span><h2>pyam.mark module<a class="headerlink" href="#module-pyam.mark" title="Permalink to this headline">¶</a></h2>
-<p>Generate mark spreadsheets for each student</p>
-<p>Reads in test reports and a template spreadsheet
-Creates a mark spreadsheet for each student from template
-with the cells named by the test ids set to PASSED or FAILED
-based on the report.</p>
-<p>Typical Usage:</p>
-<p>mark.py –cohort 2022</p>
-<dl class="function">
-<dt id="pyam.mark.add_args">
-<code class="descclassname">pyam.mark.</code><code class="descname">add_args</code><span class="sig-paren">(</span><em>parser=ArgumentParser(prog='sphinx-build'</em>, <em>usage=None</em>, <em>description='Generate mark spreadsheets for each student\n\nReads in test reports and a template spreadsheet\nCreates a mark spreadsheet for each student from template\nwith the cells named by the test ids set to PASSED or FAILED\nbased on the report.\n\nTypical Usage:\n\nmark.py --cohort 2022\n'</em>, <em>formatter_class=&lt;class 'argparse.HelpFormatter'&gt;</em>, <em>conflict_handler='error'</em>, <em>add_help=True)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/mark.html#add_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.mark.add_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add and parse args for this script</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.mark.analyse_report">
-<code class="descclassname">pyam.mark.</code><code class="descname">analyse_report</code><span class="sig-paren">(</span><em>report_path: pathlib.Path</em>, <em>tests: dict</em>, <em>log=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/mark.html#analyse_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.mark.analyse_report" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a dictionary of results from a report file at path</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.mark.fill_workbook">
-<code class="descclassname">pyam.mark.</code><code class="descname">fill_workbook</code><span class="sig-paren">(</span><em>template</em>, <em>student</em>, <em>report</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/mark.html#fill_workbook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.mark.fill_workbook" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fill in workbook 0 of template with student and report details</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.mark.get_reports">
-<code class="descclassname">pyam.mark.</code><code class="descname">get_reports</code><span class="sig-paren">(</span><em>cohort</em>, <em>students</em>, <em>paths</em>, <em>prefix</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="_modules/pyam/mark.html#get_reports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.mark.get_reports" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a reports dictionary for given students and reports list</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.mark.main">
-<code class="descclassname">pyam.mark.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/mark.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.mark.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterate through student reports to generate mark spreadhseets from template spreadsheet</p>
-</dd></dl>
-
-</div>
 <div class="section" id="module-pyam.pyAutoMark">
 <span id="pyam-pyautomark-module"></span><h2>pyam.pyAutoMark module<a class="headerlink" href="#module-pyam.pyAutoMark" title="Permalink to this headline">¶</a></h2>
 <p>Automatically retrieve, mark and provide feedback for digital student submissions</p>
@@ -767,19 +582,38 @@ based on the report.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-pyam.run_tests">
-<span id="pyam-run-tests-module"></span><h2>pyam.run_tests module<a class="headerlink" href="#module-pyam.run_tests" title="Permalink to this headline">¶</a></h2>
-<p>Run a set of tests for a cohort of students and produce reports files</p>
+<div class="section" id="module-pyam.run_pytest">
+<span id="pyam-run-pytest-module"></span><h2>pyam.run_pytest module<a class="headerlink" href="#module-pyam.run_pytest" title="Permalink to this headline">¶</a></h2>
+<p>Pun pytest in cohort  context.</p>
+<p>Functions:</p>
+<blockquote>
+<div>run_pytest</div></blockquote>
 <dl class="function">
-<dt id="pyam.run_tests.add_args">
-<code class="descclassname">pyam.run_tests.</code><code class="descname">add_args</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/run_tests.html#add_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.run_tests.add_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse Args and return them for this script</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyam.run_tests.main">
-<code class="descclassname">pyam.run_tests.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/run_tests.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.run_tests.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the test suite for specified cohort and students</p>
+<dt id="pyam.run_pytest.run_pytest">
+<code class="descclassname">pyam.run_pytest.</code><code class="descname">run_pytest</code><span class="sig-paren">(</span><em>cohort</em>, <em>*extras</em><span class="sig-paren">)</span> &#x2192; subprocess.CompletedProcess<a class="reference internal" href="_modules/pyam/run_pytest.html#run_pytest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.run_pytest.run_pytest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run pytest for pyAutoMark</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cohort</strong> (<a class="reference internal" href="#pyam.cohort.Cohort" title="pyam.cohort.Cohort"><em>Cohort</em></a>) – The cohort context to use</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Optional:</dt>
+<dd>extras (list[str]): extra arguments to send pyttest</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">result of run</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">subprocess.CompletedProcess</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -815,6 +649,7 @@ based on the report.</p>
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing pyAutoMark</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">pyam</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">pyam package</a></li>
 </ul>
@@ -827,7 +662,7 @@ based on the report.</p>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="modules.html">pyam</a><ul>
       <li>Previous: <a href="modules.html" title="previous chapter">pyam</a></li>
-      <li>Next: <a href="pyam.fixtures.html" title="next chapter">pyam.fixtures package</a></li>
+      <li>Next: <a href="pyam.cmd.html" title="next chapter">pyam.cmd package</a></li>
   </ul></li>
   </ul></li>
 </ul>

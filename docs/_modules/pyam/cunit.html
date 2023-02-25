@@ -41,7 +41,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">PIPE</span><span class="p">,</span> <span class="n">STDOUT</span><span class="p">,</span> <span class="n">run</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span>
 
 
@@ -84,17 +84,17 @@
     <span class="k">for</span> <span class="n">dec</span> <span class="ow">in</span> <span class="n">declarations</span><span class="p">:</span>
         <span class="n">cflags</span> <span class="o">=</span> <span class="n">cflags</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;-D&quot;</span><span class="p">,</span> <span class="n">dec</span><span class="p">]</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">compiler</span><span class="p">,</span> <span class="o">*</span><span class="n">cflags</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
-         <span class="nb">str</span><span class="p">(</span><span class="n">binary</span><span class="p">),</span> <span class="o">*</span><span class="n">include</span><span class="p">,</span> <span class="o">*</span><span class="n">sources</span><span class="p">],</span>
-        <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span>
-        <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">compiler</span><span class="p">,</span> <span class="o">*</span><span class="n">cflags</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
+         <span class="nb">str</span><span class="p">(</span><span class="n">binary</span><span class="p">),</span> <span class="o">*</span><span class="n">include</span><span class="p">,</span> <span class="o">*</span><span class="n">sources</span><span class="p">),</span>
+        <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">binary</span>
-    <span class="k">raise</span> <span class="n">CompilationError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span></div>
+    <span class="k">raise</span> <span class="n">CompilationError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="c_exec"><a class="viewcode-back" href="../../pyam.html#pyam.cunit.c_exec">[docs]</a><span class="k">def</span> <span class="nf">c_exec</span><span class="p">(</span><span class="n">binary</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">flags</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<div class="viewcode-block" id="c_exec"><a class="viewcode-back" href="../../pyam.html#pyam.cunit.c_exec">[docs]</a><span class="k">def</span> <span class="nf">c_exec</span><span class="p">(</span><span class="n">binary</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">flags</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Execute a binary executable with given flags.</span>
 
 <span class="sd">    Args:</span>
@@ -105,12 +105,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=W1510</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span>
-        <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">binary</span><span class="p">),</span> <span class="o">*</span><span class="n">flags</span><span class="p">],</span>
-        <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span>
-        <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
+        <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">binary</span><span class="p">),</span> <span class="o">*</span><span class="n">flags</span><span class="p">),</span>
+        <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">RunTimeError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+        <span class="k">raise</span> <span class="n">RunTimeError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">+</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
     <span class="k">return</span> <span class="kc">True</span></div>
 </pre></div>
 
@@ -131,6 +132,7 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installing pyAutoMark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">pyam</a></li>
 </ul>
 

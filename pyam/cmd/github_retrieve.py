@@ -25,9 +25,10 @@ def main(args=None):
     """Retrieve files from student repositories on github (classroom).
 
     Cohort manifest be configured with:
-       github.template: The name of the template repository
-         (prefix for student repositories)
-       github.url: URL to github organisation where repositories reside
+       github.template: 
+         The name of the template repository (prefix for student repositories)
+       github.url: 
+         URL to github organisation where repositories reside
 
     Students must have 'Github Username' field in csv file."""
     if args is None:

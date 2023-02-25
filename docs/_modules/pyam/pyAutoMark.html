@@ -35,14 +35,14 @@
 <span class="c1"># SPDX-License-Identifier: GPL-3.0-only</span>
 <span class="sd">&quot;&quot;&quot;Automatically retrieve, mark and provide feedback for digital student submissions&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
-<span class="kn">import</span> <span class="nn">pyam.run_tests</span>
-<span class="kn">import</span> <span class="nn">pyam.github_retrieve</span>
-<span class="kn">import</span> <span class="nn">pyam.extract_downloads</span>
-<span class="kn">import</span> <span class="nn">pyam.mark</span>
-<span class="kn">import</span> <span class="nn">pyam.generate_template</span>
-<span class="kn">import</span> <span class="nn">pyam.find_duplicates</span>
-<span class="kn">import</span> <span class="nn">pyam.config</span>
-<span class="kn">import</span> <span class="nn">pyam.cohort</span>
+<span class="kn">import</span> <span class="nn">pyam.cmd.run</span>
+<span class="kn">import</span> <span class="nn">pyam.cmd.github_retrieve</span>
+<span class="kn">import</span> <span class="nn">pyam.cmd.extract_downloads</span>
+<span class="kn">import</span> <span class="nn">pyam.cmd.mark</span>
+<span class="kn">import</span> <span class="nn">pyam.cmd.generate_template</span>
+<span class="kn">import</span> <span class="nn">pyam.cmd.find_duplicates</span>
+<span class="kn">import</span> <span class="nn">pyam.cmd.config</span>
+<span class="kn">import</span> <span class="nn">pyam.cmd.cohort</span>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../pyam.html#pyam.pyAutoMark.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
@@ -53,18 +53,20 @@
 <span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
     <span class="c1">#add subparsers for each command</span>
     <span class="n">subparsers</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;subcommands&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">command</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="p">(</span><span class="s1">&#39;run&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">run_tests</span><span class="p">,</span> <span class="s2">&quot;Run automated tests and generate reports&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;retrieve&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">github_retrieve</span><span class="p">,</span> <span class="s2">&quot;Retrieve student files from github&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;extract&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">extract_downloads</span><span class="p">,</span> <span class="s2">&quot;Extract student files from downloads&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;mark&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">mark</span><span class="p">,</span> <span class="s2">&quot;Generate mark spreadsheets from reports and template spreadsheet&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;generate-template&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">generate_template</span><span class="p">,</span> <span class="s2">&quot;Generate a template spreadsheet&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;check-submission&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">cohort</span><span class="p">,</span> <span class="s2">&quot;Check students have submitted files listed in manifest&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;find-duplicates&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">find_duplicates</span><span class="p">,</span> <span class="s2">&quot;Find duplicate students files&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;Set or read configration&quot;</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">command</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s1">&#39;run&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">cmd</span><span class="o">.</span><span class="n">run</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;retrieve&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">cmd</span><span class="o">.</span><span class="n">github_retrieve</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;extract&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">cmd</span><span class="o">.</span><span class="n">extract_downloads</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;mark&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">cmd</span><span class="o">.</span><span class="n">mark</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;generate-template&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">cmd</span><span class="o">.</span><span class="n">generate_template</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;find-duplicates&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">cmd</span><span class="o">.</span><span class="n">find_duplicates</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">cmd</span><span class="o">.</span><span class="n">config</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;cohort&#39;</span><span class="p">,</span> <span class="n">pyam</span><span class="o">.</span><span class="n">cmd</span><span class="o">.</span><span class="n">cohort</span><span class="p">)):</span>
+        <span class="n">description</span><span class="o">=</span><span class="n">module</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="vm">__doc__</span>
+        <span class="n">doc</span><span class="o">=</span><span class="n">description</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">sub</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
             <span class="n">command</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="n">module</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="n">doc</span><span class="p">,</span>
             <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">RawDescriptionHelpFormatter</span><span class="p">)</span>
         <span class="n">module</span><span class="o">.</span><span class="n">add_args</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
@@ -94,6 +96,7 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installing pyAutoMark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">pyam</a></li>
 </ul>
 

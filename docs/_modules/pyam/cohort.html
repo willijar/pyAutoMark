@@ -50,11 +50,12 @@
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">pyam.config</span> <span class="k">as</span> <span class="nn">config</span>
 <span class="kn">from</span> <span class="nn">pyam.config</span> <span class="kn">import</span> <span class="n">CONFIG</span>
 <span class="kn">from</span> <span class="nn">pyam.files</span> <span class="kn">import</span> <span class="n">read_csv</span>
+<span class="kn">from</span> <span class="nn">pyam.run_pytest</span> <span class="kn">import</span> <span class="n">run_pytest</span>
 
 
 <div class="viewcode-block" id="current_academic_year"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.current_academic_year">[docs]</a><span class="k">def</span> <span class="nf">current_academic_year</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -79,7 +80,6 @@
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span></div>
 
 
-
 <div class="viewcode-block" id="Cohort"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Cohort">[docs]</a><span class="k">class</span> <span class="nc">Cohort</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ConfigManager</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class representing a cohort of students with associated tests and reports</span>
 
@@ -99,7 +99,6 @@
 <span class="sd">      start_log_section: Starts a new named section in the cohort log</span>
 <span class="sd">      tests: Returns the dictionary of tests for this cohort</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">name</span>
@@ -121,13 +120,12 @@
         <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_path</span><span class="p">):</span>
             <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">student_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">read_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;students.csv&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">read_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;students.csv&quot;</span><span class="p">,</span><span class="kc">True</span><span class="p">):</span>
             <span class="n">student_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Student</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rec</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_students</span><span class="p">:</span> <span class="s1">&#39;tuple[Student]&#39;</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">student_list</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Cohort.students"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Cohort.students">[docs]</a>    <span class="k">def</span> <span class="nf">students</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;Union[str, None, list[str]]&#39;</span> <span class="o">=</span> <span class="kc">None</span>
-                 <span class="p">)</span><span class="o">-&gt;</span> <span class="s1">&#39;Union[Student, list[Student]]&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="Cohort.students"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Cohort.students">[docs]</a>    <span class="k">def</span> <span class="nf">students</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;Union[str, None, list[str]]&#39;</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Union[Student, list[Student]]&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return student or students from a cohort.</span>
 
 <span class="sd">        Finds students by full name, student id or username in cohort.</span>
@@ -172,16 +170,13 @@
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_manifest_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
                 <span class="n">test_manifest</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fid</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tests&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">test_manifest</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-                <span class="p">[</span><span class="s2">&quot;pytest&quot;</span><span class="p">,</span> <span class="s1">&#39;--collect-only&#39;</span><span class="p">,</span> <span class="s1">&#39;-q&#39;</span><span class="p">,</span> <span class="s1">&#39;--cohort&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
-                <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">test_path</span><span class="p">,</span>
-                <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">run_pytest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;--collect-only&#39;</span><span class="p">,</span> <span class="s1">&#39;-q&#39;</span><span class="p">)</span>
             <span class="n">test_manifest</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">break</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
                 <span class="n">test_manifest</span><span class="p">[</span><span class="n">line</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">return</span> <span class="n">test_manifest</span></div></div>
 
@@ -199,7 +194,6 @@
 <span class="sd">      course: Possible subcohort course name</span>
 <span class="sd">      github_username: Github username if specified</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cohort</span><span class="p">:</span> <span class="n">Cohort</span><span class="p">,</span> <span class="n">rec</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialise student into cohort from a csv record rec</span>
@@ -250,7 +244,9 @@
                 <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">last_name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">first_name</span><span class="si">}</span><span class="s2">)&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">last_name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">first_name</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
-<div class="viewcode-block" id="Student.check_manifest"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.check_manifest">[docs]</a>    <span class="k">def</span> <span class="nf">check_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Student.check_manifest"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.check_manifest">[docs]</a>    <span class="k">def</span> <span class="nf">check_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                       <span class="n">files</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if student directory contains all files on cohort manifest</span>
 
 <span class="sd">        Args:</span>
@@ -262,13 +258,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">files</span><span class="p">:</span>
             <span class="n">files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;files&quot;</span><span class="p">,</span> <span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No submission: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">files</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">files</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="n">rec</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="n">missing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">missing</span> <span class="ow">and</span> <span class="n">log</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">student_id</span><span class="si">}</span><span class="s1"> &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="s1">&quot; missing files: </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Missing Files: </span><span class="si">%-40s</span><span class="s2">: </span><span class="si">%2d</span><span class="s2"> missing: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">),</span> <span class="n">missing</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">missing</span></div>
 
 <div class="viewcode-block" id="Student.repository_name"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.repository_name">[docs]</a>    <span class="k">def</span> <span class="nf">repository_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -297,11 +296,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">action</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;clone&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository_url</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">]</span>
             <span class="n">cwd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">path</span>
+        <span class="c1"># pylint: disable=W1510</span>
         <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">action</span><span class="p">,</span>
                               <span class="n">cwd</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">cwd</span><span class="p">),</span>
                               <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                              <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                              <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                              <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># successful</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Successful </span><span class="si">{</span><span class="n">action</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">repository_name</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>\
@@ -316,7 +315,24 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="Student.find_files"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.find_files">[docs]</a>    <span class="k">def</span> <span class="nf">find_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pathname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">containing</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">recursive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<div class="viewcode-block" id="Student.github_lastcommit"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.github_lastcommit">[docs]</a>    <span class="k">def</span> <span class="nf">github_lastcommit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="s2">&quot;Return last github commit time or None&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">((</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="s2">&quot;-1&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;--format=</span><span class="si">%c</span><span class="s2">d&quot;</span><span class="p">),</span>
+                                    <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                                    <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                    <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                    <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
+                                         <span class="s2">&quot;</span><span class="si">%a</span><span class="s2"> %b </span><span class="si">%d</span><span class="s2"> %H:%M:%S %Y %z</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Student.find_files"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.find_files">[docs]</a>    <span class="k">def</span> <span class="nf">find_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                   <span class="n">pathname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                   <span class="n">containing</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="n">recursive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return filtered list of files found in student directory.</span>
 
 <span class="sd">        If containing is given also filter to files containing this regexp</span>
@@ -342,7 +358,8 @@
         <span class="k">return</span> <span class="n">matching</span></div></div>
 
 
-<div class="viewcode-block" id="get_cohort"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.get_cohort">[docs]</a><span class="k">def</span> <span class="nf">get_cohort</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cohort&quot;</span><span class="p">,</span> <span class="n">current_academic_year</span><span class="p">()))</span> <span class="o">-&gt;</span> <span class="n">Cohort</span><span class="p">:</span>
+<div class="viewcode-block" id="get_cohort"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.get_cohort">[docs]</a><span class="k">def</span> <span class="nf">get_cohort</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cohort&quot;</span><span class="p">,</span>
+                                      <span class="n">current_academic_year</span><span class="p">()))</span> <span class="o">-&gt;</span> <span class="n">Cohort</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Return cohort for given name or current defaultcohort if name=None</span>
 
 <span class="sd">    Args:</span>
@@ -356,22 +373,19 @@
         <span class="n">CONFIG</span><span class="o">.</span><span class="n">cohort</span> <span class="o">=</span> <span class="n">Cohort</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">cohort</span></div>
 
-<span class="c1"># pylint: disable=W0613</span>
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Main routine - checks student manifest in a cohort&quot;&quot;&quot;</span>
-    <span class="n">cohort</span> <span class="o">=</span> <span class="n">get_cohort</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">cohort</span><span class="o">.</span><span class="n">students</span><span class="p">():</span>
-        <span class="n">missing</span> <span class="o">=</span> <span class="n">student</span><span class="o">.</span><span class="n">check_manifest</span><span class="p">(</span><span class="n">cohort</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Files&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">student</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="s1">&quot; missing </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="list_cohorts"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.list_cohorts">[docs]</a><span class="k">def</span> <span class="nf">list_cohorts</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Returns a list of valid cohorts</span>
 
-<div class="viewcode-block" id="add_args"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.add_args">[docs]</a><span class="k">def</span> <span class="nf">add_args</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Add args for this command - none&quot;&quot;&quot;</span></div>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">main</span><span class="p">()</span>
+<span class="sd">    Subdirectories of cohorts which have student.csv and manifest.json files</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">cohorts_path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;manifest.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">path</span> <span class="o">/</span>
+                                                      <span class="s2">&quot;students.csv&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">stem</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">results</span></div>
 </pre></div>
 
           </div>
@@ -391,6 +405,7 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installing pyAutoMark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">pyam</a></li>
 </ul>
 

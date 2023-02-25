@@ -106,12 +106,13 @@
 
 
 <div class="viewcode-block" id="c_exec"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.c_mock.c_exec">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
-<span class="k">def</span> <span class="nf">c_exec</span><span class="p">(</span><span class="n">c_compile</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">c_exec</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">c_compile</span><span class="p">):</span>
     <span class="s2">&quot;Return Exec function for this test suite which takes declarations as argument&quot;</span>
-
+    <span class="n">marker</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">get_closest_marker</span><span class="p">(</span><span class="s2">&quot;timeout&quot;</span><span class="p">)</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">marker</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">def</span> <span class="nf">_exec</span><span class="p">(</span><span class="n">declarations</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cunit</span><span class="o">.</span><span class="n">c_exec</span><span class="p">(</span><span class="n">c_compile</span><span class="p">(</span><span class="n">declarations</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">cunit</span><span class="o">.</span><span class="n">c_exec</span><span class="p">(</span><span class="n">c_compile</span><span class="p">(</span><span class="n">declarations</span><span class="p">),</span><span class="n">timeout</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">cunit</span><span class="o">.</span><span class="n">RunTimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">err</span>
@@ -165,6 +166,7 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing pyAutoMark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pyam</a></li>
 </ul>
 

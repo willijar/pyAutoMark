@@ -53,10 +53,9 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">PIPE</span><span class="p">,</span> <span class="n">STDOUT</span><span class="p">,</span> <span class="n">run</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 <span class="kn">import</span> <span class="nn">pytest</span>
-<span class="kn">import</span> <span class="nn">pyam.fixtures.common</span>
 <span class="kn">from</span> <span class="nn">pyam.files</span> <span class="kn">import</span> <span class="n">find_executable</span>
 
 
@@ -113,7 +112,7 @@
 
 
 <div class="viewcode-block" id="ghdl"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.ghdl">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
-<span class="k">def</span> <span class="nf">ghdl</span><span class="p">(</span><span class="n">ghdl_exec</span><span class="p">,</span> <span class="n">ghdl_options</span><span class="p">,</span> <span class="n">build_path</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">ghdl</span><span class="p">(</span><span class="n">ghdl_exec</span><span class="p">,</span> <span class="n">ghdl_options</span><span class="p">,</span> <span class="n">build_path</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Fixture returns function to run a test using ghdl.</span>
 
 <span class="sd">    Args:</span>
@@ -127,6 +126,8 @@
 <span class="sd">      VHDLRunError: if -r or --elab-run command faild</span>
 <span class="sd">      VHDLError: if ghdl failed but netiehr of above commands</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">marker</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">get_closest_marker</span><span class="p">(</span><span class="s2">&quot;timeout&quot;</span><span class="p">)</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">marker</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="c1"># pylint: disable=W1510</span>
     <span class="k">def</span> <span class="nf">_ghdl</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">ghdl_options</span><span class="p">,</span> <span class="n">run_options</span><span class="o">=</span><span class="p">()):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span>
@@ -135,11 +136,12 @@
                 <span class="o">*</span><span class="n">run_options</span>
             <span class="p">],</span>
             <span class="n">cwd</span><span class="o">=</span><span class="n">build_path</span><span class="p">,</span>
-            <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span>
-            <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span>
             <span class="k">if</span> <span class="n">command</span> <span class="o">==</span> <span class="s2">&quot;-a&quot;</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">VHDLAnalysisError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">command</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;--elab-run&quot;</span><span class="p">,</span> <span class="s2">&quot;-r&quot;</span><span class="p">):</span>
@@ -163,7 +165,6 @@
 <span class="sd">    Raises:</span>
 <span class="sd">       see ghdl:</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
     <span class="k">def</span> <span class="nf">_vhdl_simulate</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">student_files</span><span class="p">,</span> <span class="n">test_files</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">test_files</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ghdl</span><span class="p">(</span><span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="n">test_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">top</span><span class="si">}</span><span class="s2">.vhd&quot;</span><span class="p">)</span>
@@ -188,7 +189,7 @@
 
 
 <div class="viewcode-block" id="vivado"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.vivado">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
-<span class="k">def</span> <span class="nf">vivado</span><span class="p">(</span><span class="n">vivado_exec</span><span class="p">,</span> <span class="n">build_path</span><span class="p">,</span> <span class="n">student</span><span class="p">,</span> <span class="n">vivado_options</span><span class="p">,</span> <span class="n">partnumber</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">vivado</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">vivado_exec</span><span class="p">,</span> <span class="n">build_path</span><span class="p">,</span> <span class="n">student</span><span class="p">,</span> <span class="n">vivado_options</span><span class="p">,</span> <span class="n">partnumber</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Fixture returns function to run vivado synthesis</span>
 
 <span class="sd">    Args:</span>
@@ -200,6 +201,8 @@
 <span class="sd">    Raises:</span>
 <span class="sd">      VHDLSynthesisError: If vivado exits with an error</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">marker</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">get_closest_marker</span><span class="p">(</span><span class="s2">&quot;timeout&quot;</span><span class="p">)</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">marker</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">def</span> <span class="nf">_vivado</span><span class="p">(</span><span class="n">bitfile</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">sources</span><span class="p">,</span> <span class="n">constraints</span><span class="p">):</span>
         <span class="c1"># pylint: disable=W1510</span>
         <span class="n">tcl</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
@@ -218,11 +221,12 @@
             <span class="s2">&quot;-tempDir&quot;</span><span class="p">,</span> <span class="n">build_path</span><span class="p">,</span> <span class="s2">&quot;-mode&quot;</span><span class="p">,</span> <span class="s2">&quot;tcl&quot;</span>
         <span class="p">],</span>
                      <span class="n">cwd</span><span class="o">=</span><span class="n">student</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
-                     <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span>
-                     <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
-                     <span class="nb">input</span><span class="o">=</span><span class="n">tcl</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                     <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+                     <span class="nb">input</span><span class="o">=</span><span class="n">tcl</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">VHDLSynthesisError</span>
         <span class="k">return</span> <span class="n">bitfile</span>
 
@@ -271,6 +275,7 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing pyAutoMark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pyam</a></li>
 </ul>
 

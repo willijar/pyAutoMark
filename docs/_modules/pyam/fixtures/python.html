@@ -43,14 +43,12 @@
 <div class="viewcode-block" id="PythonStyleError"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.python.PythonStyleError">[docs]</a><span class="k">class</span> <span class="nc">PythonStyleError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="s2">&quot;pylint Score too low&quot;</span></div>
 
-<div class="viewcode-block" id="timeout"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.python.timeout">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
-<span class="k">def</span> <span class="nf">timeout</span><span class="p">():</span>
-     <span class="sd">&quot;&quot;&quot;Timeout for scripts&quot;&quot;&quot;</span>
-     <span class="k">return</span> <span class="mi">5</span></div>
-
 <div class="viewcode-block" id="run_script"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.python.run_script">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
-<span class="k">def</span> <span class="nf">run_script</span><span class="p">(</span><span class="n">student</span><span class="p">,</span><span class="n">timeout</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">run_script</span><span class="p">(</span><span class="n">student</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return script runner function for this student&quot;&quot;&quot;</span>
+
+    <span class="n">marker</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">get_closest_marker</span><span class="p">(</span><span class="s2">&quot;timeout&quot;</span><span class="p">)</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span> <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">marker</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">def</span> <span class="nf">_run_script</span><span class="p">(</span><span class="n">script</span><span class="p">,</span><span class="n">stdin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Run named script with stdin as input, returing the subprocess result. Test Case fails if script fails to run.</span>
 <span class="sd">        stdin can be a string or a list of items which will sent with newlines added as input to script.</span>
@@ -87,6 +85,22 @@
     <span class="n">score</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([-\d\.]+)/10&quot;</span><span class="p">,</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">score</span><span class="o">&lt;</span><span class="n">score_threshold</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">PythonStyleError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Code Rating of </span><span class="si">{</span><span class="n">score</span><span class="si">}</span><span class="s2"> lower than </span><span class="si">{</span><span class="n">score_threshold</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    
+<span class="c1"># need to think about timeouts for python code - with windows too (signal will notn work)</span>
+<span class="c1"># @contextmanager</span>
+<span class="c1"># def timeout(duration):</span>
+<span class="c1">#     def timeout_handler(signum, frame):</span>
+<span class="c1">#         raise TimeoutError(f&#39;block timedout after {duration} seconds&#39;)</span>
+<span class="c1">#     signal.signal(signal.SIGALRM, timeout_handler)</span>
+<span class="c1">#     signal.alarm(duration)</span>
+<span class="c1">#     try:</span>
+<span class="c1">#         yield</span>
+<span class="c1">#     finally:</span>
+<span class="c1">#         signal.alarm(0)</span>
+
+<span class="c1"># def sleeper(duration):</span>
+<span class="c1">#     time.sleep(duration)</span>
+<span class="c1">#     print(&#39;finished&#39;)</span>
 </pre></div>
 
           </div>
@@ -106,6 +120,7 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing pyAutoMark</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pyam</a></li>
 </ul>
 
