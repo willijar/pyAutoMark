@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 # Copyright 2023, Dr John A.R. Williams
 # SPDX-License-Identifier: GPL-3.0-only
-"""Run a set of tests for a cohort of students and produce reports files"""
+"""Main routine for run command"""
 import argparse
 import datetime
 import pyam.cohort as cohortlib
 from pyam.config import CONFIG
-from pyam.args import add_common_args
+from pyam.cmd.args import add_common_args
 from pyam.run_pytest import run_pytest
 
+
 def main(args=None):
-    """Run the test suite for specified cohort and students"""
+    """Run the test suite for specified cohort and students
+
+    Generates the test reports for each student in the reports folder.
+    """
     # pylint: disable=W1510
     #Ensure pyam is in Python search path
     if args is None:
@@ -31,7 +35,16 @@ def main(args=None):
         extras = []
         if args.mark:
             extras += ['-m', args.mark]
-        result=run_pytest(cohort, '--no-header', '-rA', '--tb=short', '-v', *extras, '--student', student.username,)
+        result = run_pytest(
+            cohort,
+            '--no-header',
+            '-rA',
+            '--tb=short',
+            '-v',
+            *extras,
+            '--student',
+            student.username,
+        )
         with open(report_path, "w") as fid:
             fid.write(f"Report generated {datetime.datetime.now().strftime('%Y/%m/%d %H:%M')}"\
                       + f" for {student.name()} by {cohort.get('assessor.name')}\n")

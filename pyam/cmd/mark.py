@@ -1,16 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2023, Dr John A.R. Williams
 # SPDX-License-Identifier: GPL-3.0-only
-"""Generate mark spreadsheets for each student
-
-Reads in test reports and a template spreadsheet
-Creates a mark spreadsheet for each student from template
-with the cells named by the test ids set to PASSED or FAILED
-based on the report.
-
-Typical Usage:
-
-mark.py --cohort 2022
+"""Main routine for mark command.
 """
 
 import argparse
@@ -18,11 +9,17 @@ from datetime import date
 from pathlib import Path
 import openpyxl
 from pyam.cohort import get_cohort
-from pyam.args import add_common_args
+from pyam.cmd.args import add_common_args
 
 
 def main(args=None):
-    """Iterate through student reports to generate mark spreadhseets from template spreadsheet"""
+    """Generate mark spreadsheets for each student
+
+    Reads in test reports and a template spreadsheet
+    Creates a mark spreadsheet for each student from template
+    with the cells named by the test ids set to PASSED or FAILED
+    based on the report.
+    """
     if args is None:
         parser = argparse.ArgumentParser(description=__doc__)
         add_args(parser)
@@ -75,7 +72,7 @@ def fill_workbook(template, student, report):
     cohort = student.cohort
     workbook["B4"] = student.name()
     workbook["B5"] = student.student_id
-    workbook["B6"] = student.username + cohort.get("domain","")
+    workbook["B6"] = student.username + cohort.get("domain", "")
     workbook["B8"] = cohort.get('assessor.name')
     workbook["B9"] = cohort.get('assessor.email')
     workbook["B10"] = str(date.today())
@@ -103,9 +100,9 @@ def analyse_report(report_path: Path, tests: dict, log=None):
         #check we have all expected results in report
         for test in tests.keys():
             if test not in results:
-                results[test]="Unknown"
+                results[test] = "Unknown"
                 log.warning("Missing test result %s in '%s'", test,
-                         report_path.name)
+                            report_path.name)
     return results
 
 

@@ -13,7 +13,6 @@ import pathlib
 from pathlib import Path
 import logging
 import json
-import argparse
 from typing import Any
 
 # Gobal configuration
@@ -143,13 +142,13 @@ class _Config(ConfigManager):
         self.error_log.setLevel(logging.ERROR)
         self.error_log.setFormatter(
             logging.Formatter(
-                '%(asctime)-12s: %(name)-8s: %(levelname)-8s: %(message)s',
+                '%(asctime)-12s: %(name)8s: %(levelname)8s: %(message)s',
                 '%Y-%m-%d %H:%M:%S'))
         ## warning and above go to console - no need for time in format, log warning messages
         self.console_log = logging.StreamHandler()
         self.console_log.setLevel(level=logging.WARN)
         self.console_log.setFormatter(
-            logging.Formatter('%(name)-8s: %(levelname)-8s %(message)s'))
+            logging.Formatter('%(levelname)8s %(message)s'))
 
         self.log: logging.Logger = logging.getLogger()
         self.log.handlers.clear()
@@ -159,44 +158,3 @@ class _Config(ConfigManager):
         self.cohort = None
 
 CONFIG = _Config()
-
-def add_args(parser: argparse.ArgumentParser = argparse.ArgumentParser(description=__doc__)) -> None:
-    """Add arguments for config command"""
-    parser.add_argument('key', help="Key of value to be set in '.' format e.g. assessor.username")
-    parser.add_argument('value',
-                        help='value to be set (if no value give output current value)',
-                        nargs='?',
-                        default=None)
-    parser.add_argument('--type',
-                        help="Type conversion to perform on value e.g. int,float")
-
-
-def main(args: argparse.Namespace = None) -> None:
-    """Set configuration parameters.
-
-    Keys may be in '.' format e.g. 2022.assessor.username sets assessor.username in cohort 2022
-    global name may be used to set global parameters across all cohorts (unless set locally).
-    If no value is given print out current value."""
-    if args is None:
-        parser = argparse.ArgumentParser(description=__doc__)
-        add_args(parser)
-        args = parser.parse_args()
-    components = args.key.split('.')
-    domain = components[0]
-    remainder = ".".join(components[1:])
-    if domain == 'global':
-        conf = CONFIG
-    else:
-        path = CONFIG.cohorts_path / domain
-        if not path.exists():
-            raise KeyError(f"Configuration Path {domain}")
-        conf = ConfigManager(path / "manifest.json", "cohort")
-    if args.value is not None:
-        conf[remainder] = args.value
-        conf.store()
-    else:
-        print(conf[remainder])
-
-
-if __name__ == "__main__":
-    main()

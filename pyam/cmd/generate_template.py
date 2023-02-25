@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2023, Dr John A.R. Williams
 # SPDX-License-Identifier: GPL-3.0-only
-"""Generate template marking spreadsheet
-
-Starts from from template-template.xlsx
-and adds in a row per test with the description, a named cell to filled in
-as PASSED or FAILED from the students reports and a mark as per the test
-manifest
+"""Main generate-template command.
 """
 import argparse
 from pathlib import Path
@@ -14,12 +9,18 @@ import openpyxl
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.utils import quote_sheetname, absolute_coordinate
 from pyam.config import CONFIG
-from pyam.args import add_common_args
+from pyam.cmd.args import add_common_args
 from pyam.cohort import get_cohort
 
 
 def main(args=None):
-    """Main routing - generates a cohort template from template-template"""
+    """Generate a template marking spreadsheet
+
+    Starts from from template-template.xlsx
+    and adds in a row per test with the description, a named cell to filled in
+    as PASSED or FAILED from the students reports and a mark as per the test
+    manifest
+    """
     if args is None:
         parser = argparse.ArgumentParser(description=__doc__)
         add_args(parser)
