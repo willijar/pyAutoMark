@@ -63,8 +63,13 @@ class ConfigManager:
         keys = index.split(".")
         dic = self.manifest
         for key in keys[:-1]:
+            if not isinstance(dic,dict):
+                break
             dic = dic[key]
-        return dic[keys[-1]]
+        if isinstance(dic,dict):
+            return dic[keys[-1]]
+        raise KeyError(f"{index} not found.")
+
 
     def __setitem__(self, index: str, newvalue: Any) -> None:
         """Set a configuration item

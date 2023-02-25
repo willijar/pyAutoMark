@@ -86,7 +86,7 @@ def fill_workbook(template, student, report):
     cohort = student.cohort
     set_field("student_name",student.name(None))
     set_field("student_id",student.student_id)
-    set_field("student_email", student.username + "@"+ cohort.get("institution.domain"))
+    set_field("student_email", f"{student.username}@{cohort.get('institution.domain')}")
     set_field("date",date.today())
     course=student.rec.get("Course")
     if course:
