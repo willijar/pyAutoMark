@@ -22,13 +22,7 @@ __ https://openpyxl.readthedocs.io/
 Installation from source
 ------------------------
 
-Currently you must install pyAutoMark directly from a clone of the `Git repository`__.  This
-can be done either by cloning the repo and installing from the local clone, on
-simply installing directly via :command:`git`.
+Currently you must install pyAutoMark directly from the release on GitHub as follows:
 
-::
-
-   $ git clone https://github.com/willijar/pyAutoMark
-   $ cd pyAutoMark
-   $ pip install .
+   $ pip install https://github.com/willijar/pyAutoMark/archive/refs/tags/v0.3.0.zip
 
