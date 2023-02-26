@@ -11,7 +11,7 @@ import pyam.cmd.generate_template
 import pyam.cmd.find_duplicates
 import pyam.cmd.config
 import pyam.cmd.cohort
-
+import pyam.cmd.write_csv
 
 def main():
     """Automatically retrieve, mark and provide feedback for digital student submissions"""
@@ -29,7 +29,8 @@ def main():
             ('generate-template', pyam.cmd.generate_template),
             ('find-duplicates', pyam.cmd.find_duplicates),
             ('config', pyam.cmd.config),
-            ('cohort', pyam.cmd.cohort)):
+            ('cohort', pyam.cmd.cohort),
+            ('write-csv', pyam.cmd.write_csv)):
         description=module.main.__doc__
         doc=description.splitlines()[0]
         sub = subparsers.add_parser(
