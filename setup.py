@@ -13,7 +13,8 @@ setuptools.setup(
     package_dir={'pyam':'pyam'},
     package_data={'pyam': ['*.xlsx']},
     install_requires=['openpyxl>=3.0',
-                      'pytest>=7.2.1',                     
+                      'pytest>=7.2.1', 
+                      'pytest-timeout>=2.1.0',                    
                       ],
     scripts=['pyam/pyAutoMark.py'],
     classifiers=[
