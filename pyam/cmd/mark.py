@@ -56,7 +56,7 @@ def get_reports(cohort, students, paths, prefix) -> dict:
         for path in paths:
             found = False
             for student in students:
-                if student.username in str(path):
+                if student.username in str(path) and path.suffix()=="txt":
                     reports[student] = path
                     found = True
                     break
