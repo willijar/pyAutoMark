@@ -21,7 +21,7 @@ def main(args=None):
     def get_value(student_id):
         match = None
         for student in marks:
-            if student_id in student.student_id:
+            if student.student_id in student_id or student.username in student_id:
                 match = student
                 break
         if match:
@@ -39,13 +39,13 @@ def main(args=None):
 
 def get_id_and_mark(path):
     """Returns student id and mark from spreadsheet at path"""
-    wbook = openpyxl.load_workbook(path)
+    wbook = openpyxl.load_workbook(path,data_only=True)
     student_id = None
     mark = None
     for title, coord in wbook.defined_names["student_id"].destinations:
-        student_id = wbook[title][coord]
+        student_id = wbook[title][coord].value
     for title, coord in wbook.defined_names["mark"].destinations:
-        mark = wbook[title][coord]
+        mark = wbook[title][coord].value
     return (student_id, mark)
 
 
@@ -57,17 +57,15 @@ def get_marks(cohort, students, prefix, paths) -> dict:
 
     Will warn if there are missing marks or missing students."""
     if not paths:
-        paths = cohort.report_path.glob(f"{prefix}*.xslx")
+        paths =  list(cohort.report_path.glob(f"{prefix}*.xlsx"))
     marks = {}
     for path in paths:
-        if path.suffix != "xslx":
+        if path.suffix != ".xlsx":
             cohort.log.warning("File %s is not a spreadsheet", path)
             continue
         try:
             (student_id, mark) = get_id_and_mark(path)
         except KeyError:
-            cohort.log.warning(
-                "File %s does not have mark or student_id cells", path)
             continue
         found = False
         for student in students:
@@ -75,9 +73,6 @@ def get_marks(cohort, students, prefix, paths) -> dict:
                 marks[student] = mark
                 found = True
                 break
-        if not found:
-            cohort.log.warning(
-                "Mark file %s does not correspond to a known student", path)
     return marks
 
 
@@ -95,7 +90,7 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
                         nargs="*",
                         type=Path,
                         default=[],
-                        help="List of csv files to be processed. ")
+                        help="List of csv files to be processed. Deafult is those starting with prefix in report directory")
     parser.add_argument(
         '--mark-col',
         help=
