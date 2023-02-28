@@ -5,7 +5,7 @@
 Typical Usage:
 
 binary_path=c_compile(binary_path,"mysouce.c",include=["include_path"],declarations=['DOSOMETHING'])
-ran_ok=c_exec(binary_path, "option1", "option2" )
+ran_ok=c_exec(binary_path, options=( "option1", "option2" ), timeout=5)
 """
 
 from pathlib import Path
@@ -58,11 +58,12 @@ def c_compile(binary: Union[Path, str],
         capture_output=True
     )
     if result.returncode == 0:
+        print(binary)
         return binary
     raise CompilationError(result.stdout)
 
 
-def c_exec(binary: Union[Path, str], *flags: Sequence[str], timeout: float = None):
+def c_exec(binary: Union[Path, str], flags=(), timeout: float = None):
     """Execute a binary executable with given flags.
 
     Args:
@@ -72,6 +73,7 @@ def c_exec(binary: Union[Path, str], *flags: Sequence[str], timeout: float = Non
         RunTimeError: If return code is 0
     """
     # pylint: disable=W1510
+    print("run", flags)
     result = run(
         (str(binary), *flags),
         text=True,
