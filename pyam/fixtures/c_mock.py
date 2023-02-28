@@ -80,7 +80,7 @@ def c_exec(request,c_compile):
     timeout=None if marker is None else marker.args[0]
     def _exec(declarations: Sequence[str] = ()):
         try:
-            return cunit.c_exec(c_compile(declarations),timeout)
+            return cunit.c_exec(c_compile(declarations),timeout=timeout)
         except cunit.RunTimeError as err:
             print(err)
             raise err
