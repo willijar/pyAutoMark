@@ -11,7 +11,7 @@ from pathlib import Path
 import logging
 from pyam.config_manager import ConfigManager
 
-CONFIG=None
+CONFIG = None
 
 class _Config(ConfigManager):
     """Global (root) configuration
@@ -34,16 +34,12 @@ class _Config(ConfigManager):
         while not (self.root_path / "pyAutoMark.json").exists():
             if self.root_path == self.root_path.home():
                 raise FileNotFoundError("pyAutoMark.json")
-            self.root_path=self.root_path.parent
+            self.root_path = self.root_path.parent
         super().__init__(self.root_path / "pyAutoMark.json", "global")
-        self.root_path: Path = self.get("root_path", self.root_path)
-        self.tests_path: Path = self.get("test_path", self.root_path / "tests")
-        self.cohorts_path: Path = self.get(
-            "cohort_path", self.root_path / "cohorts")
-        self.build_path: Path = self.get(
-            "build_path",  self.root_path / "build")
-        self.reports_path: Path = self.get(
-            "report_path", self.root_path / "reports")
+        self.tests_path: Path = self.get("path.tests", self.root_path / "tests")
+        self.cohorts_path: Path = self.get("path.cohorts", self.root_path / "cohorts")
+        self.build_path: Path = self.get("path.build", self.root_path / "build")
+        self.reports_path: Path = self.get("path.reports", self.root_path / "reports")
         for path in (self.cohorts_path, self.tests_path, self.build_path,
                      self.reports_path):
             path.mkdir(exist_ok=True)
@@ -67,7 +63,7 @@ class _Config(ConfigManager):
         logging.getLogger("cohort").setLevel(logging.INFO)
         self.cohort = None
 
-        CONFIG=self
-        ConfigManager._global_config=self
+        CONFIG = self
+        ConfigManager._global_config = self
 
 _Config()

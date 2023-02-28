@@ -1,14 +1,15 @@
 # Copyright 2023, Dr John A.R. Williams
 # SPDX-License-Identifier: GPL-3.0-only
-
 """Implementation of ConfigManager Class
 
 A Base class for loading and managing configuration files
 """
 
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any
+
 
 class ConfigManager:
     """Base class for entities which have configuration files
@@ -22,8 +23,8 @@ class ConfigManager:
      _root: The top level global configuration
     """
 
-    _global_config={}
-    
+    _global_config = {}
+
     def __init__(self, config_path: Path, domain: str):
         self.domain: str = domain
         self.config_path: Path = config_path
@@ -49,23 +50,34 @@ class ConfigManager:
         with open(self.config_path, "w") as fid:
             fid.write(json.dumps(self.manifest, indent=2, sort_keys=True))
 
-    def __getitem__(self, index: str) -> Any:
-        """Given a configuration index returns the value or a key error
+    def getconfig(dic: dict, index: str) -> Any:
+        """Look up nested dictionaries to retrieve a value
 
-        Will accept deep indexes in '.' format e.g. assessor.username
+        Args:
+            dic (dict): Dictionary
+            index (str): index in '.' format e.g. assessor.username
 
-        Will raise key error if no value found.
+        Raises:
+            KeyError: if item not found
+
+        Returns:
+            Any: Value at index_
         """
         keys = index.split(".")
-        dic = self.manifest
         for key in keys[:-1]:
-            if not isinstance(dic,dict):
+            if not isinstance(dic, dict):
                 break
             dic = dic[key]
-        if isinstance(dic,dict):
+        if isinstance(dic, dict):
             return dic[keys[-1]]
         raise KeyError(f"{index} not found.")
 
+    def __getitem__(self, index: str) -> Any:
+        """Implementation of get for ConfigManager TYpes
+
+        See getconfig
+        """
+        return ConfigManager.getconfig(self.manifest, index)
 
     def __setitem__(self, index: str, newvalue: Any) -> None:
         """Set a configuration item
@@ -104,3 +116,74 @@ class ConfigManager:
                 return ConfigManager._global_config[index]
             except KeyError:
                 return None
+
+
+#Schema - a dictionary of known configuration parameters
+SCHEMA = {
+    "assessor": {
+        "email": {
+            "description": "assessor's email address"
+        },
+        "name": {
+            "description": "assessor's name"
+        },
+    },
+    "course": {
+        "code": {
+            "description": "code for module/course"
+        },
+        "name": {
+            "description": "title for module/course"
+        }
+    },
+    "institution": {
+        "name": {
+            "description": "name of institution"
+        },
+        "department": {
+            "description": "name of department"
+        },
+        "domain": {
+            "description": "domain to add to usernames for email"
+        },
+    },
+    "github": {
+        "url": {
+            "description": "url for organisation on github (if applicable)"
+        },
+        "assignment": {
+            "description":
+            "Title of github assignment (prefix for student repositories)"
+        },
+    },
+    "fixtures": {
+        "description": "List of pytest fixture sets to use"
+    },
+    "path": {
+        "tests": {
+            "description": "file path to tests",
+            "default": "tests",
+            "type": Path
+        },
+        "build": {
+            "description": "file path to build directory for temporary files",
+            "default": "build",
+            "type": Path
+        },
+        "cohorts": {
+            "description":
+            "file path to directory for cohort/student submissions",
+            "default": "cohorts",
+            "type": Path
+        },
+        "reports": {
+            "description": "file path for reports",
+            "default": "reports",
+            "type": Path
+        },
+    },
+    "deadline": {
+        "description": "deadline for assessment submission",
+        "type": datetime.fromisoformat
+    }
+}
