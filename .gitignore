@@ -5,6 +5,7 @@ __pycache__
 /20*/
 docsrc
 docs
+dist
 # Prerequisites
 *.d
 
