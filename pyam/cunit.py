@@ -73,7 +73,6 @@ def c_exec(binary: Union[Path, str], flags=(), timeout: float = None):
         RunTimeError: If return code is 0
     """
     # pylint: disable=W1510
-    print("run", flags)
     result = run(
         (str(binary), *flags),
         text=True,
