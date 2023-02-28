@@ -1,5 +1,9 @@
 # Change Log for pyAutoMark
 
+## v0.3.2
+
+* fix c_exec issue with timeout
+* Change to use toml file for setup
 * Initial implementation init command
 * Add config SCHEMA
 * Rename script to pam.py
@@ -9,7 +13,7 @@
 * Add pytest-timeout to requirements
 * Fix config lookup
 
-## 0.3.1
+## v0.3.1
 
 * Fix missing template-template.xlsx from package data
 

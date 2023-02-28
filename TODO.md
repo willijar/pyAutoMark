@@ -1,8 +1,8 @@
 # pyAutoMark Todo List
 
-* [ ] Change setup to use toml file etc
+* [X] Change setup to use toml file etc
 * [X] An init command which produces a top level pyAutoAMrk.json file and fills it in from some questions
-* [ ] Test install and running under WIndows
+* [X] Test install and running under WIndows
 
 ## Bug Fixes
 
