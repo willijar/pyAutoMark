@@ -58,7 +58,6 @@ def c_compile(binary: Union[Path, str],
         capture_output=True
     )
     if result.returncode == 0:
-        print(binary)
         return binary
     raise CompilationError(result.stdout)
 
