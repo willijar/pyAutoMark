@@ -10,7 +10,7 @@ from pathlib import Path
 import openpyxl
 from pyam.cohort import get_cohort
 from pyam.cmd.args import add_common_args
-
+from pyam.cmd.generate_template import to_defined_name
 
 def main(args=None):
     """Generate mark spreadsheets for each student
@@ -94,7 +94,7 @@ def fill_workbook(template, student, report):
 
     for key, value in analyse_report(report, cohort.tests(),
                                      cohort.log).items():
-        set_field(key,value)
+        set_field(to_defined_name(key),value)
 
 
 def analyse_report(report_path: Path, tests: dict, log=None):

@@ -6,6 +6,12 @@
 
 ## Bug Fixes
 
+* [X] Mapping test ids to named cells - only letters, numbers and underscores allowed. Replacce other characters with Underscore - map
+    Change in generate_template.py and mark.py
+    >>> myre="[^a-zA-Z0-9_]+"
+    >>> re.sub(myre,"_",s)[1:]
+
+
 ## Documentation
 
 * [X] Document using sphinx - see <https://www.sphinx-doc.org/en/master/>
