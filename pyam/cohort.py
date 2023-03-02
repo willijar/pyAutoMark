@@ -88,7 +88,7 @@ class Cohort(config.ConfigManager):
         for path in (self.test_path, self.report_path):
             path.mkdir(exist_ok=True)
         student_list = []
-        for rec in read_csv(self.path / "students.csv", columns=True):
+        for rec in read_csv(self.path / "students.csv",True):
             student_list.append(Student(self, rec))
         self._students: 'tuple[Student]' = tuple(student_list)
 
