@@ -7,6 +7,8 @@ docsrc
 docs
 dist
 pyAutoMark.egg-info
+*.code-workspace
+_version.py
 # Prerequisites
 *.d
 
