@@ -3,6 +3,10 @@ __pycache__
 .pytest_cache
 .vscode
 /20*/
+dist
+pyAutoMark.egg-info
+*.code-workspace
+_version.py
 # Prerequisites
 *.d
 

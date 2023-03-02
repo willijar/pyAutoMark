@@ -10,7 +10,7 @@ from pathlib import Path
 import openpyxl
 from pyam.cohort import get_cohort
 from pyam.cmd.args import add_common_args
-
+from pyam.cmd.generate_template import to_defined_name
 
 def main(args=None):
     """Generate mark spreadsheets for each student
@@ -28,6 +28,12 @@ def main(args=None):
     * student_email
     * student_course
     * date
+    * assessor_name
+    * course_code
+    * course_name
+    * course_assessment
+    * institution_name
+    * institution_department
     """
     if args is None:
         parser = argparse.ArgumentParser(description=__doc__)
@@ -56,7 +62,7 @@ def get_reports(cohort, students, paths, prefix) -> dict:
         for path in paths:
             found = False
             for student in students:
-                if student.username in str(path):
+                if student.username in str(path) and path.suffix()=="txt":
                     reports[student] = path
                     found = True
                     break
@@ -77,24 +83,31 @@ def get_reports(cohort, students, paths, prefix) -> dict:
 
 def fill_workbook(template, student, report):
     """Fill in workbook 0 of template with student and report details"""
-    def set_field(name,value):
+    def set_field(name,value, required=True):
         try:
             for title, coord in template.defined_names[name].destinations:
                     template[title][coord] = value
         except KeyError as e:
-            print(e)
+            if required:
+                print(e)
     cohort = student.cohort
     set_field("student_name",student.name(None))
     set_field("student_id",student.student_id)
-    set_field("student_email", student.username + "@"+ cohort.get("institution.domain"))
+    set_field("student_email", f"{student.username}@{cohort.get('institution.domain')}")
     set_field("date",date.today())
+    set_field("assessor_name",student.cohort.get("assessor.name"),required=False)
+    set_field("course_code",student.cohort.get("course.code"),required=False)
+    set_field("course_name",student.cohort.get("course.name"),required=False)
+    set_field("course_assessment",student.cohort.get("course.assessment"),required=False)
+    set_field("institution_name",student.cohort.get("institution.name"),required=False)
+    set_field("institution_department",student.cohort.get("institution.department"),required=False)
     course=student.rec.get("Course")
     if course:
         set_field("student_course",course)
 
     for key, value in analyse_report(report, cohort.tests(),
                                      cohort.log).items():
-        set_field(key,value)
+        set_field(to_defined_name(key),value)
 
 
 def analyse_report(report_path: Path, tests: dict, log=None):

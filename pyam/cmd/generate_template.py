@@ -11,7 +11,18 @@ from openpyxl.utils import quote_sheetname, absolute_coordinate
 from pyam.config import CONFIG
 from pyam.cmd.args import add_common_args
 from pyam.cohort import get_cohort
+import re
 
+def to_defined_name(nodeid: str) -> str:
+    """Convert a test nodeid into a format suitable for xlsx defined name
+
+    Args:
+        nodeid (str): The Nodeid
+
+    Returns:
+        str: A valid XLSX defined name
+    """
+    return re.sub("[^a-zA-Z0-9_]+","_",nodeid)
 
 def main(args=None):
     """Generate a template marking spreadsheet
@@ -72,7 +83,7 @@ def main(args=None):
         cell=start_cell.offset(row,1)
         cell.value="UNKNOWN"
         ref = f"{quote_sheetname(worksheet.title)}!{absolute_coordinate(f'{cell.coordinate}')}"
-        defn = DefinedName(name=test, attr_text=ref)
+        defn = DefinedName(name=to_defined_name(test), attr_text=ref)
         template.defined_names.append(defn)
         mark=details.get("mark",False)
         if mark:

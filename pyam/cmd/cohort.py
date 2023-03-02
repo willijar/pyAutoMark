@@ -15,7 +15,12 @@ def main(args=None):
     If no cohort is specified list all valid cohorts.
     If given a cohort name but no further command set the default cohort.
     """
-    cohort = get_cohort(CONFIG.get("cohort", current_academic_year()))
+    if args.cohort:
+        cohort=get_cohort(args.cohort)
+        CONFIG["cohort"] = args.cohort
+        CONFIG.store()
+    else:
+        cohort = get_cohort(CONFIG.get("cohort", current_academic_year()))
     if args.list_students:
         today = datetime.today().astimezone()
         deadline = cohort.get("deadline", None)
@@ -56,10 +61,6 @@ def main(args=None):
         for student in cohort.students():
             missing=student.check_manifest(log=True)
     else:
-        if args.cohort:
-            get_cohort(args.cohort)
-            CONFIG["cohort"] = args.cohort
-            CONFIG.store()
         for name in list_cohorts():
             if name == CONFIG.get("cohort"):
                 name += " <-"

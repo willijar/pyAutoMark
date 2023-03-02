@@ -48,7 +48,7 @@ def student(request, cohort):
 @pytest.fixture
 def compiler(request):
     "The C Compiler to use"
-    return request.config.getoption("--c-compiler")
+    return "gcc"
 
 
 @pytest.fixture

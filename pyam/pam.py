@@ -3,6 +3,14 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """Automatically retrieve, mark and provide feedback for digital student submissions"""
 import argparse
+import sys
+import pyam.cmd.init
+
+# need to test for init command before config is imported for other commands
+if len(sys.argv)>=1 and sys.argv[1]=="init":
+    pyam.cmd.init.main()
+    quit()
+
 import pyam.cmd.run
 import pyam.cmd.github_retrieve
 import pyam.cmd.extract_downloads
@@ -11,7 +19,7 @@ import pyam.cmd.generate_template
 import pyam.cmd.find_duplicates
 import pyam.cmd.config
 import pyam.cmd.cohort
-
+import pyam.cmd.write_csv
 
 def main():
     """Automatically retrieve, mark and provide feedback for digital student submissions"""
@@ -29,7 +37,9 @@ def main():
             ('generate-template', pyam.cmd.generate_template),
             ('find-duplicates', pyam.cmd.find_duplicates),
             ('config', pyam.cmd.config),
-            ('cohort', pyam.cmd.cohort)):
+            ('cohort', pyam.cmd.cohort),
+            ('write-csv', pyam.cmd.write_csv),
+            ('init', pyam.cmd.init)):
         description=module.main.__doc__
         doc=description.splitlines()[0]
         sub = subparsers.add_parser(

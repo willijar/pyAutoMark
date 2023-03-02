@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools","setuptools_scm[toml]>=6.2"]
+build-backend="setuptools.build_meta"
+
+[project]
+name = "pyAutoMark"
+dynamic = ["version"]
+
+authors = [ {name = "John Williams", email = "j.a.r.williams@jarw.org.uk"}]
+description = "Automated marking of student electronic submissions"
+readme = "README.md"
+license = {text = "GPL-3.0-openpyxl"}
+requires-python = ">=3.8"
+dependencies = [
+    "openpyxl>=3.0",
+    "pytest>=7.2.1", 
+    "pytest-timeout>=2.1.0"
+]
+keywords = ["pytest", "assessment"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: C",
+    "Framework :: Pytest",
+    "Topic :: Education :: Testing",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)"
+]
+
+[project.scripts]
+pyam = "pyam.pam:main"
+
+[tool.setuptools.packages.find]
+where = ["./"]
+
+[tool.setuptools.package-data]
+pyam = ["*.xlsx", "*.json"]
+
+[tool.setuptools_scm]
+write_to = "pyam/_version.py"
+
+[project.urls]
+Repository = "https://github.com/willijar/pyAutoMark"
+Homepage = "https://willijar.github.io/pyAutoMark/"
