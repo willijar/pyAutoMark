@@ -16,7 +16,7 @@ help:
 
 
 github:
-	@$(SPHINXAPIDOC) -o "$(SOURCEDIR)" ../pyam 
+	@$(SPHINXAPIDOC) -f -o "$(SOURCEDIR)" ../pyam 
 	@make html
 	@cp -a build/html/. ../docs
 

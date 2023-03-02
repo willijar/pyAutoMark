@@ -28,6 +28,14 @@ pyam.config module
     :undoc-members:
     :show-inheritance:
 
+pyam.config\_manager module
+---------------------------
+
+.. automodule:: pyam.config_manager
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pyam.cunit module
 -----------------
 
@@ -44,10 +52,10 @@ pyam.files module
     :undoc-members:
     :show-inheritance:
 
-pyam.pyAutoMark module
-----------------------
+pyam.pam module
+---------------
 
-.. automodule:: pyam.pyAutoMark
+.. automodule:: pyam.pam
     :members:
     :undoc-members:
     :show-inheritance:

@@ -61,7 +61,7 @@ class ConfigManager:
             KeyError: if item not found
 
         Returns:
-            Any: Value at index_
+            Any: Value at index
         """
         keys = index.split(".")
         for key in keys[:-1]:

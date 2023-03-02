@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyam.cunit &#8212; pyAutoMark 0.3.0 documentation</title>
+    <title>pyam.cunit &#8212; pyAutoMark 0.3.3.dev18+ga4ca320.d20230302 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -37,7 +37,7 @@
 <span class="sd">Typical Usage:</span>
 
 <span class="sd">binary_path=c_compile(binary_path,&quot;mysouce.c&quot;,include=[&quot;include_path&quot;],declarations=[&#39;DOSOMETHING&#39;])</span>
-<span class="sd">ran_ok=c_exec(binary_path, &quot;option1&quot;, &quot;option2&quot; )</span>
+<span class="sd">ran_ok=c_exec(binary_path, options=( &quot;option1&quot;, &quot;option2&quot; ), timeout=5)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
@@ -94,7 +94,7 @@
     <span class="k">raise</span> <span class="n">CompilationError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="c_exec"><a class="viewcode-back" href="../../pyam.html#pyam.cunit.c_exec">[docs]</a><span class="k">def</span> <span class="nf">c_exec</span><span class="p">(</span><span class="n">binary</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">flags</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="c_exec"><a class="viewcode-back" href="../../pyam.html#pyam.cunit.c_exec">[docs]</a><span class="k">def</span> <span class="nf">c_exec</span><span class="p">(</span><span class="n">binary</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">flags</span><span class="o">=</span><span class="p">(),</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Execute a binary executable with given flags.</span>
 
 <span class="sd">    Args:</span>
@@ -133,7 +133,8 @@
 <p class="caption"><span class="caption-text">Get started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installing pyAutoMark</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
@@ -166,7 +167,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2023, John Williams.
+      &copy;2023-2023, John Williams.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>

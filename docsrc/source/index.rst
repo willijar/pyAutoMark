@@ -65,6 +65,7 @@ including setting up your directory structure for submissions, reports and tests
 
    installation
    quickstart
+   glossary
 
 
 Reference guide

@@ -14,19 +14,23 @@
 #
 import os
 import sys
+import time
+from setuptools_scm import get_version
+
+
 sys.path.insert(0, os.path.abspath('../../'))
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'pyAutoMark'
-copyright = '2023, John Williams'
+copyright = f'2023-{time.strftime("%Y")}, John Williams'
 author = 'John Williams'
 
 # The short X.Y version
-version = ''
+version = get_version('../../')
 # The full version, including alpha/beta/rc tags
-release = '0.3.0'
+release = version
 
 
 # -- General configuration ---------------------------------------------------
@@ -42,6 +46,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary', 'sphinx.ext.extlinks',
     'sphinx.ext.coverage',
     'sphinx.ext.napoleon'
 ]

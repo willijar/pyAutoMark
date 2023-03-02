@@ -60,6 +60,14 @@ pyam.cmd.github\_retrieve module
     :undoc-members:
     :show-inheritance:
 
+pyam.cmd.init module
+--------------------
+
+.. automodule:: pyam.cmd.init
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pyam.cmd.mark module
 --------------------
 
@@ -72,6 +80,14 @@ pyam.cmd.run module
 -------------------
 
 .. automodule:: pyam.cmd.run
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyam.cmd.write\_csv module
+--------------------------
+
+.. automodule:: pyam.cmd.write_csv
     :members:
     :undoc-members:
     :show-inheritance:
