@@ -54,7 +54,7 @@ Here are pyAutoMark's major features:
 .. _Github Classroom: https://classroom.github.com/
 
 Getting Started
-===============
+---------------
 
 The basics of installing and getting started using pyAutoMark
 including setting up your directory structure for submissions, reports and tests.
@@ -67,15 +67,35 @@ including setting up your directory structure for submissions, reports and tests
    quickstart
    glossary
 
+The Subcommands
+---------------
 
+The :program:`pyam` program subcommands
+
+.. toctree::
+   :maxdepth: 2
+   :caption: The Subcommands
+
+   cmds/index
+   cmds/run
+   cmds/retrieve
+   cmds/extract
+   cmds/mark
+   cmds/generate-template
+   cmds/find-duplicates
+   cmds/config
+   cmds/cohort
+   cmds/write-csv
+   cmds/init
+  
 Reference guide
-===============
+---------------
 
 A complete collection of reference information,
 
 .. toctree::
    :maxdepth: 2
-   :caption: Reference
+   :caption: Modules
 
    modules
 

@@ -1,0 +1,193 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>write-csv &#8212; pyAutoMark 0.3.3.dev19+g0641fc8.d20230303 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="write-csv" href="init.html" />
+    <link rel="prev" title="config" href="config.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="write-csv">
+<span id="subcommand-write-csv"></span><h1>write-csv<a class="headerlink" href="#write-csv" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><strong>pyam write-csv</strong>  [-h] [-c COHORT] [-s [STUDENTS [STUDENTS …]]] [–overwrite] [–prefix PREFIX]</dt>
+<dd>[–mark-sheets [MARK_SHEETS [MARK_SHEETS …]]] [–csv-files [CSV_FILES [CSV_FILES …]]]
+[–mark-col MARK_COL] [–student-col STUDENT_COL]</dd>
+</dl>
+</div>
+<div class="section" id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p><strong class="program">pyam write-csv</strong> Read marks from a set of mark spreadsheets and write them into csv files</p>
+</div>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<dl class="option">
+<dt id="cmdoption-pyam-write-csv-h">
+<code class="descname">-h</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--help</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-pyam-write-csv-h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show a help message and exit</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-pyam-write-csv-c">
+<code class="descname">-c</code><code class="descclassname"> COHORT</code><code class="descclassname">, </code><code class="descname">--cohort</code><code class="descclassname"> COHORT</code><a class="headerlink" href="#cmdoption-pyam-write-csv-c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of cohort if different from current.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-pyam-write-csv-s">
+<code class="descname">-s</code><code class="descclassname"> [STUDENTS [STUDENTS ...]]</code><code class="descclassname">, </code><code class="descname">--students</code><code class="descclassname"> [STUDENTS [STUDENTS ...]]</code><a class="headerlink" href="#cmdoption-pyam-write-csv-s" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of specific students to process in cohort.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-pyam-write-csv-overwrite">
+<code class="descname">--overwrite</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-pyam-write-csv-overwrite" title="Permalink to this definition">¶</a></dt>
+<dd><p>If set overwrite existing output files.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-pyam-write-csv-prefix">
+<code class="descname">--prefix</code><code class="descclassname"> PREFIX</code><a class="headerlink" href="#cmdoption-pyam-write-csv-prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prefix to add to generated files.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-pyam-write-csv-mark-sheets">
+<code class="descname">--mark-sheets</code><code class="descclassname"> [MARK_SHEETS [MARK_SHEETS ...]]</code><a class="headerlink" href="#cmdoption-pyam-write-csv-mark-sheets" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of mark sheets to be processed. Defaults to those in report directory with matching prefix</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-pyam-write-csv-csv-files">
+<code class="descname">--csv-files</code><code class="descclassname"> [CSV_FILES [CSV_FILES ...]]</code><a class="headerlink" href="#cmdoption-pyam-write-csv-csv-files" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of csv files to be processed. Deafult is those starting with prefix in report directory</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-pyam-write-csv-mark-col">
+<code class="descname">--mark-col</code><code class="descclassname"> MARK_COL</code><a class="headerlink" href="#cmdoption-pyam-write-csv-mark-col" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name or number of column of csv file where marks are to be written.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-pyam-write-csv-student-col">
+<code class="descname">--student-col</code><code class="descclassname"> STUDENT_COL</code><a class="headerlink" href="#cmdoption-pyam-write-csv-student-col" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name or number of student id column in CSV file</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">pyAutoMark</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Get started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing pyAutoMark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption"><span class="caption-text">The Subcommands</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run.html">run</a></li>
+<li class="toctree-l1"><a class="reference internal" href="retrieve.html">retrieve</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extract.html">extract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mark.html">mark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generate-template.html">generate-template</a></li>
+<li class="toctree-l1"><a class="reference internal" href="find-duplicates.html">find-duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">config</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">write-csv</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#options">Options</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="init.html">write-csv</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">pyam</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="config.html" title="previous chapter">config</a></li>
+      <li>Next: <a href="init.html" title="next chapter">write-csv</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023-2023, John Williams.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../_sources/cmds/write-csv.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
