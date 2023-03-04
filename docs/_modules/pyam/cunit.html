@@ -45,8 +45,9 @@
 
 <span class="sd">Typical Usage:</span>
 
-<span class="sd">binary_path=c_compile(binary_path,&quot;mysouce.c&quot;,include=[&quot;include_path&quot;],declarations=[&#39;DOSOMETHING&#39;])</span>
-<span class="sd">ran_ok=c_exec(binary_path, options=( &quot;option1&quot;, &quot;option2&quot; ), timeout=5)</span>
+<span class="sd">.. code-block:</span>
+<span class="sd">    binary_path=c_compile(binary_path,&quot;mysouce.c&quot;,include=[&quot;include_path&quot;],declarations=[&#39;DOSOMETHING&#39;])</span>
+<span class="sd">    ran_ok=c_exec(binary_path, options=( &quot;option1&quot;, &quot;option2&quot; ), timeout=5)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
@@ -66,26 +67,26 @@
 
 
 <div class="viewcode-block" id="c_compile"><a class="viewcode-back" href="../../pyam.html#pyam.cunit.c_compile">[docs]</a><span class="k">def</span> <span class="nf">c_compile</span><span class="p">(</span><span class="n">binary</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-              <span class="n">sources</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span>
-              <span class="n">include</span><span class="p">:</span> <span class="n">Sequence</span> <span class="o">=</span> <span class="p">(),</span>
-              <span class="n">cflags</span><span class="p">:</span> <span class="n">Sequence</span> <span class="o">=</span> <span class="p">(),</span>
-              <span class="n">declarations</span><span class="p">:</span> <span class="n">Sequence</span> <span class="o">=</span> <span class="p">(),</span>
+              <span class="n">sources</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span><span class="nb">str</span><span class="p">]],</span>
+              <span class="n">include</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(),</span>
+              <span class="n">cflags</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+              <span class="n">declarations</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
               <span class="n">compiler</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gcc&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Use C compile to compile source files into an executable binary</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">      binary (Union[Path, str]): location for binary executable</span>
-<span class="sd">      sources (Sequence): source files to compile</span>
-<span class="sd">      include (Sequence): include paths to search for headers</span>
-<span class="sd">      cflags (Sequence) : additional flags to add during compilation</span>
-<span class="sd">      declarations (Sequence): list of compile declarations (-D flags)</span>
-<span class="sd">      compiler (str)    : name of compiler to use</span>
+<span class="sd">      binary: location for binary executable</span>
+<span class="sd">      sources: source files to compile</span>
+<span class="sd">      include: include paths to search for headers</span>
+<span class="sd">      cflags: additional flags to add during compilation</span>
+<span class="sd">      declarations: list of compile declarations (-D flags)</span>
+<span class="sd">      compiler: name of compiler to use</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        CompilationError: if compiler failed</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        binary: Location of binary executable</span>
+<span class="sd">        Location of binary executable</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=W1510</span>
     <span class="n">sources</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">]</span>
@@ -103,14 +104,18 @@
     <span class="k">raise</span> <span class="n">CompilationError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="c_exec"><a class="viewcode-back" href="../../pyam.html#pyam.cunit.c_exec">[docs]</a><span class="k">def</span> <span class="nf">c_exec</span><span class="p">(</span><span class="n">binary</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">flags</span><span class="o">=</span><span class="p">(),</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="c_exec"><a class="viewcode-back" href="../../pyam.html#pyam.cunit.c_exec">[docs]</a><span class="k">def</span> <span class="nf">c_exec</span><span class="p">(</span><span class="n">binary</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">flags</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="p">(),</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">True</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Execute a binary executable with given flags.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        binary (Union[Path, str]): Path to binary executable</span>
+<span class="sd">        binary: Path to binary executable</span>
+<span class="sd">        timeout: timeout for process</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        RunTimeError: If return code is 0</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=W1510</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span>

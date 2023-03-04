@@ -39,9 +39,16 @@
           <div class="body" role="main">
             
   <h1>Source code for pyam.fixtures.python</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span></span><span class="c1"># Copyright 2023, Dr John A.R. Williams</span>
+<span class="c1"># SPDX-License-Identifier: GPL-3.0-only</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Fixtures for testing students Python scripts and functions</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">pytest</span>
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
@@ -54,14 +61,26 @@
 
 <div class="viewcode-block" id="run_script"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.python.run_script">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">def</span> <span class="nf">run_script</span><span class="p">(</span><span class="n">student</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return script runner function for this student&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;*Fixture*: A function to run a students python script.</span>
+<span class="sd">    </span>
+<span class="sd">    The function takes the following arguments</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      script (str): The nname of the script in the students directory.</span>
+<span class="sd">      stdin (Union[List[str],str]): A string that will be fed to standard input to the script. Alternatively </span>
+<span class="sd">        a list of strings can be given - these will be joined with a newline character.</span>
+<span class="sd">    </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        PythonRunError: if script fails to run. Error will have stderr output from script execution.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The stdout from the script as a string.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">marker</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">get_closest_marker</span><span class="p">(</span><span class="s2">&quot;timeout&quot;</span><span class="p">)</span>
     <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span> <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">marker</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">def</span> <span class="nf">_run_script</span><span class="p">(</span><span class="n">script</span><span class="p">,</span><span class="n">stdin</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Run named script with stdin as input, returing the subprocess result. Test Case fails if script fails to run.</span>
-<span class="sd">        stdin can be a string or a list of items which will sent with newlines added as input to script.</span>
-<span class="sd">        Returns script output&quot;&quot;&quot;</span>
         <span class="c1"># pylint: disable=W1510</span>
         <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span><span class="nb">str</span><span class="p">)):</span>
             <span class="n">stdin</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">stdin</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -74,18 +93,27 @@
 
 <div class="viewcode-block" id="module_name"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.python.module_name">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">def</span> <span class="nf">module_name</span><span class="p">(</span><span class="n">student</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Module name under test&quot;&quot;&quot;</span></div>
+    <span class="sd">&quot;&quot;&quot;*Fixture*: Module name under students directory to load for a test. **Must be set in the test**&quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="student_module"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.python.student_module">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">def</span> <span class="nf">student_module</span><span class="p">(</span><span class="n">student</span><span class="p">,</span><span class="n">module_name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return function to import a module from a student file - returns module instance&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;*Fixture*: Returns the student module instance from the :func:`module_name` in the students directory.&quot;&quot;&quot;</span>
     <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">spec_from_file_location</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="p">(</span><span class="n">module_name</span><span class="o">+</span><span class="s2">&quot;.py&quot;</span><span class="p">))</span>
     <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
     <span class="n">spec</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">exec_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">module</span></div>
 
-<div class="viewcode-block" id="python_lint"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.python.python_lint">[docs]</a><span class="k">def</span> <span class="nf">python_lint</span><span class="p">(</span><span class="n">python_file</span><span class="p">,</span> <span class="n">score_threshold</span><span class="p">):</span>
-    <span class="s2">&quot;Return function to provide pylint diagnostics on sutdents code&quot;</span>
+<div class="viewcode-block" id="python_lint"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.python.python_lint">[docs]</a><span class="k">def</span> <span class="nf">python_lint</span><span class="p">(</span><span class="n">python_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">score_threshold</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Run pylint on sudents code.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">      python_file: the path to the file to be checked</span>
+<span class="sd">      score_threshold: the minimum thresold (/10) for the code to past this test.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">      PythonRunError: If pylint returns a Fatal or Error return code</span>
+<span class="sd">      PythonStyleError: If they do nor meet the minimum threshold.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=W1510</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">((</span><span class="s2">&quot;pylint&quot;</span><span class="p">,</span> <span class="n">python_file</span><span class="p">),</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>

@@ -42,18 +42,13 @@
 <span></span><span class="c1"># Copyright 2023, Dr John A.R. Williams</span>
 <span class="c1"># SPDX-License-Identifier: GPL-3.0-only</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Common fixtures for pyam to provide cohort and student information</span>
-
-<span class="sd">Defines fixtures:</span>
-<span class="sd">    cohort: the cohort under test</span>
-<span class="sd">    student: the stundet being tested</span>
-<span class="sd">    compiler: the C compiler begin used</span>
-<span class="sd">    build_path: directory for temporary build files</span>
-<span class="sd">    test_path: The path where the tests are kept</span>
+<span class="sd">Common fixtures for pyAutoMark tests which provid the cohort and student context in</span>
+<span class="sd">which the tests will be run.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">import</span> <span class="nn">pyam</span>
 <span class="kn">from</span> <span class="nn">pyam.config</span> <span class="kn">import</span> <span class="n">CONFIG</span>
 <span class="kn">from</span> <span class="nn">pyam.cohort</span> <span class="kn">import</span> <span class="n">get_cohort</span>
 
@@ -71,8 +66,8 @@
     
 <span class="c1"># pylint: disable=W0621</span>
 <div class="viewcode-block" id="cohort"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.common.cohort">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
-<span class="k">def</span> <span class="nf">cohort</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-    <span class="s2">&quot;The cohort where student is to be found - specified using --cohort option&quot;</span>
+<span class="k">def</span> <span class="nf">cohort</span><span class="p">(</span><span class="n">request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pyam</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">Cohort</span><span class="p">:</span>
+    <span class="s2">&quot;*Fixture*: The cohort where student is to be found - specified using --cohort option to pytest&quot;</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getoption</span><span class="p">(</span><span class="s2">&quot;--cohort&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">get_cohort</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -80,40 +75,42 @@
 
 
 <div class="viewcode-block" id="student"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.common.student">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
-<span class="k">def</span> <span class="nf">student</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">cohort</span><span class="p">):</span>
-    <span class="s2">&quot;The current student under test - specified using --student option&quot;</span>
+<span class="k">def</span> <span class="nf">student</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">cohort</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pyam</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">Student</span><span class="p">:</span>
+    <span class="s2">&quot;*Fixture*: The current student under test - specified using --student option&quot;</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getoption</span><span class="p">(</span><span class="s2">&quot;--student&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cohort</span><span class="o">.</span><span class="n">students</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="compiler"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.common.compiler">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
-<span class="k">def</span> <span class="nf">compiler</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-    <span class="s2">&quot;The C Compiler to use&quot;</span>
+<span class="k">def</span> <span class="nf">compiler</span><span class="p">(</span><span class="n">request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="s2">&quot;*Fixture*: The C Compiler to use&quot;</span>
     <span class="k">return</span> <span class="s2">&quot;gcc&quot;</span></div>
 
 
 <div class="viewcode-block" id="build_path"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.common.build_path">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
-<span class="k">def</span> <span class="nf">build_path</span><span class="p">():</span>
-    <span class="s2">&quot;Directory path for out of source build (executables, libs and object files)&quot;</span>
+<span class="k">def</span> <span class="nf">build_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="s2">&quot;*Fixture*: Directory path for out of source build (executables, libs and object files)&quot;</span>
     <span class="k">return</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">build_path</span></div>
 
 
 <div class="viewcode-block" id="test_path"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.common.test_path">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
-<span class="k">def</span> <span class="nf">test_path</span><span class="p">(</span><span class="n">cohort</span><span class="p">):</span>
-    <span class="s2">&quot;Directory path containing test files&quot;</span>
+<span class="k">def</span> <span class="nf">test_path</span><span class="p">(</span><span class="n">cohort</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="s2">&quot;*Fixture*: Directory path containing test files&quot;</span>
     <span class="k">return</span> <span class="n">cohort</span><span class="o">.</span><span class="n">test_path</span></div>
 
 <div class="viewcode-block" id="student_files"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.common.student_files">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">def</span> <span class="nf">student_files</span><span class="p">(</span><span class="n">student</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Fixture is function to find files for student</span>
+    <span class="sd">&quot;&quot;&quot;*Fixture*: function to find files for student</span>
+
+<span class="sd">    The returned function takes the following arguments.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">      pathname: Unix style pathaname glob (or list of same)</span>
-<span class="sd">      containing: An optional regexp to match against file contents</span>
-<span class="sd">      recursive: If true also look in subdirectories</span>
+<span class="sd">      pathname (str): Unix style pathaname glob (or list of same)</span>
+<span class="sd">      containing (str): An optional regexp to match against file contents</span>
+<span class="sd">      recursive (bool): If true also look in subdirectories</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">      Path(s): File Path or list of File Paths found.</span>
+<span class="sd">      Path (Union[Path,str]): File Path or list of File Paths found.</span>
 <span class="sd">        If multiple then first found will be given (or list)</span>
 
 <span class="sd">    Raises:</span>

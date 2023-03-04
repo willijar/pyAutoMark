@@ -39,27 +39,24 @@
           <div class="body" role="main">
             
   <h1>Source code for pyam.run_pytest</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Pun pytest in cohort  context.</span>
-
-<span class="sd">Functions:</span>
-
-<span class="sd">  run_pytest</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="c1"># Copyright 2023, Dr John A.R. Williams</span>
+<span class="c1"># SPDX-License-Identifier: GPL-3.0-only</span>
+<span class="sd">&quot;&quot;&quot;Pun pytest in the cohort  context.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span><span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">pyam.fixtures</span>
 
-
-<div class="viewcode-block" id="run_pytest"><a class="viewcode-back" href="../../pyam.html#pyam.run_pytest.run_pytest">[docs]</a><span class="k">def</span> <span class="nf">run_pytest</span><span class="p">(</span><span class="n">cohort</span><span class="p">,</span> <span class="o">*</span><span class="n">extras</span><span class="p">:</span> <span class="s1">&#39;list[str]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CompletedProcess</span><span class="p">:</span>
+<div class="viewcode-block" id="run_pytest"><a class="viewcode-back" href="../../pyam.html#pyam.run_pytest.run_pytest">[docs]</a><span class="k">def</span> <span class="nf">run_pytest</span><span class="p">(</span><span class="n">cohort</span><span class="p">:</span> <span class="s1">&#39;pyam.cohort.Cohort&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">extras</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span><span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CompletedProcess</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run pytest for pyAutoMark</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        cohort (Cohort): The cohort context to use</span>
+<span class="sd">        cohort: The cohort context to use</span>
 
 <span class="sd">    Optional:</span>
-<span class="sd">        extras (list[str]): extra arguments to send pyttest</span>
+<span class="sd">        extras: extra arguments to send pyttest</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        subprocess.CompletedProcess: result of run</span>

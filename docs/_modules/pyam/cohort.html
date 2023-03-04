@@ -41,24 +41,29 @@
   <h1>Source code for pyam.cohort</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright 2023, Dr John A.R. Williams</span>
 <span class="c1"># SPDX-License-Identifier: GPL-3.0-only</span>
-<span class="sd">&quot;&quot;&quot;Support functions for assessing students and running tests by cohort</span>
+<span class="sd">&quot;&quot;&quot;Classes to provide access to cohort and student information.</span>
 
-<span class="sd">Classes:</span>
-<span class="sd">  Cohort: representing a specific cohort</span>
-<span class="sd">  Student: representing a student in a cohort</span>
+<span class="sd">Classes</span>
 
-<span class="sd">Functions:</span>
-<span class="sd">  get_cohort:</span>
+<span class="sd">  :class:`Cohort`</span>
+<span class="sd">    representing a specific cohort</span>
+<span class="sd">  :class:`Student`</span>
+<span class="sd">    representing a student in a cohort</span>
+
+<span class="sd">Functions</span>
+
+<span class="sd">  :func:`get_cohort`</span>
 <span class="sd">    Gets a cohort by name (or default cohort)</span>
-<span class="sd">  current_academic_year:</span>
+<span class="sd">  :func:`current_academic_year`</span>
 <span class="sd">    returns a generated default cohort name by current (UK style) academic year</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span><span class="n">Dict</span><span class="p">,</span><span class="n">List</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">pyam.config</span> <span class="k">as</span> <span class="nn">config</span>
@@ -73,12 +78,14 @@
 <span class="sd">    This is based on common UK naming where the academic year starts in late September</span>
 <span class="sd">    and finished in June with referred assessments are in July/August</span>
 
-<span class="sd">      September--December it returns the current year</span>
-<span class="sd">      January to June return previous year</span>
-<span class="sd">      July-August returns &lt;previous year&gt;-referred</span>
-
 <span class="sd">    Returns:</span>
-<span class="sd">       academic_year: The academic year</span>
+<span class="sd">        September--December</span>
+<span class="sd">          returns the current year</span>
+<span class="sd">        January--June</span>
+<span class="sd">          return previous year</span>
+<span class="sd">        July-August</span>
+<span class="sd">          returns &lt;previous year&gt;-referred</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">today</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
     <span class="n">year</span> <span class="o">=</span> <span class="n">today</span><span class="o">.</span><span class="n">year</span>
@@ -92,21 +99,12 @@
 <div class="viewcode-block" id="Cohort"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Cohort">[docs]</a><span class="k">class</span> <span class="nc">Cohort</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ConfigManager</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class representing a cohort of students with associated tests and reports</span>
 
-<span class="sd">    Inherits from:</span>
-<span class="sd">      config.ConfigManager:</span>
-<span class="sd">        To load configuration from manifest.json in Cohort directory and provide log handling</span>
-
 <span class="sd">    Attributes:</span>
-<span class="sd">      name: The cohort name (subdirectory name) (e.g. academic year of study)</span>
-<span class="sd">      path: The Path to this cohort</span>
-<span class="sd">      test_path: The Path to the tests for this cohort</span>
-<span class="sd">      report_path: The Path to report directory for this cohort</span>
-<span class="sd">      log: The Logger for cohort.</span>
-
-<span class="sd">    Methods:</span>
-<span class="sd">      students: Return students matching a specified name or names</span>
-<span class="sd">      start_log_section: Starts a new named section in the cohort log</span>
-<span class="sd">      tests: Returns the dictionary of tests for this cohort</span>
+<span class="sd">      name (str): The cohort name (subdirectory name) (e.g. academic year of study)</span>
+<span class="sd">      path (Path): The Path to this cohort</span>
+<span class="sd">      test_path (Path): The Path to the tests for this cohort</span>
+<span class="sd">      report_path (Path) : The Path to report directory for this cohort</span>
+<span class="sd">      log (logging.Logger): The Logger for cohort.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
@@ -133,20 +131,22 @@
             <span class="n">student_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Student</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rec</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_students</span><span class="p">:</span> <span class="s1">&#39;tuple[Student]&#39;</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">student_list</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Cohort.students"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Cohort.students">[docs]</a>    <span class="k">def</span> <span class="nf">students</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;Union[str, None, list[str]]&#39;</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Union[Student, list[Student]]&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="Cohort.students"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Cohort.students">[docs]</a>    <span class="k">def</span> <span class="nf">students</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Union[Student, List[Student]]&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return student or students from a cohort.</span>
 
 <span class="sd">        Finds students by full name, student id or username in cohort.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">          name:</span>
-<span class="sd">            Name or names to be found in the cohort. May be username, student_id or common name</span>
+<span class="sd">          name: Name or names to be found in the cohort. </span>
+<span class="sd">            May be *username*, *student_id* or *common name*</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">          If name is not given prodes list of all students in cohort</span>
-<span class="sd">          If name is a string returns the first matching student found</span>
-<span class="sd">          If name is a list return list of students corresponding to list of names</span>
+<span class="sd">          If name is not given prodes list of all students in cohort.</span>
+
+<span class="sd">          If name is a string returns the first matching student found.</span>
+
+<span class="sd">          If name is a list return list of students corresponding to list of names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_students</span><span class="p">)</span>
@@ -166,12 +166,16 @@
         <span class="n">fix</span> <span class="o">=</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="mi">40</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">title</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fix</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">fix</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Cohort.tests"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Cohort.tests">[docs]</a>    <span class="k">def</span> <span class="nf">tests</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<div class="viewcode-block" id="Cohort.tests"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Cohort.tests">[docs]</a>    <span class="k">def</span> <span class="nf">tests</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">Dict</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return dictionary of tests for this cohort indexed by pytest nodeids</span>
 
 <span class="sd">        If a manifest.json is provided in the test directory then this is the &quot;tests&quot;</span>
 <span class="sd">        value from that file. Otherwise the nodeids are collected by pytest and the values</span>
 <span class="sd">        fields are empty dictionaies. Future implementations may use the values.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">          A dictionary of tests for this cohort indexed by pytest nodeids.</span>
+<span class="sd">          Value is a dictionary of test attributes from the test manifest if provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">test_manifest_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_path</span> <span class="o">/</span> <span class="s2">&quot;manifest.json&quot;</span>
         <span class="n">test_manifest</span> <span class="o">=</span> <span class="kc">None</span>
@@ -194,14 +198,14 @@
     <span class="sd">&quot;&quot;&quot;A student in a cohort. Initialised from students.csv file in cohort</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">      username: Their username</span>
-<span class="sd">      path: The Path to where the students submission resides.</span>
-<span class="sd">      student_id: Their official student id</span>
-<span class="sd">      last_name: Their family name</span>
-<span class="sd">      first_name: their first name</span>
-<span class="sd">      cohort: The Cohort in which they reside</span>
-<span class="sd">      course: Possible subcohort course name</span>
-<span class="sd">      github_username: Github username if specified</span>
+<span class="sd">      username (str): Their username</span>
+<span class="sd">      path (Path): The Path to where the students submission resides.</span>
+<span class="sd">      student_id (str): Their official student id</span>
+<span class="sd">      last_name (str): Their family name</span>
+<span class="sd">      first_name (str): their first name</span>
+<span class="sd">      cohort (Cohort): The Cohort in which they reside</span>
+<span class="sd">      course (str): Possible subcohort course name</span>
+<span class="sd">      github_username (str): Github username if specified</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cohort</span><span class="p">:</span> <span class="n">Cohort</span><span class="p">,</span> <span class="n">rec</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
@@ -255,7 +259,7 @@
 
 <div class="viewcode-block" id="Student.check_manifest"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.check_manifest">[docs]</a>    <span class="k">def</span> <span class="nf">check_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                        <span class="n">files</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                       <span class="n">log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+                       <span class="n">log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Check if student directory contains all files on cohort manifest</span>
 
 <span class="sd">        Args:</span>
@@ -279,23 +283,28 @@
                                     <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">),</span> <span class="n">missing</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">missing</span></div>
 
-<div class="viewcode-block" id="Student.repository_name"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.repository_name">[docs]</a>    <span class="k">def</span> <span class="nf">repository_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Github repository name if applicable else False&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Student.repository_name"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.repository_name">[docs]</a>    <span class="k">def</span> <span class="nf">repository_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return Github repository name if applicable else False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">github_username</span><span class="p">:</span>
             <span class="n">github</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;github.template&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">github</span><span class="p">:</span>
                 <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">github</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">github_username</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="kc">False</span></div>
+        <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Student.repository_url"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.repository_url">[docs]</a>    <span class="k">def</span> <span class="nf">repository_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Student.repository_url"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.repository_url">[docs]</a>    <span class="k">def</span> <span class="nf">repository_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="kc">None</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return students github repository url if present else False&quot;&quot;&quot;</span>
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository_name</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="p">[</span><span class="s1">&#39;github.url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">repository_name</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="kc">False</span></div>
+        <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Student.github_retrieve"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.github_retrieve">[docs]</a>    <span class="k">def</span> <span class="nf">github_retrieve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Clone or pull asssessments for this student from their repository.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Student.github_retrieve"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.github_retrieve">[docs]</a>    <span class="k">def</span> <span class="nf">github_retrieve</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Clone or pull asssessments for this student from their repository.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">          Success of retrieval</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="n">action</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;pull&quot;</span><span class="p">]</span>
             <span class="n">cwd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
@@ -325,7 +334,7 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="Student.github_lastcommit"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.github_lastcommit">[docs]</a>    <span class="k">def</span> <span class="nf">github_lastcommit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="s2">&quot;Return last github commit time or None&quot;</span>
+        <span class="s2">&quot;Return last github commit time if applicable&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">((</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="s2">&quot;-1&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;--format=</span><span class="si">%c</span><span class="s2">d&quot;</span><span class="p">),</span>
                                     <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
@@ -341,7 +350,7 @@
 <div class="viewcode-block" id="Student.find_files"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.Student.find_files">[docs]</a>    <span class="k">def</span> <span class="nf">find_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                    <span class="n">pathname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                    <span class="n">containing</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                   <span class="n">recursive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+                   <span class="n">recursive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return filtered list of files found in student directory.</span>
 
 <span class="sd">        If containing is given also filter to files containing this regexp</span>
@@ -369,13 +378,16 @@
 
 <div class="viewcode-block" id="get_cohort"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.get_cohort">[docs]</a><span class="k">def</span> <span class="nf">get_cohort</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cohort&quot;</span><span class="p">,</span>
                                       <span class="n">current_academic_year</span><span class="p">()))</span> <span class="o">-&gt;</span> <span class="n">Cohort</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Return cohort for given name or current defaultcohort if name=None</span>
+    <span class="sd">&quot;&quot;&quot;Return cohort for given name or current default cohort if name=None</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">      name:</span>
 <span class="sd">        Optional name of cohort to load.</span>
 <span class="sd">        If not present will use default - &quot;cohort&quot; field from configuration</span>
 <span class="sd">        Or use calculated current_academic_year</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">       The cohort object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">cohort</span>
     <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="p">(</span><span class="n">CONFIG</span><span class="o">.</span><span class="n">cohort</span><span class="p">)</span> <span class="ow">or</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">name</span><span class="p">):</span>
@@ -383,10 +395,13 @@
     <span class="k">return</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">cohort</span></div>
 
 
-<div class="viewcode-block" id="list_cohorts"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.list_cohorts">[docs]</a><span class="k">def</span> <span class="nf">list_cohorts</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Returns a list of valid cohorts</span>
+<div class="viewcode-block" id="list_cohorts"><a class="viewcode-back" href="../../pyam.html#pyam.cohort.list_cohorts">[docs]</a><span class="k">def</span> <span class="nf">list_cohorts</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;List the cohorts</span>
 
-<span class="sd">    Subdirectories of cohorts which have student.csv and manifest.json files</span>
+<span class="sd">    These are ubdirectories of cohorts which have student.csv and manifest.json files</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">       List of valid cohort names</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">cohorts_path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
