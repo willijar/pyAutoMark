@@ -138,6 +138,7 @@ and if :code:`PORTC` is set correctly to soem expected value as the :code:`TEST_
                 printf("F_CPU not set to 20E6");
                 exit(1);
             }
+            #endif
         }
         // other tests
         #if TEST_DIGITS
@@ -145,6 +146,7 @@ and if :code:`PORTC` is set correctly to soem expected value as the :code:`TEST_
             printf("Counted 0d%d digit incorrect - expected 0h%x but got 0h%x",count,expected_value,PORTC);
             exit(1);
         }
+        #endif
     }
 
 The final component it to provide the pytest file that pulls all this together. I typically will use a single

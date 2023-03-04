@@ -173,6 +173,7 @@ and if <code class="code docutils literal notranslate"><span class="pre">PORTC</
 <span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;F_CPU not set to 20E6&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="w">            </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
 <span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="cp">#endif</span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="w">    </span><span class="c1">// other tests</span>
 <span class="w">    </span><span class="cp">#if TEST_DIGITS</span>
@@ -180,6 +181,7 @@ and if <code class="code docutils literal notranslate"><span class="pre">PORTC</
 <span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Counted 0d%d digit incorrect - expected 0h%x but got 0h%x&quot;</span><span class="p">,</span><span class="n">count</span><span class="p">,</span><span class="n">expected_value</span><span class="p">,</span><span class="n">PORTC</span><span class="p">);</span><span class="w"></span>
 <span class="w">        </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="cp">#endif</span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
