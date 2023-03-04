@@ -15,7 +15,6 @@
 import os
 import sys
 import time
-from setuptools_scm import get_version
 from importlib.metadata import version
 
 sys.path.insert(0, os.path.abspath('../../'))
@@ -26,8 +25,6 @@ sys.path.insert(0, os.path.abspath('../../'))
 project = 'pyAutoMark'
 copyright = f'2023-{time.strftime("%Y")}, John Williams'
 author = 'John Williams'
-
-
 
 # The full version, including alpha/beta/rc tags
 release = version(project)

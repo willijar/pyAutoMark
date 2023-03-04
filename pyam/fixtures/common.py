@@ -1,18 +1,13 @@
 # Copyright 2023, Dr John A.R. Williams
 # SPDX-License-Identifier: GPL-3.0-only
 """
-Common fixtures for pyam to provide cohort and student information
-
-Defines fixtures:
-    cohort: the cohort under test
-    student: the stundet being tested
-    compiler: the C compiler begin used
-    build_path: directory for temporary build files
-    test_path: The path where the tests are kept
+Common fixtures for pyAutoMark tests which provid the cohort and student context in
+which the tests will be run.
 """
 from pathlib import Path
 from typing import Union
 import pytest
+import pyam
 from pyam.config import CONFIG
 from pyam.cohort import get_cohort
 
@@ -30,8 +25,8 @@ def pytest_configure(config):
     
 # pylint: disable=W0621
 @pytest.fixture
-def cohort(request):
-    "The cohort where student is to be found - specified using --cohort option"
+def cohort(request) -> pyam.cohort.Cohort:
+    "*Fixture*: The cohort where student is to be found - specified using --cohort option to pytest"
     name = request.config.getoption("--cohort")
     if name:
         return get_cohort(name)
@@ -39,40 +34,42 @@ def cohort(request):
 
 
 @pytest.fixture
-def student(request, cohort):
-    "The current student under test - specified using --student option"
+def student(request, cohort) -> pyam.cohort.Student:
+    "*Fixture*: The current student under test - specified using --student option"
     name = request.config.getoption("--student")
     return cohort.students(name)
 
 
 @pytest.fixture
-def compiler(request):
-    "The C Compiler to use"
+def compiler(request) -> Union[str,Path]:
+    "*Fixture*: The C Compiler to use"
     return "gcc"
 
 
 @pytest.fixture
-def build_path():
-    "Directory path for out of source build (executables, libs and object files)"
+def build_path() -> Path:
+    "*Fixture*: Directory path for out of source build (executables, libs and object files)"
     return CONFIG.build_path
 
 
 @pytest.fixture
-def test_path(cohort):
-    "Directory path containing test files"
+def test_path(cohort) -> Path:
+    "*Fixture*: Directory path containing test files"
     return cohort.test_path
 
 @pytest.fixture
 def student_files(student):
-    """Fixture is function to find files for student
+    """*Fixture*: function to find files for student
+
+    The returned function takes the following arguments.
 
     Args:
-      pathname: Unix style pathaname glob (or list of same)
-      containing: An optional regexp to match against file contents
-      recursive: If true also look in subdirectories
+      pathname (str): Unix style pathaname glob (or list of same)
+      containing (str): An optional regexp to match against file contents
+      recursive (bool): If true also look in subdirectories
 
     Returns:
-      Path(s): File Path or list of File Paths found.
+      Path (Union[Path,str]): File Path or list of File Paths found.
         If multiple then first found will be given (or list)
 
     Raises:

@@ -4,8 +4,9 @@
 
 Typical Usage:
 
-binary_path=c_compile(binary_path,"mysouce.c",include=["include_path"],declarations=['DOSOMETHING'])
-ran_ok=c_exec(binary_path, options=( "option1", "option2" ), timeout=5)
+.. code-block:
+    binary_path=c_compile(binary_path,"mysouce.c",include=["include_path"],declarations=['DOSOMETHING'])
+    ran_ok=c_exec(binary_path, options=( "option1", "option2" ), timeout=5)
 """
 
 from pathlib import Path
@@ -25,26 +26,26 @@ class LintError(Exception):
 
 
 def c_compile(binary: Union[Path, str],
-              sources: Sequence,
-              include: Sequence = (),
-              cflags: Sequence = (),
-              declarations: Sequence = (),
+              sources: Sequence[Union[Path,str]],
+              include: Sequence[Union[Path,str]] = (),
+              cflags: Sequence[str] = (),
+              declarations: Sequence[str] = (),
               compiler: str = "gcc") -> Union[Path, str]:
     """Use C compile to compile source files into an executable binary
 
     Args:
-      binary (Union[Path, str]): location for binary executable
-      sources (Sequence): source files to compile
-      include (Sequence): include paths to search for headers
-      cflags (Sequence) : additional flags to add during compilation
-      declarations (Sequence): list of compile declarations (-D flags)
-      compiler (str)    : name of compiler to use
+      binary: location for binary executable
+      sources: source files to compile
+      include: include paths to search for headers
+      cflags: additional flags to add during compilation
+      declarations: list of compile declarations (-D flags)
+      compiler: name of compiler to use
 
     Raises:
         CompilationError: if compiler failed
 
     Returns:
-        binary: Location of binary executable
+        Location of binary executable
     """
     # pylint: disable=W1510
     sources = [str(s) for s in sources]
@@ -62,14 +63,18 @@ def c_compile(binary: Union[Path, str],
     raise CompilationError(result.stdout)
 
 
-def c_exec(binary: Union[Path, str], flags=(), timeout: float = None):
+def c_exec(binary: Union[Path, str], flags: Sequence[str]=(), timeout: Union[float,str] = None) -> True:
     """Execute a binary executable with given flags.
 
     Args:
-        binary (Union[Path, str]): Path to binary executable
+        binary: Path to binary executable
+        timeout: timeout for process
 
     Raises:
         RunTimeError: If return code is 0
+
+    Returns:
+        True
     """
     # pylint: disable=W1510
     result = run(

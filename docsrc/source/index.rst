@@ -61,44 +61,36 @@ including setting up your directory structure for submissions, reports and tests
 
 .. toctree::
    :maxdepth: 2
-   :caption: Get started
 
    installation
    quickstart
-  
 
-
-The Subcommands
----------------
+Subcommands
+-----------
 
 The :program:`pyam` program subcommands
 
 .. toctree::
    :maxdepth: 1
-   :caption: The Subcommands
    :glob:
 
    cmds/*
 
-Examples
---------
-
+Examples of Use
+---------------
 
 .. toctree::
    :maxdepth: 1
-   :caption: Examples
 
    Embedded C <examples/cmock>
 
-  
-Reference guide
+Reference Guide
 ---------------
 
 A complete collection of reference information.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Modules
 
    modules
 

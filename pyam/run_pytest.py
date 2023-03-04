@@ -1,24 +1,21 @@
-"""Pun pytest in cohort  context.
-
-Functions:
-
-  run_pytest
-"""
+# Copyright 2023, Dr John A.R. Williams
+# SPDX-License-Identifier: GPL-3.0-only
+"""Pun pytest in the cohort  context."""
 import subprocess
 import os
 from pathlib import Path
+from typing import List,Union
 import pyam.fixtures
 
-
-def run_pytest(cohort, *extras: 'list[str]') -> subprocess.CompletedProcess:
+def run_pytest(cohort: 'pyam.cohort.Cohort', *extras: Union[List[str],None]) -> subprocess.CompletedProcess:
     """
     Run pytest for pyAutoMark
 
     Args:
-        cohort (Cohort): The cohort context to use
+        cohort: The cohort context to use
 
     Optional:
-        extras (list[str]): extra arguments to send pyttest
+        extras: extra arguments to send pyttest
 
     Returns:
         subprocess.CompletedProcess: result of run

@@ -1,6 +1,13 @@
+# Copyright 2023, Dr John A.R. Williams
+# SPDX-License-Identifier: GPL-3.0-only
+"""
+Fixtures for testing students Python scripts and functions
+"""
 import sys
 import pytest
 from subprocess import run
+from pathlib import Path
+from typing import Union
 import importlib
 import re
 
@@ -13,14 +20,26 @@ class PythonStyleError(Exception):
 
 @pytest.fixture
 def run_script(student,request):
-    """Return script runner function for this student"""
+    """*Fixture*: A function to run a students python script.
+    
+    The function takes the following arguments
+
+    Args:
+      script (str): The nname of the script in the students directory.
+      stdin (Union[List[str],str]): A string that will be fed to standard input to the script. Alternatively 
+        a list of strings can be given - these will be joined with a newline character.
+    
+    Raises:
+        PythonRunError: if script fails to run. Error will have stderr output from script execution.
+
+    Returns:
+        The stdout from the script as a string.
+
+    """
 
     marker = request.node.get_closest_marker("timeout")
     timeout=10.0 if marker is None else marker.args[0]
     def _run_script(script,stdin):
-        """Run named script with stdin as input, returing the subprocess result. Test Case fails if script fails to run.
-        stdin can be a string or a list of items which will sent with newlines added as input to script.
-        Returns script output"""
         # pylint: disable=W1510
         if not(isinstance(stdin,str)):
             stdin="\n".join([str(a) for a in stdin])+"\n"
@@ -33,18 +52,27 @@ def run_script(student,request):
 
 @pytest.fixture
 def module_name(student):
-    """Module name under test"""
+    """*Fixture*: Module name under students directory to load for a test. **Must be set in the test**"""
 
 @pytest.fixture
 def student_module(student,module_name):
-    """Return function to import a module from a student file - returns module instance"""
+    """*Fixture*: Returns the student module instance from the :func:`module_name` in the students directory."""
     spec = importlib.util.spec_from_file_location(module_name, student.path / (module_name+".py"))
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
-def python_lint(python_file, score_threshold):
-    "Return function to provide pylint diagnostics on sutdents code"
+def python_lint(python_file: Path, score_threshold: int):
+    """Run pylint on sudents code.
+    
+    Args:
+      python_file: the path to the file to be checked
+      score_threshold: the minimum thresold (/10) for the code to past this test.
+
+    Raises:
+      PythonRunError: If pylint returns a Fatal or Error return code
+      PythonStyleError: If they do nor meet the minimum threshold.
+    """
     # pylint: disable=W1510
     result = run(("pylint", python_file), capture_output=True, text=True)
     print(result.stdout)
