@@ -65,7 +65,8 @@ including setting up your directory structure for submissions, reports and tests
 
    installation
    quickstart
-   glossary
+  
+
 
 The Subcommands
 ---------------
@@ -73,31 +74,35 @@ The Subcommands
 The :program:`pyam` program subcommands
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: The Subcommands
+   :glob:
 
-   cmds/index
-   cmds/run
-   cmds/retrieve
-   cmds/extract
-   cmds/mark
-   cmds/generate-template
-   cmds/find-duplicates
-   cmds/config
-   cmds/cohort
-   cmds/write-csv
-   cmds/init
+   cmds/*
+
+Examples
+--------
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Examples
+
+   Embedded C <examples/cmock>
+
   
 Reference guide
 ---------------
 
-A complete collection of reference information,
+A complete collection of reference information.
 
 .. toctree::
    :maxdepth: 2
    :caption: Modules
 
    modules
+
+   glossary
 
 
 Indices and tables

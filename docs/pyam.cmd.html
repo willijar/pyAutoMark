@@ -6,25 +6,41 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyam.cmd package &#8212; pyAutoMark 0.3.3.dev19+g0641fc8.d20230303 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <title>pyam.cmd package &#8212; pyAutoMark 0.4.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyam.fixtures package" href="pyam.fixtures.html" />
-    <link rel="prev" title="pyam package" href="pyam.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="prev" title="pyam package" href="pyam.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyam.fixtures.html" title="pyam.fixtures package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyam.html" title="pyam package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >pyam</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pyam.html" accesskey="U">pyam package</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -388,44 +404,39 @@ mapping student_id to marks.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">pyAutoMark</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Get started</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing pyAutoMark</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="cmds/index.html">pyam</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pyam</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="pyam.html">pyam package</a></li>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pyam.cmd package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyam.cmd.args">pyam.cmd.args module</a></li>
+<li><a class="reference internal" href="#module-pyam.cmd.cohort">pyam.cmd.cohort module</a></li>
+<li><a class="reference internal" href="#module-pyam.cmd.config">pyam.cmd.config module</a></li>
+<li><a class="reference internal" href="#module-pyam.cmd.extract_downloads">pyam.cmd.extract_downloads module</a></li>
+<li><a class="reference internal" href="#module-pyam.cmd.find_duplicates">pyam.cmd.find_duplicates module</a></li>
+<li><a class="reference internal" href="#module-pyam.cmd.generate_template">pyam.cmd.generate_template module</a></li>
+<li><a class="reference internal" href="#module-pyam.cmd.github_retrieve">pyam.cmd.github_retrieve module</a></li>
+<li><a class="reference internal" href="#module-pyam.cmd.init">pyam.cmd.init module</a></li>
+<li><a class="reference internal" href="#module-pyam.cmd.mark">pyam.cmd.mark module</a></li>
+<li><a class="reference internal" href="#module-pyam.cmd.run">pyam.cmd.run module</a></li>
+<li><a class="reference internal" href="#module-pyam.cmd.write_csv">pyam.cmd.write_csv module</a></li>
+<li><a class="reference internal" href="#module-pyam.cmd">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  <li><a href="modules.html">pyam</a><ul>
-  <li><a href="pyam.html">pyam package</a><ul>
-      <li>Previous: <a href="pyam.html" title="previous chapter">pyam package</a></li>
-      <li>Next: <a href="pyam.fixtures.html" title="next chapter">pyam.fixtures package</a></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyam.html"
+                        title="previous chapter">pyam package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyam.fixtures.html"
+                        title="next chapter">pyam.fixtures package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pyam.cmd.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <div class="searchformwrapper">
@@ -442,20 +453,29 @@ mapping student_id to marks.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2023-2023, John Williams.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
-      
-      |
-      <a href="_sources/pyam.cmd.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyam.fixtures.html" title="pyam.fixtures package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyam.html" title="pyam package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >pyam</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pyam.html" >pyam package</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023-2023, John Williams.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
   </body>
 </html>
