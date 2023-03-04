@@ -3,34 +3,35 @@
 """Top level configuration handling for the assessment marking scripts
 
 Attributes:
-  CONFIG: A ConfigManager with the global configuration data
+  CONFIG (Config): A ConfigManager with the global configuration data
 """
 
 import pathlib
 from pathlib import Path
 import logging
+from typing import Union
 from pyam.config_manager import ConfigManager
 
-CONFIG = None
+CONFIG = None # Type: Config
 
-class _Config(ConfigManager):
-    """Global (root) configuration
+class Config(ConfigManager):
+    """Global (root) configuration class
 
     Attributes:
-      root_path: top level Root path for assessments etc
-      test_paths: Path to tests
-      cohort_path: Path to cohorts
-      build_path: Path for out of source build
-      reports_path: Path for generated reports
-      log: global Logger
-      cohort: The current cohort being processed
+      root_path (Path): top level Root path for assessments etc
+      test_paths (Path): Path to tests
+      cohort_path (Path): Path to cohorts
+      build_path (Path): Path for out of source build
+      reports_path (Path): Path for generated reports
+      log (logging.Logger): global Logger
+      cohort (Cohort): The current cohort being processed
     """
 
-    def __init__(self, current_dir=pathlib.Path.cwd()):
+    def __init__(self, location: Union[Path,None]=None):
         global CONFIG
         assert not CONFIG
+        self.root_path = pathlib.Path.cwd() if location is None else location
         # find a configuration path up to home directory
-        self.root_path = current_dir
         while not (self.root_path / "pyAutoMark.json").exists():
             if self.root_path == self.root_path.home():
                 raise FileNotFoundError("pyAutoMark.json")
@@ -66,4 +67,4 @@ class _Config(ConfigManager):
         CONFIG = self
         ConfigManager._global_config = self
 
-_Config()
+Config()

@@ -1,11 +1,11 @@
 # Copyright 2023, Dr John A.R. Williams
 # SPDX-License-Identifier: GPL-3.0-only
 # pylint: disable=W0621
-"""Test Fixtures for Simulating and synthesising VHDL designs:
+"""Test Fixtures to check students VHDL designs using simulation or synthesis:
 
 Main testing fixtures:
-  vhdl_simulate: returns a function to run a tutors vhdl testbench against student VHDL files
-  vhdl_synthesise: return a function to test synthesisis of a student VHDl design
+  :func:`vhdl_simulate`: returns a function to run a tutors vhdl testbench against student VHDL files
+  :func:`vhdl_synthesise`: return a function to test synthesisis of a student VHDl design
 
 Support fixtures:
   ghdl: returns function to run the ghdl simulator
@@ -24,6 +24,8 @@ Configuration fixtures:
 from subprocess import run
 from io import StringIO
 import pytest
+from pathlib import Path
+from typing import List
 from pyam.files import find_executable
 
 
@@ -44,50 +46,52 @@ class VHDLSynthesisError(VHDLError):
 
 
 @pytest.fixture(autouse=True)
-def clean(ghdl_exec, build_path):
-    "Clean files at start of test"
+def clean(ghdl_exec, build_path) ->None:
+    "*Autouse Fixture*: Runsh ghdl --clean at start of test run"
     run((ghdl_exec, "--clean", f"--workdir={build_path}"), check=True)
 
 
 @pytest.fixture
-def search_paths():
-    "Return a list of additional paths to search for executables"
+def search_paths() -> List[str]:
+    "*Fixture*: A list of additional paths to search for the executables"
     return ("/opt/Xilinx/", "/usr/local/")
 
 
 @pytest.fixture
-def vivado_exec(search_paths):
-    "Fixture returns pat to Vivado executable for synthesis"
+def vivado_exec(search_paths) -> Path:
+    "*Fixture*: Path to Vivado executable for synthesis"
     return find_executable("bin/vivado", search_paths)
 
 
 @pytest.fixture
-def partnumber():
-    "Partnumber for synthesis"
+def partnumber() ->str:
+    "*Fixture*: Partnumber to use in synthesis"
     return "xc7a35tcpg236-1"
 
 
 @pytest.fixture
-def ghdl_exec(search_paths):
-    "Return path to ghdl executable"
+def ghdl_exec(search_paths) -> Path:
+    "*Fixture*: The path to the ghdl executable for VHDL simulation"
     return find_executable("ghdl", search_paths)
 
 
 @pytest.fixture
-def ghdl_options():
+def ghdl_options() -> List[str]:
     "List of additional ghdl flags (style) to use across tests"
     return ("--std=08", "--warn-no-hide")
 
 
 @pytest.fixture
 def ghdl(ghdl_exec, ghdl_options, build_path, request):
-    """Fixture returns function to run a test using ghdl.
+    """*Fixture*: A function to run a test using ghdl.
+
+    The timeout marker is honoured to limit maximum execution time if appropriate
 
     Args:
-      command: the ghdl command string to use e.g. -a to analyse or --elab-run to run simulation
-      options: sequence of additional options to pass to ghdl, defaults to ghdl_options fixture
-      unit: the ghdl unit to execute command on
-      run_options: Additional run time ghdl options to give after unit
+      command (str): the ghdl command string to use e.g. -a to analyse or --elab-run to run simulation
+      options (Sequence[str]): sequence of additional options to pass to ghdl, defaults to ghdl_options fixture
+      unit (str): the ghdl unit to execute command on
+      run_options (Sequence[str]): Additional run time ghdl options to give after unit
 
     Raises:
       VHDLAnalysisError: if analysis (-a) command failed
@@ -121,17 +125,17 @@ def ghdl(ghdl_exec, ghdl_options, build_path, request):
 
 @pytest.fixture
 def vhdl_simulate(ghdl, student, test_path):
-    """Fixture returns function to analyse student against tutors testbench.
+    """*Fixture*: A function to analyse student against tutors testbench.
     Uses ghdl fixture to run simulations
 
     Args:
-      top: the top level (tutors) testbench to run
-      student_files: List of files in student directory to analyse first
-      test_files: List of files in test directory to analyse before student files
+      top (str): the top level (tutors) testbench filename to run
+      student_files List[str]: List of filenames in student directory to analyse first
+      test_files List[str]: List of files in test directory to analyse before student files
                   e.g. to provide working implementations for student work to use
 
     Raises:
-       see ghdl:
+       see :func:`ghdl`:
 """
     def _vhdl_simulate(top, student_files, test_files=None):
         if test_files is None:
@@ -151,20 +155,20 @@ def vhdl_simulate(ghdl, student, test_path):
 
 
 @pytest.fixture
-def vivado_options():
-    "Fixture return additional vivado options to use across tests"
+def vivado_options() -> List[str]:
+    "*Fixture*:  return additional vivado options to use on tests"
     return ("-nojournal",)
 
 
 @pytest.fixture
 def vivado(request,vivado_exec, build_path, student, vivado_options, partnumber):
-    """Fixture returns function to run vivado synthesis
+    """*Fixture* The function to run vivado synthesis tool
 
     Args:
-      bitfile: path to where bitfile should be written
-      top: Name of top level entity in design
-      sources: vhdl source files
-      constraint: list of constraints files
+      bitfile (str):filename for bitfile output in buoild directory
+      top (str): Name of top level entity in design
+      sources (List[Path]): vhdl source files (full paths)
+      constraint (List[Path]): list of constraints files (full paths)
 
     Raises:
       VHDLSynthesisError: If vivado exits with an error
@@ -202,13 +206,17 @@ def vivado(request,vivado_exec, build_path, student, vivado_options, partnumber)
 
 @pytest.fixture
 def vhdl_synthesise(student, build_path, vivado):
-    """Fixture returns function to synthesise a vhdl design and generate a bitstream - raising an
-    error if vivado throughs an error or bit files is not present
+    """*Fixture* A function to synthesise a student vhdl design and generate a bitstream
 
     Args:
-      top: Name of top level entity in design
-      student_files: list of vhdl filenames in student directory for design
-      constraints_file: Name of students constraints file to use in design - defaul top.xdc
+      top (str): Name of top level entity in design
+      student_files (List[str]): list of vhdl filenames in student directory for design
+      constraints_file (str): Name of students constraints file to use in design - defaul top.xdc
+    
+    Raises:
+      FileNotFoundError: if no bitfile generated
+
+    See also :func:`vivado`
 
     """
 

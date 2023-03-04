@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2023, Dr John A.R. Williams
 # SPDX-License-Identifier: GPL-3.0-only
-"""Automatically retrieve, mark and provide feedback for digital student submissions"""
+"""Toip level pyam command"""
 import argparse
 import sys
 import pyam.cmd.init
@@ -23,7 +23,7 @@ import pyam.cmd.write_csv
 
 def main():
     """Automatically retrieve, mark and provide feedback for digital student submissions"""
-    parser = argparse.ArgumentParser(prog="pyAutoMark",
+    parser = argparse.ArgumentParser(prog="pyam",
                                      description=__doc__,
                                      epilog="""
         """)

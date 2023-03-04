@@ -2,7 +2,11 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """Implementation of ConfigManager Class
 
-A Base class for loading and managing configuration files
+Attributes:
+
+    SCHEMA (dict): A nested dictionary of discriptors for known configuration parameters.
+        For each leaf parameter there should be a dictionary with a "description" and possibly also a
+        "type"
 """
 
 import json
@@ -15,12 +19,9 @@ class ConfigManager:
     """Base class for entities which have configuration files
 
     Attributes:
-      domain: String representing schmea domain
-      config_path: The Path to the configuration file
-      manifest: The dictionary of loaded configuration parameters
-
-    Class Attributes:
-     _root: The top level global configuration
+      domain (str): String representing schmea domain
+      config_path (Path): The Path to the configuration file
+      manifest (dict): The dictionary of loaded configuration parameters
     """
 
     _global_config = {}
@@ -36,7 +37,7 @@ class ConfigManager:
         If file doesn't exist creates a new empty dictionary
 
         Returns:
-            manifest: Dictionary of configuration data
+            The dictionary of configuration data
         """
         if self.config_path.exists():
             with open(self.config_path, "r") as fid:
@@ -61,7 +62,7 @@ class ConfigManager:
             KeyError: if item not found
 
         Returns:
-            Any: Value at index
+            Value at index
         """
         keys = index.split(".")
         for key in keys[:-1]:
@@ -75,7 +76,7 @@ class ConfigManager:
     def __getitem__(self, index: str) -> Any:
         """Implementation of get for ConfigManager TYpes
 
-        See getconfig
+        See :func:getconfig
         """
         return ConfigManager.getconfig(self.manifest, index)
 
@@ -84,7 +85,8 @@ class ConfigManager:
 
         Will accept deep indexes in '.' format e.g. assessor.username
 
-        Does NOT write to configuration file - call store method to do that.
+        .. warning:
+          Does NOT write to configuration file - call store method to do that.
         """
         keys = index.split(".")
         dic = self.manifest
@@ -105,7 +107,7 @@ class ConfigManager:
           default: Default value or CONFIG is global dictionary is to be searched as well
 
         Returns:
-          value: The retrieved value
+          The retrieved value
         """
         try:
             return self[index]
