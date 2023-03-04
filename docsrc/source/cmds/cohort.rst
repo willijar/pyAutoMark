@@ -1,4 +1,4 @@
-.. _Subcommand cohortk:
+.. _Subcommand cohort:
 
 cohort
 ======

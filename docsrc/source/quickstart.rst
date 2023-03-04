@@ -1,5 +1,5 @@
-Getting Started
-===============
+Quick Start
+===========
 
 pyAutoMark is an integrated tool to help 
 with the automatic marking of electronically submitted students work. 

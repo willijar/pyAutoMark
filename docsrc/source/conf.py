@@ -16,7 +16,7 @@ import os
 import sys
 import time
 from setuptools_scm import get_version
-
+from importlib.metadata import version
 
 sys.path.insert(0, os.path.abspath('../../'))
 
@@ -27,11 +27,12 @@ project = 'pyAutoMark'
 copyright = f'2023-{time.strftime("%Y")}, John Williams'
 author = 'John Williams'
 
-# The short X.Y version
-version = get_version('../../')
-# The full version, including alpha/beta/rc tags
-release = version
 
+
+# The full version, including alpha/beta/rc tags
+release = version(project)
+# The short X.Y version
+version = '.'.join(release.split('.')[:2])
 
 # -- General configuration ---------------------------------------------------
 
@@ -84,7 +85,7 @@ pygments_style = None
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'classic'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
