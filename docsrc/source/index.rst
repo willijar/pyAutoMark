@@ -76,13 +76,15 @@ The :program:`pyam` program subcommands
 
    cmds/*
 
-Examples of Use
----------------
+Examples
+--------
 
 .. toctree::
    :maxdepth: 1
 
    Embedded C <examples/cmock>
+   examples/python
+   examples/vhdl
 
 Reference Guide
 ---------------
