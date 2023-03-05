@@ -60,7 +60,7 @@ def c_compile(binary: Union[Path, str],
     )
     if result.returncode == 0:
         return binary
-    raise CompilationError(result.stdout)
+    raise CompilationError(result.stdout+result.stderr)
 
 
 def c_exec(binary: Union[Path, str], flags: Sequence[str]=(), timeout: Union[float,str] = None) -> True:
