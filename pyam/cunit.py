@@ -11,7 +11,7 @@ Typical Usage:
 
 from pathlib import Path
 from subprocess import run
-from typing import Union, Sequence
+from typing import Union, Sequence, List
 
 
 class CompilationError(Exception):
@@ -26,7 +26,7 @@ class LintError(Exception):
 
 
 def c_compile(binary: Union[Path, str],
-              sources: Sequence[Union[Path,str]],
+              source: Union[Path,str],
               include: Sequence[Union[Path,str]] = (),
               cflags: Sequence[str] = (),
               declarations: Sequence[str] = (),
@@ -48,13 +48,12 @@ def c_compile(binary: Union[Path, str],
         Location of binary executable
     """
     # pylint: disable=W1510
-    sources = [str(s) for s in sources]
     include = [(lambda s: f"-I{s}")(s) for s in include]
     for dec in declarations:
         cflags = cflags + ["-D", dec]
     result = run(
         (compiler, *cflags, "-o",
-         str(binary), *include, *sources),
+         str(binary), *include, str(source)),
         text=True,
         capture_output=True
     )
@@ -63,26 +62,34 @@ def c_compile(binary: Union[Path, str],
     raise CompilationError(result.stdout+result.stderr)
 
 
-def c_exec(binary: Union[Path, str], flags: Sequence[str]=(), timeout: Union[float,str] = None) -> True:
+def c_exec(binary: Union[Path, str],
+           flags: Sequence[str]=(),
+           input: Union[List[str],str]="",
+           timeout: Union[float,str] = None) -> True:
     """Execute a binary executable with given flags.
 
     Args:
         binary: Path to binary executable
         timeout: timeout for process
+        input : A string that will be fed to standard input or
+           a list of strings can be given - these will be joined with a newline character.
 
     Raises:
-        RunTimeError: If return code is 0
+        RunTimeError: If return code is 0 - args[0] is CompletedProcess from run
 
     Returns:
-        True
+        subprocess.CompletedProcess: From the run
     """
+    if not(isinstance(input,str)):
+        input="\n".join([str(a) for a in input])+"\n"
     # pylint: disable=W1510
     result = run(
         (str(binary), *flags),
         text=True,
+        input=input,
         capture_output=True,
         timeout=timeout
     )
     if result.returncode != 0:
-        raise RunTimeError(result.stdout+result.stderr)
-    return True
+        raise RunTimeError(result)
+    return result

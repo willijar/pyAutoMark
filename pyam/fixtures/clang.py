@@ -9,7 +9,7 @@ in the mock test.
 """
 
 from pathlib import Path
-from typing import Sequence,Union
+from typing import Sequence,Union,List
 from subprocess import run
 import pytest
 import pyam.cunit as cunit
@@ -23,7 +23,7 @@ def binary_name() -> str:
 
 @pytest.fixture
 def student_c_file() -> Union[str,Path]:
-    "*Fixture*: for the ctudent C file currently under test. *Must be set in the test*."
+    "*Fixture*: for the student C file currently under test. *Must be set in the test*."
 
 
 @pytest.fixture
@@ -52,22 +52,32 @@ def compile_flags() -> Sequence[str]:
 
 
 @pytest.fixture
-def c_compile(student, test_path, build_path, mock_c_file, binary_name,
+def c_compile(student, test_path, build_path, mock_c_file,
+              student_c_file,binary_name,
               compile_flags, compiler):
-    """*Fixture*: The compile function for this test suite which takes declarations as argument
+    """*Fixture*: The compile function
     
     The returned function takes the following arguments
 
     Args:
-       declarations (Sequence[str]): The list of delcarations (defines) to be set for the compilation.
-          TYpically only one will be set to select the test in the mock C file.
+        declarations (Sequence[str]): The list of declarations (defines) to
+            be set for the compilation.
+            Typically only one will be set to select the test in the mock C file.
+        source (Union[Path,str]): source C file - defaults to mock_c_file or student_c_file
+
+    Returns:
+        Path: Location of binary executable
+
+    Raises:
+        cunit.CompilationError: (after printing captured io to stdout)
     """
 
-    def _compile(declarations: Sequence[str] = ()):
+    def _compile(declarations: Sequence[str] = (),
+                 source: Union[Path,str] = mock_c_file or student_c_file):
         try:
             return cunit.c_compile(
                 build_path / binary_name,
-                sources=[mock_c_file],
+                source=source,
                 include=[test_path, build_path, student.path],
                 declarations=declarations,
                 cflags=compile_flags,
@@ -81,32 +91,45 @@ def c_compile(student, test_path, build_path, mock_c_file, binary_name,
 
 @pytest.fixture
 def c_exec(request,c_compile):
-    """*Fixture*: The exec function for this test suite which will compile and execute the mock C
-    tests.
+    """*Fixture*: The exec function for this test suite which will compile and execute the mock C tests.
       
     Uses the timeout marker, and if set will stop student programm execution at that time.
 
     The returned function takes the following arguments:
 
     Args:
-       declarations (Sequence[str]): The list of delcarations (defines) to be set for the compilation.
-          Typically only one will be set to select the test in the mock C file.
+        declarations (Sequence[str]):
+            The list of delcarations (defines) tobe set for the compilation. Typically only one will be set to select the test in the mock C file.
+        binary Union[Path,str]: Path to binary.
+            If not specified source will be compiled first.
+        input: A string that will be fed to standard input or
+           a list of strings can be given - these will be joined with a newline character.
+
+    Returns:
+         The stdout from the script as a string.
     """
     marker = request.node.get_closest_marker("timeout")
     timeout=None if marker is None else marker.args[0]
-    def _exec(declarations: Sequence[str] = ()):
+    def _exec(declarations: Sequence[str] = (),
+              binary: Union[Path,str] = None,
+              input: Union[List[str],str] = "",
+              print_cap = True):
         try:
-            return cunit.c_exec(c_compile(declarations),timeout=timeout)
+            if binary==None:
+                binary=c_compile(declarations)
+            return cunit.c_exec(
+                binary, input=input, timeout=timeout)
         except cunit.RunTimeError as err:
-            print(err)
+            if print_cap:
+                print(err.args[0].stderr+err.args[0].stdout)
             raise err
 
     return _exec
 
 @pytest.fixture
 def c_lint_checks() -> str:
-    """*Fixture*: Return C -lint checks to appy - default is '*' (all). Overwirte in your test as required"""
-    return "*"
+    """*Fixture*: C -lint checks to apply. Overwwite in your test as required"""
+    return "performance-*,readability-*,portability-*"
 
 @pytest.fixture
 def c_lint(student,test_path,build_path,c_lint_checks):
@@ -127,8 +150,7 @@ def c_lint(student,test_path,build_path,c_lint_checks):
               "--", *includes),
               capture_output=True,
               text=True)
-        print(result.stdout)
-        
+        print(result.stdout[0:])
         if result.returncode == 0:
             count=int(result.stderr.split(" ")[0])
             if count>max_warnings:
