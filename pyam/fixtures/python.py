@@ -83,19 +83,3 @@ def python_lint(python_file: Path, score_threshold: int):
         print(result.stdout)
     if score<score_threshold:
         raise PythonStyleError(f"Code Rating of {score} lower than {score_threshold}")
-    
-# need to think about timeouts for python code - with windows too (signal will notn work)
-# @contextmanager
-# def timeout(duration):
-#     def timeout_handler(signum, frame):
-#         raise TimeoutError(f'block timedout after {duration} seconds')
-#     signal.signal(signal.SIGALRM, timeout_handler)
-#     signal.alarm(duration)
-#     try:
-#         yield
-#     finally:
-#         signal.alarm(0)
-
-# def sleeper(duration):
-#     time.sleep(duration)
-#     print('finished')
