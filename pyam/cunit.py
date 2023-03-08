@@ -59,7 +59,7 @@ def c_compile(binary: Union[Path, str],
     )
     if result.returncode == 0:
         return binary
-    raise CompilationError(result.stdout+result.stderr)
+    raise CompilationError(result.stderr+result.stdout)
 
 
 def c_exec(binary: Union[Path, str],
@@ -74,22 +74,16 @@ def c_exec(binary: Union[Path, str],
         input : A string that will be fed to standard input or
            a list of strings can be given - these will be joined with a newline character.
 
-    Raises:
-        RunTimeError: If return code is 0 - args[0] is CompletedProcess from run
-
     Returns:
         subprocess.CompletedProcess: From the run
     """
     if not(isinstance(input,str)):
         input="\n".join([str(a) for a in input])+"\n"
     # pylint: disable=W1510
-    result = run(
+    return run(
         (str(binary), *flags),
         text=True,
         input=input,
         capture_output=True,
-        timeout=timeout
-    )
-    if result.returncode != 0:
-        raise RunTimeError(result)
-    return result
+        timeout=timeout)
+
