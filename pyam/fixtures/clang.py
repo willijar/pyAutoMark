@@ -11,6 +11,7 @@ in the mock test.
 import re
 from pathlib import Path
 from typing import Sequence, Union, List
+import subprocess
 from subprocess import run
 import pytest
 import pyam.cunit as cunit
@@ -18,6 +19,7 @@ import pyam.cohort
 from pyam.config import CONFIG
 
 # pylint: disable=redefined-outer-name
+
 
 @pytest.fixture
 def binary_name(student_c_file, mock_c_file) -> str:
@@ -156,6 +158,7 @@ def c_lint(student, test_path, build_path, c_lint_checks):
     """
     includes = [(lambda s: f"-I{s}")(s)
                 for s in (test_path, build_path, student.path)]
+
     # pylint: disable=subprocess-run-check
     def _c_lint(source_file, max_warnings=0):
         result = run(("clang-tidy", student.path / source_file,
@@ -177,13 +180,15 @@ def pytest_collect_file(parent, path) -> List:
     """Hook into pytest
 
     These are C files that start with test_ and
-    contain #DEFINE PYAM_CTEST fileglob
+    contain #DEFINE PYAM_TEST fileglob
     definition where fileglob will match a students file
 
-    They may also contain a #DEFINE PYAM_CLINT n,expr
+    They may also contain a #DEFINE PYAM_LINT n,expr
     definition to run a CLANG_TIDY test
 
     Tests are recognised as symbols matching "TEST_[A-Z0-9_]+"
+
+    A test timeout may be specified using #DEFINE PYAM_TIMEOUT <float>
 
     Returns:
         List of  tuples of filepath and a list of tests declarations.
@@ -191,7 +196,7 @@ def pytest_collect_file(parent, path) -> List:
     path = Path(path)
     if path.suffix == ".c" and path.name.startswith("test_"):
         text = path.read_text()
-        if re.search(r'#define\s+PYAM_CTEST\s+\"(.*)\"', text):
+        if re.search(r'#define\s+PYAM_TEST\s+\"(.*)\"', text):
             return CTestFile.from_parent(parent=parent, path=path, text=text)
     return None
 
@@ -201,20 +206,24 @@ class CTestFile(pytest.File):
     A custom file handler class for C unit test files.
 
     Attributes:
-        ctest_glob: The string from #define PYAM_CTEST "glob" - glob to find student file
-        clint_threshold: Numeric threshold value from #define PYAM_CLINT theshold,"checks"
-        clint_checks: Lint checks from   #define PYAM_CLINT threshold,"checks"
+        ctest_glob: The string from #define PYAM_TEST "glob" - glob to find student file
+        clint_threshold: Numeric threshold value from #define PYAM_LINT theshold,"checks"
+        clint_checks: Lint checks from   #define PYAM_LINT threshold,"checks"
+        timeout: timout in seconds specified using #DEFINE PYAM_TIMEOUT <float>
         cohort: Student cohort under for test
         student: student under test
         test_file_path: first file in student directory matching glob
+        compile_file_path: path to the (students) file under test
     """
-    re_CTEST = re.compile(r'#define\s+PYAM_CTEST\s+\"(.*)\"')
-    re_CLINT = re.compile(r'#define\s+PYAM_CLINT\s+(\d+)?(,\"(.*)\")?')
+    re_ctest = re.compile(r'#define\s+PYAM_TEST\s+\"(.*)\"')
+    re_clint = re.compile(r'#define\s+PYAM_LINT\s+(\d+)?(,\"(.*)\")?')
+    re_timeout = re.compile(r'#define\s+PYAM_TIMEOUT\s+(.+)')
     # attributes from initialisation
     text: str
     ctest_glob: str
     clint_threshold: int = None
     clint_checks: str = "performance-*,readability-*,portability-*"
+    timeout = None
     # attributes after configure
     cohort: pyam.cohort.Cohort = None
     student: pyam.cohort.Student = None
@@ -223,10 +232,13 @@ class CTestFile(pytest.File):
 
     @classmethod
     def from_parent(cls, parent, *, fspath=None, path=None, text="", **kw):
-        self = super().from_parent(parent=parent, fspath=fspath, path=path, **kw)
+        self = super().from_parent(parent=parent,
+                                   fspath=fspath,
+                                   path=path,
+                                   **kw)
         self.text = text
-        self.ctest_glob = self.re_CTEST.search(text).group(1)
-        match = self.re_CLINT.search(text)
+        self.ctest_glob = self.re_ctest.search(text).group(1)
+        match = self.re_clint.search(text)
         if match:
             if match.group(1):
                 self.clint_threshold = int(match.group(1))
@@ -234,6 +246,9 @@ class CTestFile(pytest.File):
                 self.clint_threshold = 999
             if match.group(3):
                 self.clint_checks = match.group(3)
+        match = self.re_timeout.search(text)
+        if match:
+            self.timeout = float(match.group(1))
         return self
 
     def collect(self):
@@ -294,7 +309,7 @@ class CTestFile(pytest.File):
     def c_exec(self, item):
         """Execute the compiled binary for item."""
         binary = self.c_compile(item)
-        result = cunit.c_exec(binary)
+        result = cunit.c_exec(binary, timeout=self.timeout)
         if result.returncode != 0:
             raise cunit.RunTimeError(result.stderr + result.stdout)
 
@@ -327,8 +342,11 @@ class CTestItem(pytest.Item):
 
     def repr_failure(self, excinfo, style=None):
         """Called when self.runtest() raises an exception."""
-        if isinstance(excinfo.value, (cunit.RunTimeError, cunit.CompilationError)):
+        if isinstance(excinfo.value,
+                      (cunit.RunTimeError, cunit.CompilationError)):
             return excinfo.value.args[0]
+        if isinstance(excinfo.value, subprocess.TimeoutExpired):
+            return f"Time taken >{excinfo.value.args[1]}s"
         return super().repr_failure(excinfo, style)
 
     def reportinfo(self):
