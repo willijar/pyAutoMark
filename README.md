@@ -87,3 +87,7 @@ The toolset automates the following steps
 | C/C++ Extension Pack     | Microsoft   |
 | Python Test Explorer     | Little Fox Team |
 | Github Classroom         | Github      |
+
+## Documentation
+
+See <https://willijar.github.io/pyAutoMark/>

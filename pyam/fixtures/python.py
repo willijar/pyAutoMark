@@ -75,25 +75,11 @@ def python_lint(python_file: Path, score_threshold: int):
     """
     # pylint: disable=W1510
     result = run(("pylint", python_file), capture_output=True, text=True)
-    print(result.stdout)
+    
     if ((result.returncode & 1) | (result.returncode & 2)): # Fatal or Error Python return codes
-        raise PythonRunError(result.stderr)
+        raise PythonRunError(result.stdout+result.stderr)
     score=float(re.search(r"([-\d\.]+)/10",result.stdout).group(1))
+    if score<10.0:
+        print(result.stdout)
     if score<score_threshold:
         raise PythonStyleError(f"Code Rating of {score} lower than {score_threshold}")
-    
-# need to think about timeouts for python code - with windows too (signal will notn work)
-# @contextmanager
-# def timeout(duration):
-#     def timeout_handler(signum, frame):
-#         raise TimeoutError(f'block timedout after {duration} seconds')
-#     signal.signal(signal.SIGALRM, timeout_handler)
-#     signal.alarm(duration)
-#     try:
-#         yield
-#     finally:
-#         signal.alarm(0)
-
-# def sleeper(duration):
-#     time.sleep(duration)
-#     print('finished')
