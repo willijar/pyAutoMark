@@ -1,0 +1,182 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyam.cmd.write_csv &#8212; pyAutoMark 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyam.cmd.write_csv</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Implementation of write-csv command&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">openpyxl</span>
+<span class="kn">from</span> <span class="nn">pyam.cohort</span> <span class="kn">import</span> <span class="n">get_cohort</span>
+<span class="kn">from</span> <span class="nn">pyam.cmd.args</span> <span class="kn">import</span> <span class="n">add_common_args</span>
+<span class="kn">from</span> <span class="nn">pyam.files</span> <span class="kn">import</span> <span class="n">set_csv_column</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../pyam.cmd.html#pyam.cmd.write_csv.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read marks from a set of mark spreadsheets and write them into csv files&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="vm">__doc__</span><span class="p">)</span>
+        <span class="n">add_args</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">cohort</span> <span class="o">=</span> <span class="n">get_cohort</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">cohort</span><span class="p">)</span>
+    <span class="n">students</span> <span class="o">=</span> <span class="n">cohort</span><span class="o">.</span><span class="n">students</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">students</span><span class="p">)</span>
+    <span class="n">cohort</span><span class="o">.</span><span class="n">start_log_section</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Collating marks into csv files&quot;</span><span class="p">)</span>
+    <span class="n">marks</span> <span class="o">=</span> <span class="n">get_marks</span><span class="p">(</span><span class="n">cohort</span><span class="p">,</span> <span class="n">students</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">mark_sheets</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="n">student_id</span><span class="p">):</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">marks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">student</span><span class="o">.</span><span class="n">student_id</span> <span class="ow">in</span> <span class="n">student_id</span> <span class="ow">or</span> <span class="n">student</span><span class="o">.</span><span class="n">username</span> <span class="ow">in</span> <span class="n">student_id</span><span class="p">:</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="n">student</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">marks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">match</span><span class="p">)</span>
+        <span class="n">cohort</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No mark found for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">student_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">csv_files</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">csv_files</span> <span class="o">=</span> <span class="n">cohort</span><span class="o">.</span><span class="n">report_path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">*.csv&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">csv_files</span><span class="p">:</span>
+        <span class="n">set_csv_column</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;Mark&quot;</span><span class="p">,</span> <span class="s2">&quot;#Cand Key&quot;</span><span class="p">,</span> <span class="n">get_value</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">marks</span><span class="p">:</span>
+        <span class="n">cohort</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No CSV record for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">name</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="get_id_and_mark"><a class="viewcode-back" href="../../../pyam.cmd.html#pyam.cmd.write_csv.get_id_and_mark">[docs]</a><span class="k">def</span> <span class="nf">get_id_and_mark</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns student id and mark from spreadsheet at path&quot;&quot;&quot;</span>
+    <span class="n">wbook</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">load_workbook</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">data_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">student_id</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">mark</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">title</span><span class="p">,</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">wbook</span><span class="o">.</span><span class="n">defined_names</span><span class="p">[</span><span class="s2">&quot;student_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">destinations</span><span class="p">:</span>
+        <span class="n">student_id</span> <span class="o">=</span> <span class="n">wbook</span><span class="p">[</span><span class="n">title</span><span class="p">][</span><span class="n">coord</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">for</span> <span class="n">title</span><span class="p">,</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">wbook</span><span class="o">.</span><span class="n">defined_names</span><span class="p">[</span><span class="s2">&quot;mark&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">destinations</span><span class="p">:</span>
+        <span class="n">mark</span> <span class="o">=</span> <span class="n">wbook</span><span class="p">[</span><span class="n">title</span><span class="p">][</span><span class="n">coord</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">student_id</span><span class="p">,</span> <span class="n">mark</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_marks"><a class="viewcode-back" href="../../../pyam.cmd.html#pyam.cmd.write_csv.get_marks">[docs]</a><span class="k">def</span> <span class="nf">get_marks</span><span class="p">(</span><span class="n">cohort</span><span class="p">,</span> <span class="n">students</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">paths</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Sets  marks for a set of students from spreadsheets</span>
+
+<span class="sd">    Given a list of paths, or a cohort name and prefix Returns a dictionary</span>
+<span class="sd">    mapping student_id to marks.</span>
+
+<span class="sd">    Will warn if there are missing marks or missing students.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="n">paths</span> <span class="o">=</span>  <span class="nb">list</span><span class="p">(</span><span class="n">cohort</span><span class="o">.</span><span class="n">report_path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">*.xlsx&quot;</span><span class="p">))</span>
+    <span class="n">marks</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;.xlsx&quot;</span><span class="p">:</span>
+            <span class="n">cohort</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File </span><span class="si">%s</span><span class="s2"> is not a spreadsheet&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">student_id</span><span class="p">,</span> <span class="n">mark</span><span class="p">)</span> <span class="o">=</span> <span class="n">get_id_and_mark</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">students</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">student</span><span class="o">.</span><span class="n">student_id</span> <span class="o">==</span> <span class="n">student_id</span><span class="p">:</span>
+                <span class="n">marks</span><span class="p">[</span><span class="n">student</span><span class="p">]</span> <span class="o">=</span> <span class="n">mark</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+    <span class="k">return</span> <span class="n">marks</span></div>
+
+
+<div class="viewcode-block" id="add_args"><a class="viewcode-back" href="../../../pyam.cmd.html#pyam.cmd.write_csv.add_args">[docs]</a><span class="k">def</span> <span class="nf">add_args</span><span class="p">(</span><span class="n">parser</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="vm">__doc__</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;Add and parse args for this script&quot;&quot;&quot;</span>
+    <span class="n">add_common_args</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">&#39;--mark-sheets&#39;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;list of mark sheets to be processed. &quot;</span>
+        <span class="s2">&quot;Defaults to those in report directory with matching prefix&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--csv-files&#39;</span><span class="p">,</span>
+                        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="p">[],</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;List of csv files to be processed. Deafult is those starting with prefix in report directory&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">&#39;--mark-col&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span>
+        <span class="s2">&quot;Name or number of column of csv file where marks are to be written.&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--student-col&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name or number of student id column in CSV file&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023-2023, John Williams.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,335 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Quick Start &#8212; pyAutoMark 0.4.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cohort" href="cmds/cohort.html" />
+    <link rel="prev" title="Installing pyAutoMark" href="installation.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cmds/cohort.html" title="cohort"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installing pyAutoMark"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quick-start">
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<p>pyAutoMark is an integrated tool to help
+with the automatic marking of electronically submitted students work.
+It can automate the retrieval or extraction of student work into directories,
+the collection and running of unit tests for each student using the <a class="reference external" href="https://docs.pytest.org/">pytest</a> framework
+to produce reports that can be used for feedback, the summarising of these reports into
+a marking spreadsheet for each student and finally the collection of those marks
+into  a csv file.</p>
+<p>This document proivdes a quick summary of how to carry out these tasks.</p>
+<p>Once installed, pyAutoMark provides a console command <strong class="program">pyam</strong> which is used to
+carry out the various tasks. You can type</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam --help
+</pre></div>
+</div>
+<p>to get the list of commands that are available</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam &lt;cmd&gt; --help
+</pre></div>
+</div>
+<p>to get help on a particular command.</p>
+<div class="section" id="the-directory-structure">
+<h2>The directory structure<a class="headerlink" href="#the-directory-structure" title="Permalink to this headline">¶</a></h2>
+<p>pyAutoMark works within a directory structure as shown below. There is a <a class="reference internal" href="glossary.html#term-root-directory"><span class="xref std std-term">root directory</span></a>
+which contains a configuration file <code class="file docutils literal notranslate"><span class="pre">pyAutoMark.json</span></code> which can be used to provided details
+of your institution, department etc and configure many aspects of how pyAutoMark operates. puAutoMark operates on a
+<a class="reference internal" href="glossary.html#term-cohort"><span class="xref std std-term">cohort</span></a> which is a particular set of students doing a particular assignment.</p>
+<p>pyAutoMark comes with a command <strong class="program">pyam init</strong> which sets up thisroot directory and configuration values
+from a few questions it asks you. TO use this, run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam init
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">root</div>
+<div class="line">├─ pyAutoMark.json</div>
+<div class="line">├─ build</div>
+<div class="line">├─ cohorts</div>
+<div class="line">│     ├─ cohort1</div>
+<div class="line">│     │   ├─ manifest.json</div>
+<div class="line">│     │   └─ students.csv</div>
+<div class="line">│     └─ cohort2</div>
+<div class="line">│        ├─ manifest.json</div>
+<div class="line">│        └─ students.csv</div>
+<div class="line">├─ reports</div>
+<div class="line">│     ├─ cohort1</div>
+<div class="line">│     └─ cohort2</div>
+<div class="line">└─ tests</div>
+<div class="line-block">
+<div class="line">├─ cohort1</div>
+<div class="line">└─ cohort2</div>
+</div>
+</div>
+</div>
+<div class="section" id="setting-up-a-cohort">
+<h2>Setting up a cohort<a class="headerlink" href="#setting-up-a-cohort" title="Permalink to this headline">¶</a></h2>
+<p>pyAutoMark needs two files providing information about the students in a cohort and the expected mainifest files.</p>
+<div class="section" id="students-csv">
+<h3>students.csv<a class="headerlink" href="#students-csv" title="Permalink to this headline">¶</a></h3>
+<p>The student list should be provided as a csv file with, as a minimum,
+columns for the students “Last Name”, “First Name”, “Username” and “Student ID”.
+Below is an example of a csv which was directly dowloaded from the Blackboard VLE gradecentre.
+It has the required information plus some extra headers which will be ignored.
+The students.csv file may be updated by some operations of pyAutoMark,
+for example a “Submission Date” field may be added if this can be determined from the student submission,
+either from the last commit time to a github repositiory or from the submisison dowload filenames from Blackboard.</p>
+<table border="1" class="docutils" id="table-1">
+<caption><span class="caption-text">Example students.csv</span><a class="headerlink" href="#table-1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Last Name</th>
+<th class="head">First Name</th>
+<th class="head">Username</th>
+<th class="head">Student ID</th>
+<th class="head">Last Access</th>
+<th class="head">Availability</th>
+<th class="head">Github Username</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Genius</td>
+<td>Coyote</td>
+<td>solution</td>
+<td>0</td>
+<td>2023-02-03 00::15:38</td>
+<td>Yes</td>
+<td>wiley1</td>
+</tr>
+<tr class="row-odd"><td>McTestFace</td>
+<td>Testy</td>
+<td>test</td>
+<td>1</td>
+<td>2023-02-03 00::15:38</td>
+<td>Yes</td>
+<td>testy1</td>
+</tr>
+</tbody>
+</table>
+<p>For this example I have added a “Github Username” field which would be the students username on github if you are
+using <a class="reference external" href="https://classroom.github.com/">Github Classroom</a> with these students.</p>
+</div>
+<div class="section" id="manifest-json">
+<h3>manifest.json<a class="headerlink" href="#manifest-json" title="Permalink to this headline">¶</a></h3>
+<p>The second file which is needed for each cohort a json file with other information specific for this cohort. At a minimum
+it must at least contain a “files” section listing the files the students are expected to submit,
+and a description of that file as shown below e.g.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;design.vhd&quot;</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Description of design vhdl file&quot;</span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;results.ghw&quot;</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Results waveform file descritpion&quot;</span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="nt">&quot;assessment&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Assessment Title&quot;</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
+<span class="nt">&quot;github&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-practical&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/my-organisation/&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Other information that may vary for each <a class="reference internal" href="glossary.html#term-cohort"><span class="xref std std-term">cohort</span></a> may be provided here such as the name
+and email address of the assessor, and assessment name and details to retrieve student work
+from github as shown above.</p>
+</div>
+</div>
+<div class="section" id="setting-up-the-tests">
+<h2>Setting up the tests<a class="headerlink" href="#setting-up-the-tests" title="Permalink to this headline">¶</a></h2>
+<p>You will also need to setup and write the tests which you want to apply fopr each <a class="reference internal" href="glossary.html#term-cohort"><span class="xref std std-term">cohort</span></a>.
+These are stored in a folder with the same name as the cohort in the tests directory. pyAutoMark runs
+<a class="reference external" href="https://docs.pytest.org/">pytest</a> to execute the set of tests in this folder for each student in the cohort,
+collecting the output into a text file in the reports subdirectory.
+It provides fixtures for your <a class="reference external" href="https://docs.pytest.org/">pytest</a>
+which are detailed in the <a class="reference internal" href="pyam.fixtures.html#module-pyam.fixtures.common" title="pyam.fixtures.common"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pyam.fixtures.common</span></code></a> module.
+Please read the <a class="reference external" href="https://docs.pytest.org/">pytest</a> documentation for full details on how to write tests.</p>
+<p>There are additional fixtures available to help with different types of tests - see <a class="reference internal" href="pyam.fixtures.html#module-pyam.fixtures" title="pyam.fixtures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pyam.fixtures</span></code></a>
+for the complete list.</p>
+<p>The most useful fixtures which you may use in your tests are <a class="reference internal" href="pyam.fixtures.html#pyam.fixtures.common.student" title="pyam.fixtures.common.student"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pyam.fixtures.common.student</span></code></a>
+which refers to the <a class="reference internal" href="pyam.html#pyam.cohort.Student" title="pyam.cohort.Student"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyam.cohort.Student</span></code></a> object you can use to refer to or find files for the current student, <a class="reference internal" href="pyam.fixtures.html#pyam.fixtures.common.test_path" title="pyam.fixtures.common.test_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyam.fixtures.common.test_path()</span></code></a>
+which is the path to the directory in which the test files are kept
+and <a class="reference internal" href="pyam.fixtures.html#pyam.fixtures.common.build_path" title="pyam.fixtures.common.build_path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pyam.fixtures.common.build_path</span></code></a> which is the path
+you can use for any temporary files generated during the test.</p>
+</div>
+<div class="section" id="retrieving-the-students-work">
+<h2>Retrieving the students work<a class="headerlink" href="#retrieving-the-students-work" title="Permalink to this headline">¶</a></h2>
+<p>Student submissions should be held in subdirectories of the <code class="file docutils literal notranslate"><span class="pre">cohort</span></code> subdirectory and named by the student username.
+It you are using github classroom (recommended) and have configured the github details for the cohort then the command</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam retrieve
+</pre></div>
+</div>
+<p>will clone or pull the students work from their assignment repositories.</p>
+<p>If you have downloaded the students work from a Blackboard assignment then the command</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam extract --files ...
+</pre></div>
+</div>
+<p>will parse the information in the given set of files and copy them into a directory for each student.
+If the students have submitted archives (such as zip or tar.gz files) then the files will be extracted from the archives.</p>
+<p>In both the above cases the student submission date will be added to the <code class="file docutils literal notranslate"><span class="pre">students.csv</span></code> file. You can query the
+state of students with the command</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam cohort --list-students
+</pre></div>
+</div>
+</div>
+<div class="section" id="running-the-tests">
+<h2>Running the tests<a class="headerlink" href="#running-the-tests" title="Permalink to this headline">¶</a></h2>
+<p>The command</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam run
+</pre></div>
+</div>
+<p>will execute all of the tests for each student and save the output from <a class="reference external" href="https://docs.pytest.org/">pytest</a> into report files in the <code class="file docutils literal notranslate"><span class="pre">reports/cohort`</span></code>
+subdirectory. These will all be given a prefix (which can be specified with the –prefix argument) - it defaults to  “report_”.
+These files can be sent to students as feedback - they will be particularly useful if you have given your tests meaningful names,
+and print any diagnostics mesages printed out by you test will be included in the reports.</p>
+</div>
+<div class="section" id="generating-the-mark-spreadsheets">
+<h2>Generating the mark spreadsheets<a class="headerlink" href="#generating-the-mark-spreadsheets" title="Permalink to this headline">¶</a></h2>
+<p>You will often want to use the results of these tests to provide all or part of the mark for the students.
+To assist with this the results from the reports can be copied into a marking spreadsheet. The first step is to
+generate a template spreadhseet which will then be filled in for each student.</p>
+<p>The command</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam generate-template
+</pre></div>
+</div>
+<p>will produce a template spreadsheet for you in the <code class="file docutils literal notranslate"><span class="pre">reports/cohort</span> <span class="pre">subfolder</span></code> (with the specified filenanme prefix).
+This template will have have the test names and a result cell as a named reference which will be automatically filled in at the mark stage.
+The Named cell references for each test which will be marked as either “PASSED” or “FAILED”
+from the <a class="reference external" href="https://docs.pytest.org/">pytest</a> report file. The generate template is intended as a starting point for you to modify with your
+own marking shceme which might, for example, include manual entered evaluation, and provided a weighting for each test result.</p>
+<p>Once you are happy with your marking sheet type the command</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam mark
+</pre></div>
+</div>
+<p>And a marking spreadsheet will be produced for each student in the <code class="file docutils literal notranslate"><span class="pre">reports/cohort</span> <span class="pre">subfolder</span></code>
+(with the specified filename prefix). You can then add in you manual elements</p>
+</div>
+<div class="section" id="and-finally-collating-the-marks">
+<h2>And finally - collating the marks<a class="headerlink" href="#and-finally-collating-the-marks" title="Permalink to this headline">¶</a></h2>
+<p>The command</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam write-csv --csv-files ....
+</pre></div>
+</div>
+<p>will read the marks from the finished marked spreadshsset for each student and entern them into the given speadsheet csv files.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Quick Start</a><ul>
+<li><a class="reference internal" href="#the-directory-structure">The directory structure</a></li>
+<li><a class="reference internal" href="#setting-up-a-cohort">Setting up a cohort</a><ul>
+<li><a class="reference internal" href="#students-csv">students.csv</a></li>
+<li><a class="reference internal" href="#manifest-json">manifest.json</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#setting-up-the-tests">Setting up the tests</a></li>
+<li><a class="reference internal" href="#retrieving-the-students-work">Retrieving the students work</a></li>
+<li><a class="reference internal" href="#running-the-tests">Running the tests</a></li>
+<li><a class="reference internal" href="#generating-the-mark-spreadsheets">Generating the mark spreadsheets</a></li>
+<li><a class="reference internal" href="#and-finally-collating-the-marks">And finally - collating the marks</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="previous chapter">Installing pyAutoMark</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cmds/cohort.html"
+                        title="next chapter">cohort</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/quickstart.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cmds/cohort.html" title="cohort"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installing pyAutoMark"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023-2023, John Williams.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

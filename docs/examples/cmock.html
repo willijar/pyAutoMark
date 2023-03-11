@@ -1,0 +1,411 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Embedded C using the C mock fixtures &#8212; pyAutoMark 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pyam" href="../modules.html" />
+    <link rel="prev" title="write-csv" href="../cmds/write-csv.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../modules.html" title="pyam"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../cmds/write-csv.html" title="write-csv"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="embedded-c-using-the-c-mock-fixtures">
+<h1>Embedded C using the C mock fixtures<a class="headerlink" href="#embedded-c-using-the-c-mock-fixtures" title="Permalink to this headline">¶</a></h1>
+<p>We often want to mark students embedded C designs without having to execute the code on hardware. For this we use mock
+headers and C functions.
+In this example I show how we can create a C mock to test their code on the host computer rather than
+on the embedded system. I have two examples, using embedded AVR C, which are typical of the kinds
+of tasks students are given when they start out on their embedded programming journey.</p>
+<div class="section" id="directory-structure">
+<h2>Directory structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h2>
+<p>Below is the directory structure for these tests. Under the cohort directory we will have a directory for each student which will
+contain their submitted code - in this case <code class="file docutils literal notranslate"><span class="pre">Q1.c</span></code> and <code class="file docutils literal notranslate"><span class="pre">Q2.c</span></code>. In our tests folder for the cohort we
+will need the pytest unittest files e.g. <code class="file docutils literal notranslate"><span class="pre">test1_Q1.py</span></code>, helper C test files e.g. <code class="file docutils literal notranslate"><span class="pre">Q1_test.c</span></code> and replacement
+header files which the student code will include. These need to me in the appropriate directory structure to match the expected_value
+system headers so for these simple cases we only have <code class="file docutils literal notranslate"><span class="pre">util/delay.y</span></code> and <code class="file docutils literal notranslate"><span class="pre">avr/io.h</span></code>.</p>
+<div class="line-block">
+<div class="line">root</div>
+<div class="line">├─ cohorts</div>
+<div class="line">│     ├─ cohort1</div>
+<div class="line">│     │   └─ student1</div>
+<div class="line">│     │   │  └─ Q1.c</div>
+<div class="line">│     │   │  └─ Q2.c</div>
+<div class="line">└─ tests</div>
+<div class="line">│     ├─ cohort1</div>
+<div class="line">│     │   └─ util</div>
+<div class="line">│     │   │  └─ delay.h</div>
+<div class="line">│     │   └─ avr</div>
+<div class="line">│     │   │  └─ io.h</div>
+<div class="line">│     │   └─ Q1_test.c</div>
+<div class="line">│     │   └─ Q2_test.c</div>
+<div class="line">│     │   └─ test_Q1.py</div>
+<div class="line">│     │   └─ test_Q2.py</div>
+</div>
+<p>The cmock fixtures provided by pyAutoMark will set up the compilation include directories to point to the appropriate test folder
+and student folder and add in the necessary compilation units.</p>
+</div>
+<div class="section" id="example-1-replacing-function-calls">
+<h2>Example 1 - Replacing function calls<a class="headerlink" href="#example-1-replacing-function-calls" title="Permalink to this headline">¶</a></h2>
+<p>Below is a typical example of a “first” embedded program - the students have to include the
+correct header files, setup some defines and then have a main program which is an infinite loop that
+sets and reads some registers to do stuff (using the defines from the header files). In this case it has a call
+to the <code class="code docutils literal notranslate"><span class="pre">_delay_ms</span></code> function to slow down operation  so the student cans see the LEDS or whatever flashing.</p>
+<div class="literal-block-wrapper docutils container" id="container-1">
+<div class="code-block-caption"><span class="caption-text">Q1.c - A student AVR Embedded C Program Q1</span><a class="headerlink" href="#container-1" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Include relevant libraries</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;avr/io.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;util/delay.h&gt;</span><span class="cp"></span>
+
+<span class="c1">// Define stuff</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Define PortC pins as outputs</span>
+<span class="w">    </span><span class="n">DDRC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LEDs_Out</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">PORTC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Digits</span><span class="p">[</span><span class="n">Count</span><span class="p">];</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// do stuff</span>
+<span class="w">        </span><span class="n">_delay_ms</span><span class="p">(</span><span class="mi">400</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// fo stuff</span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<p>For testing we will replace the headers with our own mock versions
+to define the necessary constants, and we will replace the registers with external variables
+of the appropriate type which we can then read or write in our code to test the students
+funcitonality.</p>
+<div class="literal-block-wrapper docutils container" id="container-2">
+<div class="code-block-caption"><span class="caption-text">delay.h - mock replacement delay header</span><a class="headerlink" href="#container-2" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef __DELAY_H_</span>
+<span class="cp">#define __DELAY_H_</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">_delay_ms</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">__ms</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">_delay_us</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">__us</span><span class="p">);</span><span class="w"></span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="container-3">
+<div class="code-block-caption"><span class="caption-text">Mock io.h - replacement io header</span><a class="headerlink" href="#container-3" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Constant defines can be copied from real io.header e.g.</span>
+<span class="cp">#define PD2 2</span>
+
+<span class="c1">// Replace register defines with external variables</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">DDRC</span><span class="p">;</span><span class="w"></span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">PORTC</span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<p>The next step is to write our C code which will actually test the students work. At the top of this we
+we include the file <code class="file docutils literal notranslate"><span class="pre">student.h</span></code>. This file is created by the provided fixtures to include the actual students C file
+under test. For each test that we want to perform this code will be compiled and and then executed with a different define set
+(using the -d argument to the compiler). We therefore use <code class="code docutils literal notranslate"><span class="pre">#ifdef</span></code> or <code class="code docutils literal notranslate"><span class="pre">#ifdefined</span></code> blocks in the C program
+to select which test we want to carry out. In the example below we have two. <code class="code docutils literal notranslate"><span class="pre">TEST_DELAY_HEADER</span></code> is used to include the
+check that  the students have included the delay header and if not we create a compile time error.</p>
+<p>We then include our mock headers (in case the student hasn’t) and define the external variables that we want to read and write to
+in our tests - the replacement for the embedded system registers.</p>
+<p>Since the student code calls the function <code class="code docutils literal notranslate"><span class="pre">_delay_ms</span></code> everytime the go round the <code class="code docutils literal notranslate"><span class="pre">while</span></code> loop most of our tests
+are in there. I will typically use a global count variable that increases every time our mock function is called to provide state.
+On iteration 0 we can put in all of the register intialisation checks we want to assess the studdents against - and we can check, say ,
+that a particular register is changing over time, or that it changes when we set anoter variable/register to simulate an input. In the
+example provided we check if <code class="code docutils literal notranslate"><span class="pre">F_CPU</span></code> ise set correctly as the <code class="code docutils literal notranslate"><span class="pre">TEST_DELAY_HEADER</span></code> test,
+and if <code class="code docutils literal notranslate"><span class="pre">PORTC</span></code> is set correctly to soem expected value as the <code class="code docutils literal notranslate"><span class="pre">TEST_DIGITS</span></code> test.</p>
+<div class="literal-block-wrapper docutils container" id="container-4">
+<div class="code-block-caption"><span class="caption-text">Q1_test.c – the C test file</span><a class="headerlink" href="#container-4" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;student.h&gt;</span><span class="c1"> // this header file will include actual student C file</span><span class="cp"></span>
+<span class="cp">#if defined(TEST_DELAY_HEADER) &amp;&amp; !defined(__DELAY_H_)</span>
+<span class="cp">#error &quot;delay.h header not included&quot;</span>
+<span class="cp">#endif</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;avr/io.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;util/delay.h&gt;</span><span class="cp"></span>
+
+<span class="c1">// Define variables corresponding to registers</span>
+<span class="kt">uint8_t</span><span class="w"> </span><span class="n">PORTC</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="c1">// global variable to give state</span>
+
+<span class="c1">// Write replacement function to check state</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">_delay_ms</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">delay</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">count</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Tests that only need checked once e.g.</span>
+<span class="w">        </span><span class="cp">#if TEST_F_CPU</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">F_CPU</span><span class="o">!=</span><span class="w"> </span><span class="mf">20E6</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;F_CPU not set to 20E6&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="cp">#endif</span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// other tests</span>
+<span class="w">    </span><span class="cp">#if TEST_DIGITS</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PORTC</span><span class="o">!=</span><span class="w"> </span><span class="n">expected_value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Counted 0d%d digit incorrect - expected 0h%x but got 0h%x&quot;</span><span class="p">,</span><span class="n">count</span><span class="p">,</span><span class="n">expected_value</span><span class="p">,</span><span class="n">PORTC</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="cp">#endif</span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<p>The final component it to provide the pytest file that pulls all this together. I typically will use a single
+python file for every student task. In that we have to provide two fixtures. <code class="code docutils literal notranslate"><span class="pre">student_c_file</span></code> which returns the path to
+the student c file under test, and the <code class="code docutils literal notranslate"><span class="pre">mock_c_file</span></code> which is our test C file. I then have a parametrized test
+<code class="code docutils literal notranslate"><span class="pre">test_code</span></code> which will be run with the provided definitions, and, since we often check style, I have a <code class="code docutils literal notranslate"><span class="pre">test_style</span></code>
+test function that runs c_lint on the student file with a particular threshold of warning that constitute a failure for this test.
+The fixture <code class="code docutils literal notranslate"><span class="pre">c_lint_checks</span></code> sets which style checks are carried out - I don’t recommend setting them all at this early stage.</p>
+<div class="literal-block-wrapper docutils container" id="container-5">
+<div class="code-block-caption"><span class="caption-text">test_Q1.py - the pytest Python file for this task.</span><a class="headerlink" href="#container-5" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">student_c_file</span><span class="p">(</span><span class="n">student</span><span class="p">):</span>
+    <span class="s2">&quot;Path to students C file under test&quot;</span>
+    <span class="c1"># TODO: modify to use regex to match and find file rather than fixed filename</span>
+    <span class="k">return</span> <span class="n">student</span><span class="o">.</span><span class="n">path</span><span class="o">/</span><span class="s2">&quot;Q1a.c&quot;</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">mock_c_file</span><span class="p">(</span><span class="n">test_path</span><span class="p">):</span>
+    <span class="s2">&quot;Path to the Mock test C file to use&quot;</span>
+    <span class="k">return</span> <span class="n">test_path</span><span class="o">/</span><span class="s2">&quot;Q1_test.c&quot;</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s2">&quot;declaration&quot;</span><span class="p">,</span>
+                     <span class="p">(</span><span class="s2">&quot;TEST_F_CPU&quot;</span><span class="p">,</span> <span class="s2">&quot;TEST_DELAY_HEADER&quot;</span><span class="p">,</span> <span class="s2">&quot;TEST_DDRC&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;TEST_TIME_DELAY&quot;</span><span class="p">,</span> <span class="s2">&quot;TEST_DIGIT0&quot;</span><span class="p">,</span> <span class="s2">&quot;TEST_DIGITS&quot;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">test_code</span><span class="p">(</span><span class="n">declaration</span><span class="p">,</span><span class="n">c_exec</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">c_exec</span><span class="p">([</span><span class="n">declaration</span><span class="p">]),</span><span class="n">declaration</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">c_lint_checks</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">&quot;performance-*,readability-*,portability-*&quot;</span>
+
+<span class="k">def</span> <span class="nf">test_style</span><span class="p">(</span><span class="n">student_c_file</span><span class="p">,</span><span class="n">c_lint</span><span class="p">):</span>
+    <span class="n">c_lint</span><span class="p">(</span><span class="n">student_c_file</span><span class="p">,</span><span class="mi">17</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="example-2-no-function-calls-registers-only">
+<h2>Example 2 - No function calls - registers only<a class="headerlink" href="#example-2-no-function-calls-registers-only" title="Permalink to this headline">¶</a></h2>
+<p>In the previous example the student submission had function calls for which we could provide a mock
+function to carry out our tests. However simple embedded programs may only address registers.
+Typically, however, the will use macros to address those registers (or at least they should) and so we can
+exploit that to inject function calls into the student code that we can then use to test and set the register/variable state
+for the students work. An example is given below which has one student written function that dets a register bit to start an
+ADC conversion and then waits for a conversion finished bit to be set before returning the value in the ADC register.</p>
+<div class="literal-block-wrapper docutils container" id="container-6">
+<div class="code-block-caption"><span class="caption-text">Q2.c - an AVR EMbedded C Program with- no function calls</span><a class="headerlink" href="#container-6" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Include relevant libraries</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;avr/io.h&gt;</span><span class="cp"></span>
+
+<span class="c1">// Define Constants</span>
+
+<span class="c1">// Define Functions</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">ADC_Conversion</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Reads value from ADC</span>
+<span class="w">    </span><span class="n">ADCSRA</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">ADSC</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="p">(</span><span class="n">ADCSRA</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">ADSC</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ADC</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ADC_Result</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Set Registers</span>
+
+<span class="w">    </span><span class="c1">// ADC Initialisation</span>
+<span class="w">    </span><span class="n">ADMUX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">REFS0</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Left_POT</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ADCSRA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">ADEN</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">ADPS2</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">ADPS0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">ADC_Result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ADC_Conversion</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Do stuff depending on ADC_Result</span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<p>As before we provide our own header files. However, we can exploit the “,” operator syntax
+in C to inject function calls into the students code.
+In the example below I have defined the <code class="code docutils literal notranslate"><span class="pre">ADCSRA</span></code> macro which is used
+to represent a register as a call to
+a function which we will use to test/set state be provided followed by the name of our external variable that we will use to
+represent that register. Similarly for the <code class="code docutils literal notranslate"><span class="pre">ADC</span></code> register.</p>
+<div class="literal-block-wrapper docutils container" id="container-7">
+<div class="code-block-caption"><span class="caption-text">io.h replacing registers with function call and variable</span><a class="headerlink" href="#container-7" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">/// Constant defines can be copied from real io.header</span>
+
+<span class="c1">// Replace register defines with external variables</span>
+
+<span class="c1">// Where appropriate replace a register deine with a function call</span>
+<span class="c1">// and variable to inject function calls into student code e.g.</span>
+
+<span class="k">extern</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">_ADCSRA</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">_ADC</span><span class="p">;</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">_F_ADCSRA</span><span class="p">();</span><span class="w"></span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">_F_ADC</span><span class="p">();</span><span class="w"></span>
+<span class="cp">#define ADCSRA _F_ADCSRA(),  _ADCSRA</span>
+<span class="cp">#define ADC _F_ADC()</span>
+</pre></div>
+</div>
+</div>
+<p>Then in our mock test <code class="file docutils literal notranslate"><span class="pre">Q2_test.c</span></code> file we can implement these function to carry out testing as needed. In this case
+we have <code class="code docutils literal notranslate"><span class="pre">_F_ADCSRA()</span></code> which models an ADC converstion, it sets the state variable <code class="code docutils literal notranslate"><span class="pre">state_requested</span></code> if the student has correctly
+set the correct conversion bit and then after 9 calls sets the conversion finished bit - at which  point the students code will read the
+<code class="code docutils literal notranslate"><span class="pre">ADC</span></code> register which we have also replaced. This calls the second function <code class="code docutils literal notranslate"><span class="pre">_F_ADC()</span></code> which
+does the the necessary checks (using compiler defines to select which test as before). It can return different ADC values to the
+student program and then on the next call check to see if the student has correctly responded in setting output registers etc.
+The pytest test file for this will very similar to the first example, seting the student file and test C file
+using fixtures, compiling and executing the code with different defines to run each test and possibly running a style check
+on the students submitted code.</p>
+<div class="literal-block-wrapper docutils container" id="container-8">
+<div class="code-block-caption"><span class="caption-text">Q2_test.c our mock C implementation with the two functions</span><a class="headerlink" href="#container-8" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">conversion_requested</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="c1">// FUnction called everytime ADCSRA is referenced</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">_F_ADCSRA</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_ADCSRA</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">ADSC</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">conversion_requested</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">count</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">count</span><span class="o">&gt;</span><span class="mi">1000</span><span class="p">)</span><span class="w"> </span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">count</span><span class="o">%</span><span class="mi">9</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">_ADCSRA</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="o">~</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">ADSC</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="p">}</span><span class="w"></span>
+
+<span class="c1">// Function called everytime ADC is referenced</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">_F_ADC</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">count</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="c1">// Initialisation tests tested on first read of ADC</span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="cp">#if TEST_DDRB</span>
+<span class="w">        </span><span class="n">assert_int</span><span class="p">(</span><span class="s">&quot;DDRB incorrect&quot;</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">PB3</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">PB4</span><span class="p">,</span><span class="w"> </span><span class="n">DDRB</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="cp">#endif</span>
+
+<span class="w">        </span><span class="c1">// .....</span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="cp">#if TEST_ADSC_SET</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">conversion_requested</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Conversion bit ADSC of ADCSRA not set&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="cp">#endif</span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Embedded C using the C mock fixtures</a><ul>
+<li><a class="reference internal" href="#directory-structure">Directory structure</a></li>
+<li><a class="reference internal" href="#example-1-replacing-function-calls">Example 1 - Replacing function calls</a></li>
+<li><a class="reference internal" href="#example-2-no-function-calls-registers-only">Example 2 - No function calls - registers only</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../cmds/write-csv.html"
+                        title="previous chapter">write-csv</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../modules.html"
+                        title="next chapter">pyam</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/examples/cmock.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../modules.html" title="pyam"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../cmds/write-csv.html" title="write-csv"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023-2023, John Williams.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

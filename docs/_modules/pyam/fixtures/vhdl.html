@@ -1,0 +1,317 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyam.fixtures.vhdl &#8212; pyAutoMark 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyam.fixtures.vhdl</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2023, Dr John A.R. Williams</span>
+<span class="c1"># SPDX-License-Identifier: GPL-3.0-only</span>
+<span class="c1"># pylint: disable=W0621</span>
+<span class="sd">&quot;&quot;&quot;Test Fixtures to check students VHDL designs using simulation or synthesis:</span>
+
+<span class="sd">Main testing fixtures:</span>
+<span class="sd">  :func:`vhdl_simulate`: returns a function to run a tutors vhdl testbench against student VHDL files</span>
+<span class="sd">  :func:`vhdl_synthesise`: return a function to test synthesisis of a student VHDl design</span>
+
+<span class="sd">Support fixtures:</span>
+<span class="sd">  ghdl: returns function to run the ghdl simulator</span>
+<span class="sd">  vivdao: run function to run Vivado</span>
+
+<span class="sd">Configuration fixtures:</span>
+<span class="sd">  search_paths: paths to dsearch for ghdl and vviado executables (if no on path)</span>
+<span class="sd">  vivado_exec: the (found) vivado executable path</span>
+<span class="sd">  ghdl_exec: the (found) ghdl executable path</span>
+<span class="sd">  partnumber: Vivado parnumber to synthesise for</span>
+<span class="sd">  ghdl_options: Standard list op options to pass ghdl</span>
+<span class="sd">  vivado_options: standard list of options to pass vivado</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">pyam.files</span> <span class="kn">import</span> <span class="n">find_executable</span>
+
+
+<div class="viewcode-block" id="VHDLError"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.VHDLError">[docs]</a><span class="k">class</span> <span class="nc">VHDLError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="s2">&quot;Base for all VHDL related errors&quot;</span></div>
+
+
+<div class="viewcode-block" id="VHDLAnalysisError"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.VHDLAnalysisError">[docs]</a><span class="k">class</span> <span class="nc">VHDLAnalysisError</span><span class="p">(</span><span class="n">VHDLError</span><span class="p">):</span>
+    <span class="s2">&quot;Error at VHDL Analysis stage&quot;</span></div>
+
+
+<div class="viewcode-block" id="VHDLRunError"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.VHDLRunError">[docs]</a><span class="k">class</span> <span class="nc">VHDLRunError</span><span class="p">(</span><span class="n">VHDLError</span><span class="p">):</span>
+    <span class="s2">&quot;Error at chdl simulation/run time&quot;</span></div>
+
+
+<div class="viewcode-block" id="VHDLSynthesisError"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.VHDLSynthesisError">[docs]</a><span class="k">class</span> <span class="nc">VHDLSynthesisError</span><span class="p">(</span><span class="n">VHDLError</span><span class="p">):</span>
+    <span class="s2">&quot;Error with VHDL Synthesis&quot;</span></div>
+
+
+<div class="viewcode-block" id="clean"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.clean">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">autouse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="n">ghdl_exec</span><span class="p">,</span> <span class="n">build_path</span><span class="p">)</span> <span class="o">-&gt;</span><span class="kc">None</span><span class="p">:</span>
+    <span class="s2">&quot;*Autouse Fixture*: Runsh ghdl --clean at start of test run&quot;</span>
+    <span class="n">run</span><span class="p">((</span><span class="n">ghdl_exec</span><span class="p">,</span> <span class="s2">&quot;--clean&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;--workdir=</span><span class="si">{</span><span class="n">build_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="search_paths"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.search_paths">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">search_paths</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="s2">&quot;*Fixture*: A list of additional paths to search for the executables&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;/opt/Xilinx/&quot;</span><span class="p">,</span> <span class="s2">&quot;/usr/local/&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="vivado_exec"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.vivado_exec">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">vivado_exec</span><span class="p">(</span><span class="n">search_paths</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="s2">&quot;*Fixture*: Path to Vivado executable for synthesis&quot;</span>
+    <span class="k">return</span> <span class="n">find_executable</span><span class="p">(</span><span class="s2">&quot;bin/vivado&quot;</span><span class="p">,</span> <span class="n">search_paths</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="partnumber"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.partnumber">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">partnumber</span><span class="p">()</span> <span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
+    <span class="s2">&quot;*Fixture*: Partnumber to use in synthesis&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;xc7a35tcpg236-1&quot;</span></div>
+
+
+<div class="viewcode-block" id="ghdl_exec"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.ghdl_exec">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">ghdl_exec</span><span class="p">(</span><span class="n">search_paths</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="s2">&quot;*Fixture*: The path to the ghdl executable for VHDL simulation&quot;</span>
+    <span class="k">return</span> <span class="n">find_executable</span><span class="p">(</span><span class="s2">&quot;ghdl&quot;</span><span class="p">,</span> <span class="n">search_paths</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ghdl_options"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.ghdl_options">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">ghdl_options</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="s2">&quot;List of additional ghdl flags (style) to use across tests&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;--std=08&quot;</span><span class="p">,</span> <span class="s2">&quot;--warn-no-hide&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ghdl"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.ghdl">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">ghdl</span><span class="p">(</span><span class="n">ghdl_exec</span><span class="p">,</span> <span class="n">ghdl_options</span><span class="p">,</span> <span class="n">build_path</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;*Fixture*: A function to run a test using ghdl.</span>
+
+<span class="sd">    The timeout marker is honoured to limit maximum execution time if appropriate</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      command (str): the ghdl command string to use e.g. -a to analyse or --elab-run to run simulation</span>
+<span class="sd">      options (Sequence[str]): sequence of additional options to pass to ghdl, defaults to ghdl_options fixture</span>
+<span class="sd">      unit (str): the ghdl unit to execute command on</span>
+<span class="sd">      run_options (Sequence[str]): Additional run time ghdl options to give after unit</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">      VHDLAnalysisError: if analysis (-a) command failed</span>
+<span class="sd">      VHDLRunError: if -r or --elab-run command faild</span>
+<span class="sd">      VHDLError: if ghdl failed but netiehr of above commands</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">marker</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">get_closest_marker</span><span class="p">(</span><span class="s2">&quot;timeout&quot;</span><span class="p">)</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">marker</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># pylint: disable=W1510</span>
+    <span class="k">def</span> <span class="nf">_ghdl</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">ghdl_options</span><span class="p">,</span> <span class="n">run_options</span><span class="o">=</span><span class="p">()):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">ghdl_exec</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;--workdir=</span><span class="si">{</span><span class="n">build_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span>
+                <span class="o">*</span><span class="n">run_options</span>
+            <span class="p">],</span>
+            <span class="n">cwd</span><span class="o">=</span><span class="n">build_path</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span>
+            <span class="k">if</span> <span class="n">command</span> <span class="o">==</span> <span class="s2">&quot;-a&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">VHDLAnalysisError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">command</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;--elab-run&quot;</span><span class="p">,</span> <span class="s2">&quot;-r&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">VHDLRunError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">VHDLError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GHDL &#39;</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&#39; </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_ghdl</span></div>
+
+
+<div class="viewcode-block" id="vhdl_simulate"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.vhdl_simulate">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">vhdl_simulate</span><span class="p">(</span><span class="n">ghdl</span><span class="p">,</span> <span class="n">student</span><span class="p">,</span> <span class="n">test_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;*Fixture*: A function to analyse student against tutors testbench.</span>
+<span class="sd">    Uses ghdl fixture to run simulations</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      top (str): the top level (tutors) testbench filename to run</span>
+<span class="sd">      student_files List[str]: List of filenames in student directory to analyse first</span>
+<span class="sd">      test_files List[str]: List of files in test directory to analyse before student files</span>
+<span class="sd">                  e.g. to provide working implementations for student work to use</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">       see :func:`ghdl`:</span>
+<span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_vhdl_simulate</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">student_files</span><span class="p">,</span> <span class="n">test_files</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">test_files</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ghdl</span><span class="p">(</span><span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="n">test_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">top</span><span class="si">}</span><span class="s2">.vhd&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">student_files</span><span class="p">:</span>
+            <span class="n">ghdl</span><span class="p">(</span><span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="n">file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">test_files</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">test_files</span><span class="p">:</span>
+                <span class="n">ghdl</span><span class="p">(</span><span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="n">test_path</span> <span class="o">/</span> <span class="n">file</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ghdl</span><span class="p">(</span><span class="s2">&quot;--elab-run&quot;</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">run_options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;--assert-level=error&quot;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">VHDLError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+            <span class="k">raise</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_vhdl_simulate</span></div>
+
+
+<div class="viewcode-block" id="vivado_options"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.vivado_options">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">vivado_options</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="s2">&quot;*Fixture*:  return additional vivado options to use on tests&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;-nojournal&quot;</span><span class="p">,)</span></div>
+
+
+<div class="viewcode-block" id="vivado"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.vivado">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">vivado</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">vivado_exec</span><span class="p">,</span> <span class="n">build_path</span><span class="p">,</span> <span class="n">student</span><span class="p">,</span> <span class="n">vivado_options</span><span class="p">,</span> <span class="n">partnumber</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;*Fixture* The function to run vivado synthesis tool</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      bitfile (str):filename for bitfile output in buoild directory</span>
+<span class="sd">      top (str): Name of top level entity in design</span>
+<span class="sd">      sources (List[Path]): vhdl source files (full paths)</span>
+<span class="sd">      constraint (List[Path]): list of constraints files (full paths)</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">      VHDLSynthesisError: If vivado exits with an error</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">marker</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">get_closest_marker</span><span class="p">(</span><span class="s2">&quot;timeout&quot;</span><span class="p">)</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">marker</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">_vivado</span><span class="p">(</span><span class="n">bitfile</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">sources</span><span class="p">,</span> <span class="n">constraints</span><span class="p">):</span>
+        <span class="c1"># pylint: disable=W1510</span>
+        <span class="n">tcl</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">:</span>
+            <span class="n">tcl</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;read_vhdl </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">constraints</span><span class="p">:</span>
+            <span class="n">tcl</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;read_xdc </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">tcl</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;synth_design -top </span><span class="si">{</span><span class="n">top</span><span class="si">}</span><span class="s2"> -part </span><span class="si">{</span><span class="n">partnumber</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">tcl</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="s2">&quot;opt_design</span><span class="se">\n</span><span class="s2">power_opt_design</span><span class="se">\n</span><span class="s2">place_design</span><span class="se">\n</span><span class="s2">phys_opt_design</span><span class="se">\n</span><span class="s2">route_design</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">tcl</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;write_bitstream -force </span><span class="si">{</span><span class="n">bitfile</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">tcl</span> <span class="o">=</span> <span class="n">tcl</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">([</span>
+            <span class="n">vivado_exec</span><span class="p">,</span> <span class="o">*</span><span class="n">vivado_options</span><span class="p">,</span> <span class="s2">&quot;-log&quot;</span><span class="p">,</span> <span class="n">build_path</span> <span class="o">/</span> <span class="s2">&quot;synth.log&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-tempDir&quot;</span><span class="p">,</span> <span class="n">build_path</span><span class="p">,</span> <span class="s2">&quot;-mode&quot;</span><span class="p">,</span> <span class="s2">&quot;tcl&quot;</span>
+        <span class="p">],</span>
+                     <span class="n">cwd</span><span class="o">=</span><span class="n">student</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                     <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+                     <span class="nb">input</span><span class="o">=</span><span class="n">tcl</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">VHDLSynthesisError</span>
+        <span class="k">return</span> <span class="n">bitfile</span>
+
+    <span class="k">return</span> <span class="n">_vivado</span></div>
+
+<div class="viewcode-block" id="vhdl_synthesise"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.vhdl.vhdl_synthesise">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">vhdl_synthesise</span><span class="p">(</span><span class="n">student</span><span class="p">,</span> <span class="n">build_path</span><span class="p">,</span> <span class="n">vivado</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;*Fixture* A function to synthesise a student vhdl design and generate a bitstream</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      top (str): Name of top level entity in design</span>
+<span class="sd">      student_files (List[str]): list of vhdl filenames in student directory for design</span>
+<span class="sd">      constraints_file (str): Name of students constraints file to use in design - defaul top.xdc</span>
+<span class="sd">    </span>
+<span class="sd">    Raises:</span>
+<span class="sd">      FileNotFoundError: if no bitfile generated</span>
+
+<span class="sd">    See also :func:`vivado`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_vhdl_synthesise</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">student_files</span><span class="p">,</span> <span class="n">constraints_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">constraints_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">constraints_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">top</span><span class="si">}</span><span class="s2">.xdc&quot;</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">student_files</span><span class="p">:</span>
+            <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">bitfile</span><span class="o">=</span><span class="n">vivado</span><span class="p">(</span><span class="n">build_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">top</span><span class="si">}</span><span class="s2">.bit&quot;</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span>
+                <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">student</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">constraints_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bitfile</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">bitfile</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_vhdl_synthesise</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023-2023, John Williams.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

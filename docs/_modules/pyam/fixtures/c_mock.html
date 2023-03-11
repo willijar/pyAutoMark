@@ -1,0 +1,224 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyam.fixtures.c_mock &#8212; pyAutoMark 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyam.fixtures.c_mock</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2023, Dr John A.R. Williams</span>
+<span class="c1"># SPDX-License-Identifier: GPL-3.0-only</span>
+<span class="sd">&quot;&quot;&quot;pytest fixtures to support running C (mock) tests using mocking.</span>
+
+<span class="sd">This set of fixtures assumes a single student C file, and a single mock test C file.</span>
+<span class="sd">include path will be set to the cohort test directory, the build directory and the students</span>
+<span class="sd">directory. A file &quot;student.h&quot; is written into build directory to include the students c file</span>
+<span class="sd">in the mock test.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span><span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span>
+<span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">import</span> <span class="nn">pyam.cunit</span> <span class="k">as</span> <span class="nn">cunit</span>
+
+
+<div class="viewcode-block" id="binary_name"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.c_mock.binary_name">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">binary_name</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="s2">&quot;*Fixture*: The binary Executable name to use for compiled tests - file will be created in build folder&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;mock_test&quot;</span></div>
+
+
+<div class="viewcode-block" id="student_c_file"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.c_mock.student_c_file">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">student_c_file</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="s2">&quot;*Fixture*: for the ctudent C file currently under test. *Must be set in the test*.&quot;</span></div>
+
+
+<div class="viewcode-block" id="mock_c_file"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.c_mock.mock_c_file">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">mock_c_file</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="s2">&quot;*Fixture*: The mock code C file currently under test. *Must be set in the test*.&quot;</span></div>
+
+
+<div class="viewcode-block" id="write_header"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.c_mock.write_header">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">autouse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">write_header</span><span class="p">(</span><span class="n">build_path</span><span class="p">,</span> <span class="n">student_c_file</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;*Fixture*:  creates :file:`student.h` which includes the :func:`student_c_file`</span>
+<span class="sd">    </span>
+<span class="sd">    Used in Mock C code to include the students file.&quot;&quot;&quot;</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">build_path</span> <span class="o">/</span> <span class="s2">&quot;student.h&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+        <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;#include &quot;</span><span class="si">{</span><span class="n">student_c_file</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">header</span></div>
+
+
+<div class="viewcode-block" id="compile_flags"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.c_mock.compile_flags">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">compile_flags</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="s2">&quot;*Fixture*: A list of additional compile flags (style) to use across tests&quot;</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="s2">&quot;-funsigned-char&quot;</span><span class="p">,</span> <span class="s2">&quot;-funsigned-bitfields&quot;</span><span class="p">,</span> <span class="s2">&quot;-fpack-struct&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-fshort-enums&quot;</span><span class="p">,</span> <span class="s2">&quot;-Wall&quot;</span><span class="p">,</span> <span class="s2">&quot;-std=gnu99&quot;</span>
+    <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="c_compile"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.c_mock.c_compile">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">c_compile</span><span class="p">(</span><span class="n">student</span><span class="p">,</span> <span class="n">test_path</span><span class="p">,</span> <span class="n">build_path</span><span class="p">,</span> <span class="n">mock_c_file</span><span class="p">,</span> <span class="n">binary_name</span><span class="p">,</span>
+              <span class="n">compile_flags</span><span class="p">,</span> <span class="n">compiler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;*Fixture*: The compile function for this test suite which takes declarations as argument</span>
+<span class="sd">    </span>
+<span class="sd">    The returned function takes the following arguments</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">       declarations (Sequence[str]): The list of delcarations (defines) to be set for the compilation.</span>
+<span class="sd">          TYpically only one will be set to select the test in the mock C file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_compile</span><span class="p">(</span><span class="n">declarations</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cunit</span><span class="o">.</span><span class="n">c_compile</span><span class="p">(</span>
+                <span class="n">build_path</span> <span class="o">/</span> <span class="n">binary_name</span><span class="p">,</span>
+                <span class="n">sources</span><span class="o">=</span><span class="p">[</span><span class="n">mock_c_file</span><span class="p">],</span>
+                <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">test_path</span><span class="p">,</span> <span class="n">build_path</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">path</span><span class="p">],</span>
+                <span class="n">declarations</span><span class="o">=</span><span class="n">declarations</span><span class="p">,</span>
+                <span class="n">cflags</span><span class="o">=</span><span class="n">compile_flags</span><span class="p">,</span>
+                <span class="n">compiler</span><span class="o">=</span><span class="n">compiler</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">cunit</span><span class="o">.</span><span class="n">CompilationError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">err</span>
+
+    <span class="k">return</span> <span class="n">_compile</span></div>
+
+
+<div class="viewcode-block" id="c_exec"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.c_mock.c_exec">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">c_exec</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">c_compile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;*Fixture*: The exec function for this test suite which will compile and execute the mock C</span>
+<span class="sd">    tests.</span>
+<span class="sd">      </span>
+<span class="sd">    Uses the timeout marker, and if set will stop student programm execution at that time.</span>
+
+<span class="sd">    The returned function takes the following arguments:</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">       declarations (Sequence[str]): The list of delcarations (defines) to be set for the compilation.</span>
+<span class="sd">          Typically only one will be set to select the test in the mock C file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">marker</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">get_closest_marker</span><span class="p">(</span><span class="s2">&quot;timeout&quot;</span><span class="p">)</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">marker</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">_exec</span><span class="p">(</span><span class="n">declarations</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cunit</span><span class="o">.</span><span class="n">c_exec</span><span class="p">(</span><span class="n">c_compile</span><span class="p">(</span><span class="n">declarations</span><span class="p">),</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">cunit</span><span class="o">.</span><span class="n">RunTimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">err</span>
+
+    <span class="k">return</span> <span class="n">_exec</span></div>
+
+<div class="viewcode-block" id="c_lint_checks"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.c_mock.c_lint_checks">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">c_lint_checks</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;*Fixture*: Return C -lint checks to appy - default is &#39;*&#39; (all). Overwirte in your test as required&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;*&quot;</span></div>
+
+<div class="viewcode-block" id="c_lint"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.c_mock.c_lint">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">c_lint</span><span class="p">(</span><span class="n">student</span><span class="p">,</span><span class="n">test_path</span><span class="p">,</span><span class="n">build_path</span><span class="p">,</span><span class="n">c_lint_checks</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;*Fixture*: A function to provide lint ouput on students C file</span>
+<span class="sd">    </span>
+<span class="sd">    The returned function takes the following arguments:</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">       source_file (Path): Path to C source file to be checked</span>
+<span class="sd">       man_warnings (int): Optionally maximum number of warning to accept before test</span>
+<span class="sd">          is considered a failure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">includes</span><span class="o">=</span><span class="p">[(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;-I</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span><span class="n">test_path</span><span class="p">,</span> <span class="n">build_path</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">path</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">_c_lint</span><span class="p">(</span><span class="n">source_file</span><span class="p">,</span> <span class="n">max_warnings</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot;clang-tidy&quot;</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">path</span><span class="o">/</span><span class="n">source_file</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;-checks=</span><span class="si">{</span><span class="n">c_lint_checks</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;--quiet&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">includes</span><span class="p">),</span>
+              <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">count</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">count</span><span class="o">&gt;</span><span class="n">max_warnings</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">cunit</span><span class="o">.</span><span class="n">LintError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">cunit</span><span class="o">.</span><span class="n">CompilationError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">_c_lint</span></div>
+
+   <span class="c1"># e.g. clang-tidy Q2b.c -checks=* --quiet -- -I../../../tests/2022/</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023-2023, John Williams.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>
