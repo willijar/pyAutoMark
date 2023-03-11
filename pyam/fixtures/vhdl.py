@@ -94,11 +94,10 @@ def run_ghdl(command,
              build_path="./",
              run_options=(),
              timeout=None):
-    """RUn the ghdl command
+    """Run the ghdl command
     Args:
       ghdl_exec (Union[Path|str]): ghdl executable
-      command (str): the ghdl command string to use e.g.
-        -a to analyse or --elab-run to run simulation
+      command (str): the ghdl command string to use e.g. -a to analyse or --elab-run to run simulation
       options (Sequence[str]): sequence of additional options to pass to ghdl
       unit (str): the top level vhdl to execute (if running a simulation)
       run_options (Sequence[str]): Additional run time ghdl options to give after unit
@@ -304,15 +303,15 @@ def pytest_collect_file(parent, path) -> List:
     """Hook into pytest
 
     These are VHDL files that start with test_ and
-    contain "-- PYAM_TEST fileglob" comment
+    contain "-- PYAM\_TEST fileglob" comment
     definition where fileglob will match a students file
 
-    They may also contain a -- PYAM_TIMEOUT <float
+    They may also contain a -- PYAM_TIMEOUT <float>
 
     Multiple tests can be instantiated per testbench using a PYAM_TEST generic,
     Where the values are specified in a -- PYAM_TEST_VALUES comment
 
-    Tests are recognised as symbols matching "TEST_[A-Z0-9_]+"
+    Tests are recognised as symbols matching "TEST\_[A-Z0-9\_]+"
 
     A test timeout may be specified using #DEFINE PYAM_TIMEOUT <float>
 

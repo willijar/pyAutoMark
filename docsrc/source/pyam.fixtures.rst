@@ -4,10 +4,10 @@ pyam.fixtures package
 Submodules
 ----------
 
-pyam.fixtures.c\_mock module
-----------------------------
+pyam.fixtures.clang module
+--------------------------
 
-.. automodule:: pyam.fixtures.c_mock
+.. automodule:: pyam.fixtures.clang
     :members:
     :undoc-members:
     :show-inheritance:

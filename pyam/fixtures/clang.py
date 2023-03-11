@@ -186,7 +186,7 @@ def pytest_collect_file(parent, path) -> List:
     They may also contain a #DEFINE PYAM_LINT n,expr
     definition to run a CLANG_TIDY test
 
-    Tests are recognised as symbols matching "TEST_[A-Z0-9_]+"
+    Tests are recognised as symbols matching "TEST\_[A-Z0-9_\]+"
 
     A test timeout may be specified using #DEFINE PYAM_TIMEOUT <float>
 
