@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyam.cunit &#8212; pyAutoMark 0.4.0 documentation</title>
+    <title>pyam.cunit &#8212; pyAutoMark 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -52,7 +52,7 @@
 
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">List</span>
 
 
 <div class="viewcode-block" id="CompilationError"><a class="viewcode-back" href="../../pyam.html#pyam.cunit.CompilationError">[docs]</a><span class="k">class</span> <span class="nc">CompilationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
@@ -67,7 +67,7 @@
 
 
 <div class="viewcode-block" id="c_compile"><a class="viewcode-back" href="../../pyam.html#pyam.cunit.c_compile">[docs]</a><span class="k">def</span> <span class="nf">c_compile</span><span class="p">(</span><span class="n">binary</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-              <span class="n">sources</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span><span class="nb">str</span><span class="p">]],</span>
+              <span class="n">source</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span><span class="nb">str</span><span class="p">],</span>
               <span class="n">include</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(),</span>
               <span class="n">cflags</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
               <span class="n">declarations</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
@@ -89,44 +89,45 @@
 <span class="sd">        Location of binary executable</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=W1510</span>
-    <span class="n">sources</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">]</span>
     <span class="n">include</span> <span class="o">=</span> <span class="p">[(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;-I</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">include</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">dec</span> <span class="ow">in</span> <span class="n">declarations</span><span class="p">:</span>
         <span class="n">cflags</span> <span class="o">=</span> <span class="n">cflags</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;-D&quot;</span><span class="p">,</span> <span class="n">dec</span><span class="p">]</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span>
         <span class="p">(</span><span class="n">compiler</span><span class="p">,</span> <span class="o">*</span><span class="n">cflags</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
-         <span class="nb">str</span><span class="p">(</span><span class="n">binary</span><span class="p">),</span> <span class="o">*</span><span class="n">include</span><span class="p">,</span> <span class="o">*</span><span class="n">sources</span><span class="p">),</span>
+         <span class="nb">str</span><span class="p">(</span><span class="n">binary</span><span class="p">),</span> <span class="o">*</span><span class="n">include</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">source</span><span class="p">)),</span>
         <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">binary</span>
-    <span class="k">raise</span> <span class="n">CompilationError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span></div>
+    <span class="k">raise</span> <span class="n">CompilationError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="o">+</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="c_exec"><a class="viewcode-back" href="../../pyam.html#pyam.cunit.c_exec">[docs]</a><span class="k">def</span> <span class="nf">c_exec</span><span class="p">(</span><span class="n">binary</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">flags</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="p">(),</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">True</span><span class="p">:</span>
+<div class="viewcode-block" id="c_exec"><a class="viewcode-back" href="../../pyam.html#pyam.cunit.c_exec">[docs]</a><span class="k">def</span> <span class="nf">c_exec</span><span class="p">(</span><span class="n">binary</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+           <span class="n">flags</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="p">(),</span>
+           <span class="nb">input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+           <span class="n">timeout</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">True</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Execute a binary executable with given flags.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        binary: Path to binary executable</span>
 <span class="sd">        timeout: timeout for process</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        RunTimeError: If return code is 0</span>
+<span class="sd">        input : A string that will be fed to standard input or</span>
+<span class="sd">           a list of strings can be given - these will be joined with a newline character.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        True</span>
+<span class="sd">        subprocess.CompletedProcess: From the run</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span><span class="nb">str</span><span class="p">)):</span>
+        <span class="nb">input</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="c1"># pylint: disable=W1510</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">run</span><span class="p">(</span>
         <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">binary</span><span class="p">),</span> <span class="o">*</span><span class="n">flags</span><span class="p">),</span>
         <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span>
         <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">RunTimeError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">+</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
-    <span class="k">return</span> <span class="kc">True</span></div>
+        <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div>
+
 </pre></div>
 
           </div>
@@ -159,7 +160,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

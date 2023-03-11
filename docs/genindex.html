@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Index &#8212; pyAutoMark 0.4.0 documentation</title>
+    <title>Index &#8212; pyAutoMark 0.5.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -29,7 +29,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -50,6 +50,7 @@
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
  | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -323,7 +324,7 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyam.fixtures.html#pyam.fixtures.c_mock.binary_name">binary_name() (in module pyam.fixtures.c_mock)</a>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.binary_name">binary_name() (in module pyam.fixtures.clang)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -337,25 +338,48 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.c_binary">c_binary() (in module pyam.fixtures.clang)</a>
+</li>
       <li><a href="pyam.html#pyam.cunit.c_compile">c_compile() (in module pyam.cunit)</a>
 
       <ul>
-        <li><a href="pyam.fixtures.html#pyam.fixtures.c_mock.c_compile">(in module pyam.fixtures.c_mock)</a>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.clang.c_compile">(in module pyam.fixtures.clang)</a>
+</li>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.c_compile">(pyam.fixtures.clang.CTestFile method)</a>
 </li>
       </ul></li>
       <li><a href="pyam.html#pyam.cunit.c_exec">c_exec() (in module pyam.cunit)</a>
 
       <ul>
-        <li><a href="pyam.fixtures.html#pyam.fixtures.c_mock.c_exec">(in module pyam.fixtures.c_mock)</a>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.clang.c_exec">(in module pyam.fixtures.clang)</a>
+</li>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.c_exec">(pyam.fixtures.clang.CTestFile method)</a>
 </li>
       </ul></li>
-      <li><a href="pyam.fixtures.html#pyam.fixtures.c_mock.c_lint">c_lint() (in module pyam.fixtures.c_mock)</a>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.c_lint">c_lint() (in module pyam.fixtures.clang)</a>
+
+      <ul>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.c_lint">(pyam.fixtures.clang.CTestFile method)</a>
 </li>
-      <li><a href="pyam.fixtures.html#pyam.fixtures.c_mock.c_lint_checks">c_lint_checks() (in module pyam.fixtures.c_mock)</a>
+      </ul></li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.c_lint_checks">c_lint_checks() (in module pyam.fixtures.clang)</a>
 </li>
       <li><a href="pyam.html#pyam.cohort.Student.check_manifest">check_manifest() (pyam.cohort.Student method)</a>
 </li>
+      <li>
+    CHECKS
+
+      <ul>
+        <li><a href="examples/clang.html#cmdoption-arg-checks">command line option</a>, <a href="examples/cmock.html#cmdoption-arg-checks">[1]</a>
+</li>
+      </ul></li>
       <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.clean">clean() (in module pyam.fixtures.vhdl)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.clint_checks">clint_checks (pyam.fixtures.clang.CTestFile attribute)</a>, <a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.clint_checks">[1]</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.clint_threshold">clint_threshold (pyam.fixtures.clang.CTestFile attribute)</a>, <a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.clint_threshold">[1]</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CLintItem">CLintItem (class in pyam.fixtures.clang)</a>
 </li>
       <li><a href="glossary.html#term-cohort"><strong>cohort</strong></a>
 
@@ -370,6 +394,10 @@
       <ul>
         <li><a href="pyam.html#pyam.config.Config.cohort">(pyam.config.Config attribute)</a>
 </li>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.cohort">(pyam.fixtures.clang.CTestFile attribute)</a>, <a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.cohort">[1]</a>
+</li>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.cohort">(pyam.fixtures.vhdl.VHDLTestFile attribute)</a>, <a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.cohort">[1]</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -377,9 +405,30 @@
 </li>
       <li><a href="pyam.html#pyam.config.Config.cohort_path">cohort_path (pyam.config.Config attribute)</a>
 </li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.collect">collect() (pyam.fixtures.clang.CTestFile method)</a>
+
+      <ul>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.collect">(pyam.fixtures.vhdl.VHDLTestFile method)</a>
+</li>
+      </ul></li>
+      <li>
+    command line option
+
+      <ul>
+        <li><a href="examples/clang.html#cmdoption-arg-checks">CHECKS</a>, <a href="examples/cmock.html#cmdoption-arg-checks">[1]</a>
+</li>
+        <li><a href="examples/clang.html#cmdoption-arg-n">N</a>, <a href="examples/cmock.html#cmdoption-arg-n">[1]</a>
+</li>
+        <li><a href="examples/clang.html#cmdoption-arg-timeout">TIMEOUT</a>, <a href="examples/cmock.html#cmdoption-arg-timeout">[1]</a>
+</li>
+        <li><a href="examples/clang.html#cmdoption-arg-uut-c">UUT.c</a>, <a href="examples/cmock.html#cmdoption-arg-uut-c">[1]</a>
+</li>
+      </ul></li>
       <li><a href="pyam.html#pyam.cunit.CompilationError">CompilationError</a>
 </li>
-      <li><a href="pyam.fixtures.html#pyam.fixtures.c_mock.compile_flags">compile_flags() (in module pyam.fixtures.c_mock)</a>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.compile_file_path">compile_file_path (pyam.fixtures.clang.CTestFile attribute)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.compile_flags">compile_flags() (in module pyam.fixtures.clang)</a>
 </li>
       <li><a href="pyam.fixtures.html#pyam.fixtures.common.compiler">compiler() (in module pyam.fixtures.common)</a>
 </li>
@@ -391,7 +440,19 @@
 </li>
       <li><a href="pyam.html#pyam.config_manager.ConfigManager">ConfigManager (class in pyam.config_manager)</a>
 </li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.configure">configure() (pyam.fixtures.clang.CTestFile method)</a>
+
+      <ul>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.configure">(pyam.fixtures.vhdl.VHDLTestFile method)</a>
+</li>
+      </ul></li>
       <li><a href="pyam.html#pyam.cohort.Student.course">course (pyam.cohort.Student attribute)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.ctest_glob">ctest_glob (pyam.fixtures.clang.CTestFile attribute)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile">CTestFile (class in pyam.fixtures.clang)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestItem">CTestItem (class in pyam.fixtures.clang)</a>
 </li>
       <li><a href="pyam.html#pyam.cohort.current_academic_year">current_academic_year() (in module pyam.cohort)</a>
 </li>
@@ -427,14 +488,22 @@
 </li>
       <li><a href="pyam.cmd.html#pyam.cmd.mark.fill_workbook">fill_workbook() (in module pyam.cmd.mark)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyam.html#pyam.files.find_executable">find_executable() (in module pyam.files)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyam.html#pyam.cohort.Student.find_files">find_files() (pyam.cohort.Student method)</a>
 </li>
       <li><a href="pyam.html#pyam.cohort.Student.first_name">first_name (pyam.cohort.Student attribute)</a>
 </li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.from_parent">from_parent() (pyam.fixtures.clang.CTestFile class method)</a>
+
+      <ul>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.from_parent">(pyam.fixtures.vhdl.VHDLTestFile class method)</a>
+</li>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestItem.from_parent">(pyam.fixtures.vhdl.VHDLTestItem class method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -472,6 +541,14 @@
       <li><a href="pyam.html#pyam.cohort.Student.github_username">github_username (pyam.cohort.Student attribute)</a>
 </li>
       <li><a href="pyam.cmd.html#pyam.cmd.find_duplicates.group_records">group_records() (in module pyam.cmd.find_duplicates)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.includes">includes() (pyam.fixtures.clang.CTestFile method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -542,7 +619,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyam.html#pyam.config_manager.ConfigManager.manifest">manifest (pyam.config_manager.ConfigManager attribute)</a>
 </li>
-      <li><a href="pyam.fixtures.html#pyam.fixtures.c_mock.mock_c_file">mock_c_file() (in module pyam.fixtures.c_mock)</a>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.mock_c_file">mock_c_file() (in module pyam.fixtures.clang)</a>
 </li>
       <li><a href="pyam.fixtures.html#pyam.fixtures.python.module_name">module_name() (in module pyam.fixtures.python)</a>
 </li>
@@ -552,10 +629,17 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyam.html#pyam.cohort.Cohort.name">name (pyam.cohort.Cohort attribute)</a>
+      <li>
+    N
+
+      <ul>
+        <li><a href="examples/clang.html#cmdoption-arg-n">command line option</a>, <a href="examples/cmock.html#cmdoption-arg-n">[1]</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyam.html#pyam.cohort.Cohort.name">name (pyam.cohort.Cohort attribute)</a>
+</li>
       <li><a href="pyam.html#pyam.cohort.Student.name">name() (pyam.cohort.Student method)</a>
 </li>
   </ul></td>
@@ -691,8 +775,6 @@
         <li><a href="cmds/retrieve.html#cmdoption-pyam-retrieve-s">-s [STUDENTS [STUDENTS ...]], --students [STUDENTS [STUDENTS ...]]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pyam-run command line option
 
@@ -714,6 +796,8 @@
         <li><a href="cmds/run.html#cmdoption-pyam-run-t">-t TEST, --test TEST</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pyam-write-csv command line option
 
@@ -773,7 +857,7 @@
 </li>
       <li><a href="pyam.fixtures.html#module-pyam.fixtures">pyam.fixtures (module)</a>
 </li>
-      <li><a href="pyam.fixtures.html#module-pyam.fixtures.c_mock">pyam.fixtures.c_mock (module)</a>
+      <li><a href="pyam.fixtures.html#module-pyam.fixtures.clang">pyam.fixtures.clang (module)</a>
 </li>
       <li><a href="pyam.fixtures.html#module-pyam.fixtures.common">pyam.fixtures.common (module)</a>
 </li>
@@ -789,6 +873,18 @@
 </li>
       <li><a href="pyam.fixtures.html#pyam.fixtures.common.pytest_addoption">pytest_addoption() (in module pyam.fixtures.common)</a>
 </li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.pytest_collect_file">pytest_collect_file() (in module pyam.fixtures.clang)</a>
+
+      <ul>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.pytest_collect_file">(in module pyam.fixtures.vhdl)</a>
+</li>
+      </ul></li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.pytest_collection_modifyitems">pytest_collection_modifyitems() (in module pyam.fixtures.clang)</a>
+
+      <ul>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.pytest_collection_modifyitems">(in module pyam.fixtures.vhdl)</a>
+</li>
+      </ul></li>
       <li><a href="pyam.fixtures.html#pyam.fixtures.common.pytest_configure">pytest_configure() (in module pyam.fixtures.common)</a>
 </li>
       <li><a href="pyam.fixtures.html#pyam.fixtures.python.python_lint">python_lint() (in module pyam.fixtures.python)</a>
@@ -803,10 +899,28 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.re_clint">re_clint (pyam.fixtures.clang.CTestFile attribute)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.re_ctest">re_ctest (pyam.fixtures.clang.CTestFile attribute)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.RE_TEST">RE_TEST (pyam.fixtures.vhdl.VHDLTestFile attribute)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.RE_TEST_VALUE">RE_TEST_VALUE (pyam.fixtures.vhdl.VHDLTestFile attribute)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.re_timeout">re_timeout (pyam.fixtures.clang.CTestFile attribute)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.RE_TIMEOUT">RE_TIMEOUT (pyam.fixtures.vhdl.VHDLTestFile attribute)</a>
+</li>
       <li><a href="pyam.html#pyam.files.read_csv">read_csv() (in module pyam.files)</a>
 </li>
       <li><a href="pyam.html#pyam.cohort.Cohort.report_path">report_path (pyam.cohort.Cohort attribute)</a>
 </li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CLintItem.reportinfo">reportinfo() (pyam.fixtures.clang.CLintItem method)</a>
+
+      <ul>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestItem.reportinfo">(pyam.fixtures.clang.CTestItem method)</a>
+</li>
+      </ul></li>
       <li><a href="pyam.html#pyam.config.Config.reports_path">reports_path (pyam.config.Config attribute)</a>
 </li>
       <li><a href="pyam.html#pyam.cohort.Student.repository_name">repository_name() (pyam.cohort.Student method)</a>
@@ -815,14 +929,34 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CLintItem.repr_failure">repr_failure() (pyam.fixtures.clang.CLintItem method)</a>
+
+      <ul>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestItem.repr_failure">(pyam.fixtures.clang.CTestItem method)</a>
+</li>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestItem.repr_failure">(pyam.fixtures.vhdl.VHDLTestItem method)</a>
+</li>
+      </ul></li>
       <li><a href="glossary.html#term-root-directory"><strong>root directory</strong></a>
 </li>
       <li><a href="pyam.html#pyam.config.Config.root_path">root_path (pyam.config.Config attribute)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.run_ghdl">run_ghdl() (in module pyam.fixtures.vhdl)</a>
 </li>
       <li><a href="pyam.html#pyam.run_pytest.run_pytest">run_pytest() (in module pyam.run_pytest)</a>
 </li>
       <li><a href="pyam.fixtures.html#pyam.fixtures.python.run_script">run_script() (in module pyam.fixtures.python)</a>
 </li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.run_test">run_test() (pyam.fixtures.vhdl.VHDLTestFile method)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CLintItem.runtest">runtest() (pyam.fixtures.clang.CLintItem method)</a>
+
+      <ul>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestItem.runtest">(pyam.fixtures.clang.CTestItem method)</a>
+</li>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestItem.runtest">(pyam.fixtures.vhdl.VHDLTestItem method)</a>
+</li>
+      </ul></li>
       <li><a href="pyam.html#pyam.cunit.RunTimeError">RunTimeError</a>
 </li>
   </ul></td>
@@ -845,13 +979,19 @@
 </li>
       <li><a href="pyam.html#pyam.cohort.Student">Student (class in pyam.cohort)</a>
 </li>
+      <li><a href="pyam.cmd.html#pyam.cmd.find_duplicates.FileRecord.student">student (pyam.cmd.find_duplicates.FileRecord attribute)</a>
+
+      <ul>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.student">(pyam.fixtures.clang.CTestFile attribute)</a>, <a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.student">[1]</a>
+</li>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.student">(pyam.fixtures.vhdl.VHDLTestFile attribute)</a>, <a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.student">[1]</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyam.cmd.html#pyam.cmd.find_duplicates.FileRecord.student">student (pyam.cmd.find_duplicates.FileRecord attribute)</a>
-</li>
       <li><a href="pyam.fixtures.html#pyam.fixtures.common.student">student() (in module pyam.fixtures.common)</a>
 </li>
-      <li><a href="pyam.fixtures.html#pyam.fixtures.c_mock.student_c_file">student_c_file() (in module pyam.fixtures.c_mock)</a>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.student_c_file">student_c_file() (in module pyam.fixtures.clang)</a>
 </li>
       <li><a href="pyam.fixtures.html#pyam.fixtures.common.student_files">student_files() (in module pyam.fixtures.common)</a>
 </li>
@@ -869,18 +1009,45 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyam.cmd.html#pyam.cmd.init.term_input">term_input() (in module pyam.cmd.init)</a>
 </li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.test_file_path">test_file_path (pyam.fixtures.clang.CTestFile attribute)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestItem.test_generic">test_generic (pyam.fixtures.vhdl.VHDLTestItem attribute)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.test_glob">test_glob (pyam.fixtures.vhdl.VHDLTestFile attribute)</a>
+</li>
       <li><a href="pyam.html#pyam.test_manifest.test_manifest">test_manifest() (in module pyam.test_manifest)</a>
 </li>
       <li><a href="pyam.html#pyam.cohort.Cohort.test_path">test_path (pyam.cohort.Cohort attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyam.fixtures.html#pyam.fixtures.common.test_path">test_path() (in module pyam.fixtures.common)</a>
 </li>
       <li><a href="pyam.html#pyam.config.Config.test_paths">test_paths (pyam.config.Config attribute)</a>
 </li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.test_timeout">test_timeout (pyam.fixtures.vhdl.VHDLTestFile attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.test_values">test_values (pyam.fixtures.vhdl.VHDLTestFile attribute)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.tests">tests (pyam.fixtures.vhdl.VHDLTestFile attribute)</a>
+</li>
       <li><a href="pyam.html#pyam.cohort.Cohort.tests">tests() (pyam.cohort.Cohort method)</a>
 </li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.text">text (pyam.fixtures.vhdl.VHDLTestFile attribute)</a>
+</li>
+      <li>
+    TIMEOUT
+
+      <ul>
+        <li><a href="examples/clang.html#cmdoption-arg-timeout">command line option</a>, <a href="examples/cmock.html#cmdoption-arg-timeout">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.timeout">timeout (pyam.fixtures.clang.CTestFile attribute)</a>, <a href="pyam.fixtures.html#pyam.fixtures.clang.CTestFile.timeout">[1]</a>
+
+      <ul>
+        <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.timeout">(pyam.fixtures.vhdl.VHDLTestFile attribute)</a>
+</li>
+      </ul></li>
       <li><a href="pyam.cmd.html#pyam.cmd.generate_template.to_defined_name">to_defined_name() (in module pyam.cmd.generate_template)</a>
 </li>
   </ul></td>
@@ -890,6 +1057,17 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyam.html#pyam.cohort.Student.username">username (pyam.cohort.Student attribute)</a>
+</li>
+      <li>
+    UUT.c
+
+      <ul>
+        <li><a href="examples/clang.html#cmdoption-arg-uut-c">command line option</a>, <a href="examples/cmock.html#cmdoption-arg-uut-c">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile.uut_path">uut_path (pyam.fixtures.vhdl.VHDLTestFile attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -910,13 +1088,17 @@
 </li>
       <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLAnalysisError">VHDLAnalysisError</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLError">VHDLError</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLRunError">VHDLRunError</a>
 </li>
       <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLSynthesisError">VHDLSynthesisError</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestFile">VHDLTestFile (class in pyam.fixtures.vhdl)</a>
+</li>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.VHDLTestItem">VHDLTestItem (class in pyam.fixtures.vhdl)</a>
 </li>
       <li><a href="pyam.fixtures.html#pyam.fixtures.vhdl.vivado">vivado() (in module pyam.fixtures.vhdl)</a>
 </li>
@@ -930,7 +1112,7 @@
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyam.fixtures.html#pyam.fixtures.c_mock.write_header">write_header() (in module pyam.fixtures.c_mock)</a>
+      <li><a href="pyam.fixtures.html#pyam.fixtures.clang.write_header">write_header() (in module pyam.fixtures.clang)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -967,7 +1149,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -4,6 +4,7 @@ Embedded C using the C mock fixtures
 
 We often want to mark students embedded C designs without having to execute the code on hardware. For this we use mock
 headers and C functions.
+
 In this example I show how we can create a C mock to test their code on the host computer rather than 
 on the embedded system. I have two examples, using embedded AVR C, which are typical of the kinds
 of tasks students are given when they start out on their embedded programming journey.
@@ -301,6 +302,51 @@ on the students submitted code.
         exit(0);
         #endif
     }
+
+
+Example 3: Detecting C tests without Python
+-------------------------------------------
+
+In the previous examples I show how to use pytest fixtures and tests written in Python
+combined with C tests.
+
+pyam has the ability to collect and run C tests directly from C files.
+
+To be collected the C test filenames must start with "test\_" and must contain
+the following definition
+
+:PYAM_TEST: A unix glob string used to find the students file under test.
+
+:PYAM_TIMEOUT: (Optional) A floating point value spcifying the timeout for these tests.
+
+:PYAM_LINT: (Optional) A number specifying the naximum number of LINT warnings allowed
+    for the test to pass, optionally followed by the list of LINT checks to perform
+
+As with the examples above tests are collect from the C file as directives starting with
+TEST\_ 
+
+.. code-block:: C
+
+    #DEFINE PYAM_TEST "UUT.c"
+    #DEFINE PYAM_LINT N,CHECKS
+    #DEFINE PYAM_TIMEOUT TIMEOUT
+
+.. option:: UUT.c
+
+    The filename glob in the students directory 
+
+.. option:: N
+
+    The number of warnings to allow before a lint check is considered a fail.
+
+.. option:: CHECKS
+
+    The list fo checks (passed to clang-tidy)
+
+.. option:: TIMEOUT
+
+    THe maximum run time for a test in seconds.
+
 
 
 

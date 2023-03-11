@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Embedded C using the C mock fixtures &#8212; pyAutoMark 0.4.0 documentation</title>
+    <title>Embedded C using the C mock fixtures &#8212; pyAutoMark 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Python" href="python.html" />
-    <link rel="prev" title="write-csv" href="../cmds/write-csv.html" /> 
+    <link rel="prev" title="C" href="clang.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -34,9 +34,9 @@
           <a href="python.html" title="Python"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../cmds/write-csv.html" title="write-csv"
+          <a href="clang.html" title="C"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -48,8 +48,8 @@
   <div class="section" id="embedded-c-using-the-c-mock-fixtures">
 <h1>Embedded C using the C mock fixtures<a class="headerlink" href="#embedded-c-using-the-c-mock-fixtures" title="Permalink to this headline">¶</a></h1>
 <p>We often want to mark students embedded C designs without having to execute the code on hardware. For this we use mock
-headers and C functions.
-In this example I show how we can create a C mock to test their code on the host computer rather than
+headers and C functions.</p>
+<p>In this example I show how we can create a C mock to test their code on the host computer rather than
 on the embedded system. I have two examples, using embedded AVR C, which are typical of the kinds
 of tasks students are given when they start out on their embedded programming journey.</p>
 <div class="section" id="directory-structure">
@@ -338,6 +338,58 @@ on the students submitted code.</p>
 </div>
 </div>
 </div>
+<div class="section" id="example-3-detecting-c-tests-without-python">
+<h2>Example 3: Detecting C tests without Python<a class="headerlink" href="#example-3-detecting-c-tests-without-python" title="Permalink to this headline">¶</a></h2>
+<p>In the previous examples I show how to use pytest fixtures and tests written in Python
+combined with C tests.</p>
+<p>pyam has the ability to collect and run C tests directly from C files.</p>
+<p>To be collected the C test filenames must start with “test_” and must contain
+the following definition</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">PYAM_TEST:</th><td class="field-body">A unix glob string used to find the students file under test.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">PYAM_TIMEOUT:</th><td class="field-body">(Optional) A floating point value spcifying the timeout for these tests.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">PYAM_LINT:</th><td class="field-body">(Optional) A number specifying the naximum number of LINT warnings allowed
+for the test to pass, optionally followed by the list of LINT checks to perform</td>
+</tr>
+</tbody>
+</table>
+<p>As with the examples above tests are collect from the C file as directives starting with
+TEST_</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="cp">#DEFINE PYAM_TEST &quot;UUT.c&quot;</span>
+<span class="cp">#DEFINE PYAM_LINT N,CHECKS</span>
+<span class="cp">#DEFINE PYAM_TIMEOUT TIMEOUT</span>
+</pre></div>
+</div>
+<dl class="option">
+<dt id="cmdoption-arg-uut-c">
+<code class="descname">UUT.c</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-arg-uut-c" title="Permalink to this definition">¶</a></dt>
+<dd><p>The filename glob in the students directory</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-arg-n">
+<code class="descname">N</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-arg-n" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of warnings to allow before a lint check is considered a fail.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-arg-checks">
+<code class="descname">CHECKS</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-arg-checks" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list fo checks (passed to clang-tidy)</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-arg-timeout">
+<code class="descname">TIMEOUT</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-arg-timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>THe maximum run time for a test in seconds.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -352,13 +404,14 @@ on the students submitted code.</p>
 <li><a class="reference internal" href="#directory-structure">Directory structure</a></li>
 <li><a class="reference internal" href="#example-1-replacing-function-calls">Example 1 - Replacing function calls</a></li>
 <li><a class="reference internal" href="#example-2-no-function-calls-registers-only">Example 2 - No function calls - registers only</a></li>
+<li><a class="reference internal" href="#example-3-detecting-c-tests-without-python">Example 3: Detecting C tests without Python</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="../cmds/write-csv.html"
-                        title="previous chapter">write-csv</a></p>
+  <p class="topless"><a href="clang.html"
+                        title="previous chapter">C</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="python.html"
                         title="next chapter">Python</a></p>
@@ -398,9 +451,9 @@ on the students submitted code.</p>
           <a href="python.html" title="Python"
              >next</a> |</li>
         <li class="right" >
-          <a href="../cmds/write-csv.html" title="write-csv"
+          <a href="clang.html" title="C"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

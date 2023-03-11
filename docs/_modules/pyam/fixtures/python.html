@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyam.fixtures.python &#8212; pyAutoMark 0.4.0 documentation</title>
+    <title>pyam.fixtures.python &#8212; pyAutoMark 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -116,28 +116,14 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=W1510</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">((</span><span class="s2">&quot;pylint&quot;</span><span class="p">,</span> <span class="n">python_file</span><span class="p">),</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+    
     <span class="k">if</span> <span class="p">((</span><span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">&amp;</span> <span class="mi">2</span><span class="p">)):</span> <span class="c1"># Fatal or Error Python return codes</span>
-        <span class="k">raise</span> <span class="n">PythonRunError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">PythonRunError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">+</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
     <span class="n">score</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([-\d\.]+)/10&quot;</span><span class="p">,</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">score</span><span class="o">&lt;</span><span class="mf">10.0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">score</span><span class="o">&lt;</span><span class="n">score_threshold</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">PythonStyleError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Code Rating of </span><span class="si">{</span><span class="n">score</span><span class="si">}</span><span class="s2"> lower than </span><span class="si">{</span><span class="n">score_threshold</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-    
-<span class="c1"># need to think about timeouts for python code - with windows too (signal will notn work)</span>
-<span class="c1"># @contextmanager</span>
-<span class="c1"># def timeout(duration):</span>
-<span class="c1">#     def timeout_handler(signum, frame):</span>
-<span class="c1">#         raise TimeoutError(f&#39;block timedout after {duration} seconds&#39;)</span>
-<span class="c1">#     signal.signal(signal.SIGALRM, timeout_handler)</span>
-<span class="c1">#     signal.alarm(duration)</span>
-<span class="c1">#     try:</span>
-<span class="c1">#         yield</span>
-<span class="c1">#     finally:</span>
-<span class="c1">#         signal.alarm(0)</span>
-
-<span class="c1"># def sleeper(duration):</span>
-<span class="c1">#     time.sleep(duration)</span>
-<span class="c1">#     print(&#39;finished&#39;)</span>
 </pre></div>
 
           </div>
@@ -170,7 +156,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

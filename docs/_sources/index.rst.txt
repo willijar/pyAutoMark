@@ -82,6 +82,7 @@ Examples
 .. toctree::
    :maxdepth: 1
 
+   examples/clang
    Embedded C <examples/cmock>
    examples/python
    examples/vhdl
