@@ -1,0 +1,269 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>VHDL &#8212; pyAutoMark 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pyam" href="../modules.html" />
+    <link rel="prev" title="Python" href="python.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../modules.html" title="pyam"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="python.html" title="Python"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="vhdl">
+<h1>VHDL<a class="headerlink" href="#vhdl" title="Permalink to this headline">¶</a></h1>
+<p>A set of fixtures are provided which uses <a class="reference external" href="http://ghdl.free.fr/">GHDL</a> as a free open source simulator for VHDL
+and the <a class="reference external" href="https://www.xilinx.com/products/design-tools/vivado.html">Xilinx Vivado</a> design software for to synthesise
+hardware designs written in VHDL  for Xilinx FPGA devices which the students can then test in the laboratory.
+For the purpose of automatic marking we can test their designs using simulation testbenches
+(which can be the same as those we give the students to get feedback as they work) and the synthesis step o generate A
+binary “.bit” file that would the be used to program an FPGA device. I have found this to often be sufficient combined with
+having seen the students work in the laboratory without having to program the devices myself for every students design. I have used this
+both for intermediate digital desing courses using VHDL bu also for a digital systems hardware course where the students
+explore the tradeoffs in a microprocessor design using VHDL.</p>
+<div class="section" id="directory-structure">
+<h2>Directory structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h2>
+<p>Below is the directory structure for these tests. Under the cohort directory we will have a directory for each student which will
+contain their submitted designs in this case a VHDL entity and architecture for a trivial adder design based on a logic circuit in <code class="file docutils literal notranslate"><span class="pre">full_adder.vhd</span></code>
+and a constrainst file to map the ports onto hardware signals in file <code class="file docutils literal notranslate"><span class="pre">full_adder.xdc</span></code>
+- this is usually a first exercise I given the students to acclimitise them to using the software involved. They also design their
+own test bench based on using a truth table for their full adder in file <code class="file docutils literal notranslate"><span class="pre">full_adder_testbench.vhd</span></code> which we also want to check.</p>
+<p>In the tests folder we have the python unit test script <code class="file docutils literal notranslate"><span class="pre">test_full_adder.py</span></code>, our own testbench for the full adder <code class="file docutils literal notranslate"><span class="pre">full_adder_check.vhd</span></code>
+and two files to test the students testbench - one which implements a correct full adder <code class="file docutils literal notranslate"><span class="pre">full_adder_success</span></code> and one which has errors
+<code class="file docutils literal notranslate"><span class="pre">full_adder_fail</span></code> to check that they detect a failed design.</p>
+<div class="line-block">
+<div class="line">root</div>
+<div class="line">├─ cohorts</div>
+<div class="line">│     ├─ cohort1</div>
+<div class="line">│     │   └─ student1</div>
+<div class="line">│     │   │  └─ full_adder.vhd</div>
+<div class="line">│     │   │  └─ full_adder_testbench.vhd</div>
+<div class="line">│     │   │  └─ full_adder.xdc</div>
+<div class="line">└─ tests</div>
+<div class="line">│     ├─ cohort1</div>
+<div class="line">│     │   └─ test_full_adder.py</div>
+<div class="line">│     │   └─ full_adder_check.vhd</div>
+<div class="line">│     │   └─ full_adder_fail.vhd</div>
+<div class="line">│     │   └─ full_adder_success.vhd</div>
+</div>
+</div>
+<div class="section" id="example-1-testing-simulation-and-synthesis">
+<h2>Example 1 - Testing simulation and synthesis<a class="headerlink" href="#example-1-testing-simulation-and-synthesis" title="Permalink to this headline">¶</a></h2>
+<p>In the fist case we want to check that the students design pass a simulation and can be synthesised. They provide their implementation
+to a given entity specification and an associate constraints (xdc) file. I normally specify that the constraints file name must match that of the top level vhdl file and that these should match the entity name as a matter of good practice and the students work will fail if they do not follow this practice. It also makes automated marking easier to have a strict specification.</p>
+<div class="literal-block-wrapper docutils container" id="container-1">
+<div class="code-block-caption"><span class="caption-text">full_adder.vhd - sutdnets full adder implementation</span><a class="headerlink" href="#container-1" title="Permalink to this code">¶</a></div>
+<div class="highlight-vhdl notranslate"><div class="highlight"><pre><span></span><span class="k">library</span><span class="w"> </span><span class="nn">ieee</span><span class="p">;</span><span class="w"></span>
+<span class="k">use</span><span class="w"> </span><span class="nn">ieee.std_logic_1164.</span><span class="k">all</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">entity</span><span class="w"> </span><span class="nc">full_adder</span><span class="w"> </span><span class="k">is</span><span class="w"></span>
+<span class="w">    </span><span class="k">port</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">x</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">y</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">cin</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">s</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">cout</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">std_logic</span><span class="p">);</span><span class="w"></span>
+<span class="k">end</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">architecture</span><span class="w"> </span><span class="nc">behavioral</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nc">full_adder</span><span class="w"> </span><span class="k">is</span><span class="w"></span>
+<span class="k">begin</span><span class="w"></span>
+<span class="c1">-- students implementation goes here</span><span class="w"></span>
+<span class="k">end</span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<p>The constrains file will be a modified version of a template provided that has all of the pins on their
+development board listed but commented out - they just have to comment out the lines for the appropriate switches, buttons, LEDs etc and make sure they connect to the correctly named VHDL ports.</p>
+<p>My testbench for  this is from the truth table - exactly the same as I expect the students to produce.</p>
+<div class="literal-block-wrapper docutils container" id="container-2">
+<div class="code-block-caption"><span class="caption-text">full_adder_check.vhd - Turth table based test bench for full adder</span><a class="headerlink" href="#container-2" title="Permalink to this code">¶</a></div>
+<div class="highlight-vhdl notranslate"><div class="highlight"><pre><span></span><span class="k">library</span><span class="w"> </span><span class="nn">ieee</span><span class="p">;</span><span class="w"></span>
+<span class="k">use</span><span class="w"> </span><span class="nn">ieee.std_logic_1164.</span><span class="k">all</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">entity</span><span class="w"> </span><span class="nc">full_adder_check</span><span class="w"> </span><span class="k">is</span><span class="w"></span>
+<span class="k">end</span><span class="w"> </span><span class="nc">full_adder_check</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">architecture</span><span class="w"> </span><span class="nc">testbench</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nc">full_adder_check</span><span class="w"> </span><span class="k">is</span><span class="w"></span>
+<span class="k">component</span><span class="w"> </span><span class="nc">full_adder</span><span class="w"> </span><span class="k">is</span><span class="w"></span>
+<span class="w">    </span><span class="k">port</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">x</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">y</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">cin</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">s</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">std_logic</span><span class="p">);</span><span class="w"></span>
+<span class="k">end</span><span class="w"> </span><span class="k">component</span><span class="p">;</span><span class="w"></span>
+<span class="k">signal</span><span class="w"> </span><span class="n">input</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="kt">std_logic_vector</span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="k">downto</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="k">signal</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">std_logic_vector</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="k">downto</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="k">begin</span><span class="w"></span>
+<span class="n">uut</span><span class="o">:</span><span class="w"> </span><span class="n">full_adder</span><span class="w"> </span><span class="k">port</span><span class="w"> </span><span class="k">map</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">input</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">input</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="n">cin</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">input</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="n">s</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">output</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">output</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">);</span><span class="w"></span>
+
+<span class="nc">stim_proc</span><span class="o">:</span><span class="w"> </span><span class="k">process</span><span class="w"></span>
+<span class="k">begin</span><span class="w"></span>
+<span class="w">    </span><span class="n">input</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;000&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">wait</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="n">ns</span><span class="p">;</span><span class="w"> </span><span class="k">assert</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;00&quot;</span><span class="w"> </span><span class="n">report</span><span class="w"> </span><span class="s">&quot;0+0+0 failed&quot;</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="c1">-- Other 7 tests here</span><span class="w"></span>
+<span class="w">    </span><span class="k">wait</span><span class="p">;</span><span class="w"></span>
+<span class="k">end</span><span class="w"> </span><span class="k">process</span><span class="p">;</span><span class="w"></span>
+<span class="k">end</span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<p>Below is the unit test file. Since I often want to test many different student entities I paramaterise the tests.
+The first test is <code class="xref py py-func docutils literal notranslate"><span class="pre">test_sim()</span></code> which takes the students list of vhdl files that we need for the test
+(just <code class="file docutils literal notranslate"><span class="pre">fill_adder.vhd</span></code> in this case) and our provided testbench entity name (which is also used as the file name) <code class="file docutils literal notranslate"><span class="pre">full_adder_check</span></code>. It calls the provided fixture <a class="reference internal" href="../pyam.fixtures.html#pyam.fixtures.vhdl.vhdl_simulate" title="pyam.fixtures.vhdl.vhdl_simulate"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyam.fixtures.vhdl.vhdl_simulate()</span></code></a> to analyse the student files,
+together with our top level testbench, elaborate and run, throwing a <a class="reference internal" href="../pyam.fixtures.html#pyam.fixtures.vhdl.VHDLSynthesisError" title="pyam.fixtures.vhdl.VHDLSynthesisError"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyam.fixtures.vhdl.VHDLSynthesisError</span></code></a> if the test failed.</p>
+<p>The second test we have <code class="xref py py-func docutils literal notranslate"><span class="pre">test_full_adder_bit_file_present()</span></code> simply tests to see if the students have synthesised their own design
+- a reminder to check notes from observations in the laboratory. The third test <code class="xref py py-func docutils literal notranslate"><span class="pre">test_synthesis()</span></code> is also paramaterised as I may want to fdo this for several designs in a submission. It again takes the name of the top level entity (which also forms the name of the constraints file) and a full list of VHDL files needed. It calls the provided fixture <a class="reference internal" href="../pyam.fixtures.html#pyam.fixtures.vhdl.vhdl_synthesise" title="pyam.fixtures.vhdl.vhdl_synthesise"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyam.fixtures.vhdl.vhdl_synthesise()</span></code></a> which will return if the synthesis has completed and a bit file produced, otherwise raising an error.</p>
+<div class="literal-block-wrapper docutils container" id="container-3">
+<div class="code-block-caption"><span class="caption-text">test_full_adder.py  fragment</span><a class="headerlink" href="#container-3" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="s2">&quot;student_files,check&quot;</span><span class="p">,</span>
+    <span class="p">(([</span><span class="s2">&quot;full_adder.vhd&quot;</span><span class="p">],</span> <span class="s2">&quot;full_adder_check&quot;</span><span class="p">)))</span>
+<span class="k">def</span> <span class="nf">test_sim</span><span class="p">(</span><span class="n">check</span><span class="p">,</span> <span class="n">student_files</span><span class="p">,</span> <span class="n">vhdl_simulate</span><span class="p">):</span>
+    <span class="n">vhdl_simulate</span><span class="p">(</span><span class="n">check</span><span class="p">,</span> <span class="n">student_files</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_full_adder_bit_file_present</span><span class="p">(</span><span class="n">student</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">student</span><span class="o">.</span><span class="n">path</span><span class="o">/</span><span class="s2">&quot;full_adder.bit&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">slow</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s2">&quot;top, files&quot;</span><span class="p">,</span>
+                        <span class="p">((</span><span class="s2">&quot;full_adder&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;full_adder.vhd&quot;</span><span class="p">)),))</span>
+<span class="k">def</span> <span class="nf">test_synthesis</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">vhdl_synthesise</span><span class="p">):</span>
+    <span class="n">vhdl_synthesise</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="example-2-testing-student-test-benches">
+<h2>Example 2 - Testing student test benches<a class="headerlink" href="#example-2-testing-student-test-benches" title="Permalink to this headline">¶</a></h2>
+<p>Testing student test benches is a little more complex as we usually want to check if they detect both success (correct)
+designs and failure (incorrect) designs. To accomplish this we provide a correct and incorrect design in our tests folder -  <code class="file docutils literal notranslate"><span class="pre">full_adder_success.vhd</span></code> and <code class="file docutils literal notranslate"><span class="pre">full_adder_fail.vhd</span></code>. Below is the test function <code class="xref py py-func docutils literal notranslate"><span class="pre">test_full_adder_testbench()</span></code> for this case.
+It makes use of the <a class="reference internal" href="../pyam.fixtures.html#pyam.fixtures.vhdl.vhdl_simulate" title="pyam.fixtures.vhdl.vhdl_simulate"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyam.fixtures.vhdl.vhdl_simulate()</span></code></a> fixture as before to test success.</p>
+<p>To detect test bench failure we use the lower level <a class="reference internal" href="../pyam.fixtures.html#pyam.fixtures.vhdl.ghdl" title="pyam.fixtures.vhdl.ghdl"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyam.fixtures.vhdl.ghdl()</span></code></a> fixture provided to analyse our files and then run them, expecting a <a class="reference internal" href="../pyam.fixtures.html#pyam.fixtures.vhdl.VHDLRunError" title="pyam.fixtures.vhdl.VHDLRunError"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyam.fixtures.vhdl.VHDLRunError</span></code></a> indicating that the testbench has successfully produced an error. It is necessary to reanalyse the fles at this point as we are using a different file with the incorrect version of the top level entity in the test. In tis case we disable standard output capture (capsys) for the duration of the simulation as we don’t need it’s error output for the student (it is expected).</p>
+<div class="literal-block-wrapper docutils container" id="container-4">
+<div class="code-block-caption"><span class="caption-text">test_full_adder.py fragment for testing testbenches</span><a class="headerlink" href="#container-4" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_full_adder_testbench</span><span class="p">(</span><span class="n">vhdl_simulate</span><span class="p">,</span><span class="n">capsys</span><span class="p">,</span><span class="n">ghdl</span><span class="p">,</span> <span class="n">test_path</span><span class="p">,</span> <span class="n">student</span><span class="p">):</span>
+    <span class="c1">#Expect student testbench to succeed for full_adder_successs provided</span>
+    <span class="n">vhdl_simulate</span><span class="p">(</span><span class="s2">&quot;full_adder_testbench&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;full_adder_testbench.vhd&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;full_adder_success.vhd&quot;</span><span class="p">])</span>
+    <span class="c1">#Expect student testbench to fail for full_adder_fail provided</span>
+    <span class="k">with</span> <span class="n">capsys</span><span class="o">.</span><span class="n">disabled</span><span class="p">():</span>
+        <span class="n">ghdl</span><span class="p">(</span><span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="n">test_path</span> <span class="o">/</span> <span class="s2">&quot;full_adder_fail.vhd&quot;</span><span class="p">)</span>
+        <span class="n">ghdl</span><span class="p">(</span><span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;full_adder_testbench.vhd&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">VHDLRunError</span><span class="p">):</span>
+            <span class="n">ghdl</span><span class="p">(</span><span class="s2">&quot;--elab-run&quot;</span><span class="p">,</span> <span class="s2">&quot;full_adder_testbench&quot;</span><span class="p">,</span> <span class="n">run_options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;--assert-level=error&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">VHDL</a><ul>
+<li><a class="reference internal" href="#directory-structure">Directory structure</a></li>
+<li><a class="reference internal" href="#example-1-testing-simulation-and-synthesis">Example 1 - Testing simulation and synthesis</a></li>
+<li><a class="reference internal" href="#example-2-testing-student-test-benches">Example 2 - Testing student test benches</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="python.html"
+                        title="previous chapter">Python</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../modules.html"
+                        title="next chapter">pyam</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/examples/vhdl.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../modules.html" title="pyam"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="python.html" title="Python"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.4.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023-2023, John Williams.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>
