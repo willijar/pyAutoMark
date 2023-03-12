@@ -95,9 +95,13 @@ A complete collection of reference information.
 .. toctree::
    :maxdepth: 2
 
+   configuration<schema>
+   
    modules
 
    glossary
+
+   
 
 
 Indices and tables
