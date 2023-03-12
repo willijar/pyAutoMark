@@ -12,7 +12,7 @@ Attributes:
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any,Union
 
 
 class ConfigManager:
@@ -189,3 +189,33 @@ SCHEMA = {
         "type": datetime.fromisoformat
     }
 }
+
+
+def write_schema_rst(path, schema = SCHEMA):
+    """Write schema out as RST to given location
+    
+    Args:
+        path: location for file to be written to
+        schema: The schema
+    """
+    with open(path,"w") as fid:
+        def write_section(section, indent=0):
+            prefix=" "*indent
+            for key,value in section.items():
+                if value.get("description"): # terminal node
+                    if value.get("type"):
+                        the_type=f" ({value['type'].__name__})"
+                    else:
+                        the_type=""
+                    if value.get("default"):
+                        default=f" - default: '{value.get('default')}'"
+                    else:
+                        default=""
+                    fid.write(f"{prefix}:{key}:{the_type} {value['description']}{default}\n")
+                else: # new section
+                    fid.write(f"{prefix}:{key}:\n")
+                    write_section(value,indent+4)
+
+        write_section(schema)
+
+#write_schema_rst("schema.rst")
