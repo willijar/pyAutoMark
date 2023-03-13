@@ -210,6 +210,9 @@ class Student:
     def __repr__(self):
         return f"<Student {self.cohort.name}/{self.student_id}>"
 
+    def __lt__(self,other):
+        return (self.last_name, self.first_name) < (other.last_name, other.first_name) 
+    
     def __str__(self):
         return self.name()
 
