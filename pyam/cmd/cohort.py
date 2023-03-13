@@ -16,7 +16,7 @@ def main(args=None):
     If given a cohort name but no further command set the default cohort.
     """
     if args.cohort:
-        cohort=get_cohort(args.cohort)
+        cohort = get_cohort(args.cohort)
         CONFIG["cohort"] = args.cohort
         CONFIG.store()
     else:
@@ -27,14 +27,14 @@ def main(args=None):
         if deadline:
             deadline = datetime.fromisoformat(deadline).astimezone()
         print(f"Deadline: {deadline}")
-        print("-"*100)
+        print("-" * 100)
         print(f"{'Student':40} | {'Submission Date':40} | Lateness")
-        print("-"*100)
+        print("-" * 100)
         for student in cohort.students():
             if not student.path.exists():
                 print(f"{student.name():40} | No submission")
                 continue
-            submission_time = student.rec.get("Submission Date", None)
+            submission_time = student.rec.get("submission-date", None)
             if submission_time:
                 submission_time = datetime.fromisoformat(submission_time)
                 days_ago = (today - submission_time).days
@@ -49,7 +49,7 @@ def main(args=None):
                 )
             else:
                 print(f"{student.name():40}: Unknown Submission Time")
-        print("-"*100)
+        print("-" * 100)
     elif args.list_files:
         for file, value in cohort["files"].items():
             print(f"{file:30}: {value['description']}")
@@ -59,7 +59,7 @@ def main(args=None):
     elif args.check_submissions:
         cohort.start_log_section("Checking Student Submissions")
         for student in cohort.students():
-            missing=student.check_manifest(log=True)
+            student.check_manifest(log=True)
     else:
         for name in list_cohorts():
             if name == CONFIG.get("cohort"):
@@ -79,9 +79,11 @@ def add_args(parser: argparse.ArgumentParser):
     parser.add_argument('--list-files',
                         action="store_true",
                         help="Print out file manifest (from manifest.json)")
-    parser.add_argument('--check-submissions',
-                        action="store_true",
-                        help="Check student submissions listing missing files for each student.")
+    parser.add_argument(
+        '--check-submissions',
+        action="store_true",
+        help="Check student submissions listing missing files for each student."
+    )
     parser.add_argument(
         '--list-tests',
         action="store_true",
