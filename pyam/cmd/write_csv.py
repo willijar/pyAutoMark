@@ -29,17 +29,15 @@ def main(args=None):
             return marks.pop(match)
         cohort.log.warning("No mark found for %s", student_id)
         return None
-    if not args.csv_files:
-        args.csv_files = list(cohort.report_path.glob(f"{args.prefix}*.csv"))
-    if not args.csv_files[0].exists():  # create a new csv file
-        write_mark_csv(args.csv_files[0], marks)
+    
+    if args.output:  # create a new csv file
+        write_mark_csv(args.output, marks)
     else:  # fill in already existing csv files - warn if students not included
         for path in args.csv_files:
-            print(path)
             set_csv_column(path, 
-                           cohort.get("mark-column.mark"), 
-                           cohort.get("mark-column.studentid"), 
-                           get_value)
+                        cohort.get("mark-column.mark"), 
+                        cohort.get("mark-column.studentid"), 
+                        get_value)
         for student in marks:
             cohort.log.warning("No CSV record for %s", student.name())
 
@@ -69,6 +67,8 @@ def get_marks(cohort, students, prefix, paths) -> dict:
     for path in paths:
         if path.suffix != ".xlsx":
             cohort.log.warning("File %s is not a spreadsheet", path)
+            continue
+        if path.stem.endswith("template"):
             continue
         try:
             (student_id, mark) = get_id_and_mark(path)
@@ -107,8 +107,11 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
         type=Path,
         default=[],
         help="List of csv files to be modified. "
-        "Default is those starting with prefix in report directory."
-        "If a single file is given and it does not exist it is created.")
+        "Default is those starting with prefix in report directory.")
+    parser.add_argument(
+        '-o','--output', type=Path,
+        help="Output path to create new CSV file in. Incompatible with --csv-files "
+    )
     parser.add_argument(
         '--mark-col',
         help="Name column of csv file where marks are to be written.")
