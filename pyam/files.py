@@ -78,7 +78,7 @@ def read_csv(filename: Union[Path, str],
       * Else return just as list of lists
     """
     rows = []
-    with open(filename, 'r') as fid:
+    with open(filename, 'r', encoding="utf-8-sig") as fid:
         reader = csv.reader(fid, delimiter=',', quotechar='"')
         for row in reader:
             rows.append(row)
@@ -116,7 +116,7 @@ def set_csv_column(filename: Union[Path, str], column_name: str, key_name: str,
                if it returns None old value is kept.
     """
     rows = []
-    with open(filename, 'r') as fid:
+    with open(filename, 'r', encoding="utf-8-sig") as fid:
         reader = csv.reader(fid, delimiter=',', quotechar='"')
         coltitles = reader.__next__()
         try:
