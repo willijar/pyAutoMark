@@ -273,13 +273,13 @@ class CTestFile(pytest.File):
         self.student = self.cohort.students(config.getoption("--student"))
         paths = list(self.student.path.glob(self.ctest_glob))
         if not paths:
-            self.cohort.log.warning("No CTest file matching '%s' found for %s",
+            self.cohort.log.warning("No file matching '%s' found for %s",
                             self.ctest_glob, self.student.name())
-            raise FileNotFoundError(self.student, self.ctest_glob)
+            #raise FileNotFoundError(self.student, self.ctest_glob)
         self.test_file_path = paths[0]
         if len(paths) > 1:
             self.cohort.log.warning(
-                "Multiple CTest files matching '%s' found for %s, using %s",
+                "Multiple files matching '%s' found for %s, using %s",
                 self.ctest_glob, self.student.name(), self.test_file_path)
         #insert include to student file
         self.compile_file_path = CONFIG.build_path / self.path.name
