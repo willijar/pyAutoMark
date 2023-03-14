@@ -53,7 +53,7 @@ def main(args=None):
     cohort = pyam.cohort.get_cohort(args.cohort)
     cohort.path.mkdir(exist_ok=True)
     cohort.start_log_section(f"Extracting downloads for Cohort {args.cohort}")
-    students = list(cohort.students)
+    students = list(cohort.students())
     submission_dates = {}
     for file in args.files:
         (username, filename, date) = extract_details(file, cohort.log)
@@ -65,6 +65,7 @@ def main(args=None):
             cohort.log.warning(
                 "Download file from %s who is not student in cohort", username)
             continue
+        student.path.mkdir(exist_ok=True)
         if filename == "txt":  # this is the download details txt - copy to student directory
             shutil.copy2(file, student.path)
         else:
@@ -72,7 +73,7 @@ def main(args=None):
                 shutil.unpack_archive(file, student.path)
                 cohort.log.info("Extracted files for %s from %s",
                                 student.username, file.name)
-            except ValueError:  # not recognised archive format
+            except (ValueError, shutil.ReadError):  # not recognised archive format
                 shutil.copy2(file, student.path / filename)
                 cohort.log.info("Copied %s to %s", file.name,
                                 student.path / filename)
