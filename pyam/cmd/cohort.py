@@ -48,7 +48,7 @@ def main(args=None):
                     f"{student.name():40} | {submission_time.strftime('%c')} - {days_ago:15} {past_deadline}"
                 )
             else:
-                print(f"{student.name():40}: Unknown Submission Time")
+                print(f"{student.name():40} | Unknown {' ':32} |")
         print("-" * 100)
     elif args.list_files:
         for file, value in cohort["files"].items():
