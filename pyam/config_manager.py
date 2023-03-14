@@ -5,8 +5,8 @@
 Attributes:
 
     SCHEMA (dict): A nested dictionary of discriptors for known configuration parameters.
-        For each leaf parameter there should be a dictionary with a "description" and possibly also a
-        "type"
+        For each leaf parameter there should be a dictionary with a "description"
+        and possibly also a "type"
 """
 
 import json
@@ -51,7 +51,8 @@ class ConfigManager:
         with open(self.config_path, "w") as fid:
             fid.write(json.dumps(self.manifest, indent=2, sort_keys=True))
 
-    def getconfig(dic: dict, index: str) -> Any:
+    @classmethod
+    def getconfig(cls, dic: dict, index: str) -> Any:
         """Look up nested dictionaries to retrieve a value
 
         Args:
@@ -73,12 +74,36 @@ class ConfigManager:
             return dic[keys[-1]]
         raise KeyError(f"{index} not found.")
 
+    @classmethod
+    def parse_type(cls, value: str, thetype: type):
+        """Given a type from schema parse COnfig value using this type
+
+        Class Method
+
+        Args:
+            value: The configuration value to be parsed
+            thetype: A type to covert value to
+        """
+        if thetype == datetime:
+            return datetime.fromisoformat(value)
+        elif thetype == Path:
+            return Path(value)
+        elif thetype == float:
+            return float(value)
+        else:
+            return value
+
     def __getitem__(self, index: str) -> Any:
         """Implementation of get for ConfigManager TYpes
 
         See :func:getconfig
         """
-        return ConfigManager.getconfig(self.manifest, index)
+        value = ConfigManager.getconfig(self.manifest, index)
+        try:
+            entry = ConfigManager.getconfig(SCHEMA, index)
+            return ConfigManager.parse_type(value, entry.get("type"))
+        except KeyError:
+            return value
 
     def __setitem__(self, index: str, newvalue: Any) -> None:
         """Set a configuration item
@@ -112,12 +137,18 @@ class ConfigManager:
         try:
             return self[index]
         except KeyError:
-            if default is not self.get.__defaults__[0]:
-                return default
-            try:
-                return ConfigManager._global_config[index]
-            except KeyError:
-                return None
+            pass
+        if default is not self.get.__defaults__[0]:
+            return default
+        try:
+            return ConfigManager._global_config[index]
+        except KeyError:
+            pass
+        try:
+            entry = ConfigManager.getconfig(SCHEMA, index)
+            return entry["default"]
+        except KeyError:
+            return None
 
 
 #Schema - a dictionary of known configuration parameters
@@ -159,7 +190,8 @@ SCHEMA = {
         },
     },
     "fixtures": {
-        "description": "List of pytest fixture sets to use"
+        "description": "List of pytest fixture sets to use",
+        "type": list
     },
     "path": {
         "tests": {
@@ -186,36 +218,82 @@ SCHEMA = {
     },
     "deadline": {
         "description": "deadline for assessment submission",
-        "type": datetime.fromisoformat
+        "type": datetime
+    },
+    "student-folder-name": {
+        "description": "What field to use for students folder name",
+        "default": "username"
+    },
+    "student-column": {
+        "studentid": {
+            "description": "The column to read for studentid",
+            "default": r"(?i)Student\s*ID"
+        },
+        "username": {
+            "description": "Column to read for students username",
+            "default": "(?i)Username"
+        },
+        "lastname": {
+            "description": "Column to read for students last (family) name",
+            "default": r"(?i)Last\s*name"
+        },
+        "firstname": {
+            "description": "Column to read for students first (given) name",
+            "default": r"(?i)First\s*name"
+        },
+        "course": {
+            "description":
+            "Column to read specifying which course student is on (if different from default)",
+            "default": "(?i)Child Course ID"
+        },
+        "github-username": {
+            "description":
+            "Column to read for the students username on github",
+            "default": "(?i)Github Username"
+        },
+        "submission-date": {
+            "description": "Column name to use to record submission dates",
+            "default": "Submission Date",
+        },
+    },
+    "mark-column": {
+        "studentid": {
+            "description": "Column name in marking csv file with student id",
+            "default": "#Cand Key"
+        },
+        "mark": {
+            "description": "Column name in marking csv file for mark",
+            "default": "Mark"
+        }
     }
 }
 
 
-def write_schema_rst(path, schema = SCHEMA):
-    """Write schema out as RST to given location
-    
+def write_schema_rst(fid):
+    """Write schema out as RST to given file descriptor
+
     Args:
-        path: location for file to be written to
+        fid: A file descriptor to write to
         schema: The schema
     """
-    with open(path,"w") as fid:
-        def write_section(section, indent=0):
-            prefix=" "*indent
-            for key,value in section.items():
-                if value.get("description"): # terminal node
-                    if value.get("type"):
-                        the_type=f" ({value['type'].__name__})"
-                    else:
-                        the_type=""
-                    if value.get("default"):
-                        default=f" - default: '{value.get('default')}'"
-                    else:
-                        default=""
-                    fid.write(f"{prefix}:{key}:{the_type} {value['description']}{default}\n")
-                else: # new section
-                    fid.write(f"{prefix}:{key}:\n")
-                    write_section(value,indent+4)
+    def write_section(section, indent=0):
+        prefix = " " * indent
+        for key, value in section.items():
+            if value.get("description"):  # is terminal node
+                if value.get("type"):
+                    the_type = f" ({value['type'].__name__})"
+                else:
+                    the_type = ""
+                if value.get("default"):
+                    default = f" - default: '{value.get('default')}'"
+                else:
+                    default = ""
+                fid.write(
+                    f"{prefix}:{key}:{the_type} {value['description']}{default}\n"
+                )
+            # determine if
+            else:  # new section
+                fid.write(f"{prefix}:{key}:\n")
+                write_section(value, indent + 4)
 
-        write_section(schema)
-
-#write_schema_rst("schema.rst")
+    write_section(SCHEMA)
