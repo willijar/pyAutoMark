@@ -270,12 +270,16 @@ class CTestFile(pytest.File):
         if self.cohort:  #already configured
             return
         self.cohort = pyam.cohort.get_cohort(config.getoption("--cohort"))
-        self.student = self.cohort.students(config.getoption("--student"))
+        student = config.getoption("--student") 
+        if not student: # no student specified - probably collecting tests only
+            return
+        self.student=self.cohort.students(student)
         paths = list(self.student.path.glob(self.ctest_glob))
         if not paths:
             self.cohort.log.warning("No file matching '%s' found for %s",
                             self.ctest_glob, self.student.name())
-            #raise FileNotFoundError(self.student, self.ctest_glob)
+            self.test_file_path = None
+            raise FileNotFoundError(self.student, self.ctest_glob)
         self.test_file_path = paths[0]
         if len(paths) > 1:
             self.cohort.log.warning(
@@ -308,6 +312,8 @@ class CTestFile(pytest.File):
 
     def c_exec(self, item):
         """Execute the compiled binary for item."""
+        if not self.test_file_path:
+            raise FileNotFoundError
         binary = self.c_compile(item)
         result = cunit.c_exec(binary, timeout=self.timeout)
         if result.returncode != 0:
@@ -315,6 +321,8 @@ class CTestFile(pytest.File):
 
     def c_lint(self, item):
         """Use clang-tidy to lint the file"""
+        if not self.test_file_path:
+            raise FileNotFoundError
         includes = [(lambda s: f"-I{s}")(s) for s in self.includes()]
         # pylint: disable=subprocess-run-check
         result = run(
@@ -347,11 +355,14 @@ class CTestItem(pytest.Item):
             return excinfo.value.args[0]
         if isinstance(excinfo.value, subprocess.TimeoutExpired):
             return f"Time taken >{excinfo.value.args[1]}s"
+        if isinstance(excinfo.value, FileNotFoundError):
+            return f"File Not Found: {self.parent.ctest_glob}"
         return super().repr_failure(excinfo, style)
 
     def reportinfo(self):
         """Short Report info for a test item"""
-        return self.parent.test_file_path.stem, 0, self.parent.test_file_path.stem + ":" + self.name
+        stem=self.parent.path.stem
+        return stem, 0, stem + ":" + self.name
 
 
 class CLintItem(pytest.Item):
@@ -365,15 +376,21 @@ class CLintItem(pytest.Item):
         """Called when self.runtest() raises an exception."""
         if isinstance(excinfo.value, cunit.LintError):
             return excinfo.value.args[0]
+        if isinstance(excinfo.value, FileNotFoundError):
+            return f"File Not Found: {self.parent.ctest_glob}"
         return super().repr_failure(excinfo, style)
 
     def reportinfo(self):
         """Short Report info for a lint item"""
-        return self.parent.test_file_path.stem, 0, self.parent.test_file_path.stem + ":" + self.name
+        stem=self.parent.path.stem
+        return stem, 0, stem + ":" + self.name
 
 
 def pytest_collection_modifyitems(config, items):
     """ENsure that if we have a test item that the file collector is configured"""
     for item in items:
         if isinstance(item, (CTestItem, CLintItem)):
-            item.parent.configure(config)
+            try:
+                item.parent.configure(config)
+            except FileNotFoundError:
+                pass
