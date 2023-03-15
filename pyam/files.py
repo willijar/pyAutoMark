@@ -4,10 +4,43 @@
 import shutil
 import os
 import re
+import argparse
 from pathlib import Path
 from typing import Any, Union, List, Dict, Callable
 import csv
 
+class PathGlob(argparse.Action):
+    """File Glob Action aimed to works for Windows and Linux
+    
+    On Windows it treats every value as a potential glob expression to be expanded
+    and adds the results onto the stored values.
+
+    On other systems the shell will already have expanded the expressions so just treat as a path
+
+    """
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        items = getattr(namespace, self.dest) or []
+        for item in values:
+            if os.name=='nt':
+                items.extend(Path().glob(item))
+            else:
+                items.append(Path(item))
+            setattr(namespace, self.dest, items)
+
+
+
+def expand_files(filearg):
+    """Given a files value (from args.files) expand the list using glob
+    
+    This is needed as Windows OS does not expand the file globs before passing to programmes"""
+    if os.name=='nt':
+        files=[]
+        for file in filearg:
+            files += Path().rglob(file)
+    else:
+        files=[Path(filearg)]
+    return files
 
 def get_depends(name: Any, depends: List[List]) -> List[Any]:
     """Determine the dependencies for a particular (file) name from a
@@ -133,7 +166,7 @@ def set_csv_column(filename: Union[Path, str], column_name: str, key_name: str,
                 else:
                     row[dest] = value
             rows.append(row)
-    with open(filename, 'w') as fid:
+    with open(filename, 'w', newline='') as fid:
         writer = csv.writer(fid, delimiter=',', quotechar='"')
         writer.writerow(coltitles)
         for row in rows:

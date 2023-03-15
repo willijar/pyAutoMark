@@ -17,12 +17,10 @@ import pyam.files
 def add_args(parser):
     """Get and parse arguments for this script"""
     add_common_args(parser)
-    parser.add_argument('--files',
-                        dest="files",
-                        nargs=argparse.REMAINDER,
-                        type=Path,
-                        default=[],
-                        help="list of workbooks files to be processed")
+    parser.add_argument("files",
+                        nargs='+',
+                        action=pyam.files.PathGlob,
+                        help="list of downloaded files to be processed")
 
 
 _GRADECENTRE_RE = re.compile(".+_(.+?)_attempt_(.+?)[_.](.+)")
