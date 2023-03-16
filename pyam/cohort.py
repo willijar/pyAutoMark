@@ -22,6 +22,7 @@ import logging
 import json
 import glob
 import re
+from os import walk
 from typing import Union, Dict, List
 from datetime import date, datetime
 from pathlib import Path
@@ -252,8 +253,10 @@ class Student:
             self.cohort.log.warning("No submission: %s", self.name())
             return files.keys()
         missing = []
+        if log:
+            log=self.cohort.log
         for rec in files.keys():
-            if not (self.path / rec).exists():
+            if not self.file(rec,log):
                 missing.append(rec)
         if missing and log:
             self.cohort.log.warning("Missing Files: %-40s: %2d missing: %s",
@@ -323,6 +326,43 @@ class Student:
                                          "%a %b %d %H:%M:%S %Y %z\n")
             raise ValueError(result.stderr)
         return None
+
+    def file(self, pattern: str, log: Union[logging.Logger,None] = None) -> Union[Path,None]:
+        """Attempt to find file matching given pathname pattern based on the configuration setting
+        filematch.pattern.
+
+        Args:
+            pattern: The file pattern to search for - either an exact path, glob or regexp
+                depending on the configuration setting filematch.pattern
+            log: If given use to log if no file found or multiple files found
+
+        Returns:
+            The path to the (first) matching file found or None if none found
+        """
+        matchtype=self.cohort["filematch.pattern"]
+        files=[]
+        if matchtype=="exact":
+            path=self.path / pattern
+            if path.exists():
+                files.append(path)
+        elif matchtype=="glob":
+            files=list(self.path.glob(pattern))
+        elif matchtype=="regexp":
+            matcher = re.compile(pattern)
+            for path in self.path.glob("**/*"):
+                if matcher.search(str(path)):
+                    files.append(path)
+        else:
+            raise ValueError("Invalid filematch.pattern", matchtype)
+        if not files:
+            if log:
+                log.warning("File Not Found: %s: '%s'",self.name(), pattern)
+            return None
+        if len(files)>1 and log:
+            log.warning("Multiple files found: %s matching '%s': using %s",
+                self.name(), pattern,  files[0].relative_to(self.path))
+        return files[0]
+
 
     def find_files(self,
                    pathname: str,

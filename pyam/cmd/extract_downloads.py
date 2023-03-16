@@ -35,7 +35,7 @@ def extract_details(file, log: logging.Logger = None):
             match.group(3),  # filename or txt
             datetime.strptime(match.group(2), "%Y-%m-%d-%H-%M-%S"))  # date
     log.warning("Unable to decode details from download file %s", file)
-    return None
+    return (None,None,None)
 
 
 def main(args=None):
@@ -85,7 +85,7 @@ def main(args=None):
         if student not in students:
             student.check_manifest(log=True)
         else:
-            cohort.log.warning("No download found for student %s", student)
+            cohort.log.warning("No download found for %s", student)
 
 
 if __name__ == "__main__":
