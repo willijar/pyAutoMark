@@ -339,7 +339,7 @@ class Student:
         Returns:
             The path to the (first) matching file found or None if none found
         """
-        matchtype=self.cohort["filematch.pattern"]
+        matchtype=self.cohort.get("filematch.pattern")
         files=[]
         if matchtype=="exact":
             path=self.path / pattern
