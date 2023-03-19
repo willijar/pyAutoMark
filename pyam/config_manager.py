@@ -230,6 +230,9 @@ SCHEMA = {
             "default": "glob"
         }
     },
+    "solution" : {
+        "username": { "description": "Username for 'solution' student in cohort"}
+    },
     "student-column": {
         "studentid": {
             "description": "The column to read for studentid",

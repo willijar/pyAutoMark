@@ -95,6 +95,17 @@ def student_files(student):
 
     return __student_files
 
+@pytest.fixture
+def solution(cohort):
+    """*Fixture* The solution "student" in the cohort.
+    
+    - if set in configuration"""
+    username=cohort.get("solution.username",None)
+    if username:
+        return cohort.students(username)
+    return None
+
+
 
 # @pytest.fixture(autouse=True)
 # def run_before_and_after_tests(build_dir,request):
