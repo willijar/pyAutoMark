@@ -36,7 +36,7 @@ def main(args=None):
                 continue
             submission_time = student.rec.get("submission-date", None)
             if submission_time:
-                submission_time = datetime.fromisoformat(submission_time)
+                submission_time = datetime.fromisoformat(submission_time).astimezone()
                 days_ago = (today - submission_time).days
                 days_ago = f"{days_ago:3} days ago. |"
                 past_deadline = ""

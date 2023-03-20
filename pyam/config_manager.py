@@ -224,6 +224,18 @@ SCHEMA = {
         "description": "What field to use for students folder name",
         "default": "username"
     },
+    "filematch": {
+        "pattern" : {
+            "description": "How to match/search for students files - one off exact, glob or regexp.",
+            "default": "glob"
+        }
+    },
+    "solution" : {
+        "username": { "description": "Username for 'solution' student in cohort"}
+    },
+    "workbook" : {
+        "description": "Name/relative path to students workbook for xlsx fixtures"
+    },
     "student-column": {
         "studentid": {
             "description": "The column to read for studentid",
