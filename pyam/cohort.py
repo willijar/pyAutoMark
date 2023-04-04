@@ -256,11 +256,11 @@ class Student:
         if log:
             log=self.cohort.log
         for rec in files.keys():
-            if not self.file(rec,log):
+            if not self.file(rec,False):
                 missing.append(rec)
         if missing and log:
-            self.cohort.log.warning("Missing Files: %-40s: %2d missing: %s",
-                                    self.name(), len(missing), missing)
+            self.cohort.log.warning("Missing Files: %s - %s",
+                                    self.name(), missing)
         return missing
 
     def repository_name(self) -> Union[str, None]:

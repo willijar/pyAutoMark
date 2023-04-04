@@ -102,14 +102,13 @@ def fill_workbook(template, student, report):
     set_field("course_assessment",student.cohort.get("course.assessment"),required=False)
     set_field("institution_name",student.cohort.get("institution.name"),required=False)
     set_field("institution_department",student.cohort.get("institution.department"),required=False)
+    set_field(student.cohort.get("template.report"),report.read_text(), required=False)
     course=student.rec.get("Course")
     if course:
         set_field("student_course",course)
-
     for key, value in analyse_report(report, cohort.tests(),
                                      cohort.log).items():
-        set_field(to_defined_name(key),value)
-
+        set_field(to_defined_name(key), value)
 
 def analyse_report(report_path: Path, tests: dict, log=None):
     """Returns a dictionary of results from a report file at path"""

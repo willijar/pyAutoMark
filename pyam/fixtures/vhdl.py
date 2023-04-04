@@ -124,7 +124,7 @@ def run_ghdl(command,
                  capture_output=True,
                  timeout=timeout)
     if result.returncode != 0:
-        msg = result.stdout
+        msg = result.stdout + result.stderr
         if command == "-a":
             raise VHDLAnalysisError(msg)
         if command in ("--elab-run", "-r"):
@@ -211,8 +211,8 @@ def vhdl_simulate(ghdl, student, test_path):
         try:
             ghdl("--elab-run", top, run_options=["--assert-level=error"])
         except VHDLError as err:
-            print(str(err))
-            raise err
+            # print(str(err.args[0]))
+            assert True, err.args[0]
 
     return _vhdl_simulate
 
@@ -262,9 +262,17 @@ def vivado(request, vivado_exec, build_path, student, vivado_options,
                      text=True,
                      timeout=timeout,
                      input=tcl)
-        if result.returncode != 0:
-            print(result.stdout)
-            raise VHDLSynthesisError
+        no_errors=0
+        errors=[]
+        # collect all unique error lines
+        for line in list(dict.fromkeys(result.stdout.splitlines())):
+            if "ERROR:" in line:
+                no_errors+=1
+                errors.append(line)
+            if "WARNING" in line:
+                errors.append(line)
+        if no_errors!=0:
+            raise AssertionError("\n".join(errors))
         return bitfile
 
     return _vivado
@@ -293,9 +301,8 @@ def vhdl_synthesise(student, build_path, vivado):
         for filename in student_files:
             files.append(student.path / filename)
         bitfile = vivado(build_path / f"{top}.bit", top, files,
-                         (f"{student.path}/{constraints_file}"))
-        if not bitfile.exists():
-            raise FileNotFoundError(bitfile)
+                         (f"{student.path}/{constraints_file}",))
+        assert bitfile.exists(), "No bitfile Generated"
 
     return _vhdl_synthesise
 

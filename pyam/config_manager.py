@@ -277,6 +277,12 @@ SCHEMA = {
             "description": "Column name in marking csv file for mark",
             "default": "Mark"
         }
+    },
+    "template": {
+        "report": {
+            "description" : "Name of cell in marking template for report",
+            "default": "report"
+        }
     }
 }
 

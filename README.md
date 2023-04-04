@@ -77,7 +77,7 @@ The toolset automates the following steps
 
 | Python Libraries         | Version     |
 |--------------------------|-------------|
-| openpyxl                 | 3.0.10      |
+| openpyxl                 | 3.1.2      |
 | pylint (Optional)        | 2.4.4       |
 | pytest-timeout (Optional)| |
 
