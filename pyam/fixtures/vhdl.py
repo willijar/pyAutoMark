@@ -262,9 +262,12 @@ def vivado(request, vivado_exec, build_path, student, vivado_options,
                      text=True,
                      timeout=timeout,
                      input=tcl)
-        if result.returncode != 0:
-            print(result.stdout)
-            raise VHDLSynthesisError
+        errors=[]
+        for line in result.stdout.splitlines():
+            if "ERROR:" in line:
+                errors.append(line)
+        if errors:
+            raise VHDLSynthesisError("\n".join(errors))
         return bitfile
 
     return _vivado
@@ -293,9 +296,8 @@ def vhdl_synthesise(student, build_path, vivado):
         for filename in student_files:
             files.append(student.path / filename)
         bitfile = vivado(build_path / f"{top}.bit", top, files,
-                         (f"{student.path}/{constraints_file}"))
-        if not bitfile.exists():
-            raise FileNotFoundError(bitfile)
+                         (f"{student.path}/{constraints_file}",))
+        assert bitfile.exists(), "No bitfile Generated"
 
     return _vhdl_synthesise
 
