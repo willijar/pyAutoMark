@@ -24,8 +24,6 @@ def main(args=None):
     if args.list_students:
         today = datetime.today().astimezone()
         deadline = cohort.get("deadline", None)
-        if deadline:
-            deadline = datetime.fromisoformat(deadline).astimezone()
         print(f"Deadline: {deadline}")
         print("-" * 100)
         print(f"{'Student':40} | {'Submission Date':40} | Lateness")
@@ -39,13 +37,20 @@ def main(args=None):
                 submission_time = datetime.fromisoformat(submission_time).astimezone()
                 days_ago = (today - submission_time).days
                 days_ago = f"{days_ago:3} days ago. |"
+                extension= student.rec.get("extension", None)
+                if extension:
+                    student_deadline=datetime.fromisoformat(extension).astimezone()
+                else:
+                    student_deadline=deadline
                 past_deadline = ""
                 if deadline:
-                    past_deadline = (submission_time - deadline)
-                    if past_deadline.days > 0:
-                        past_deadline = f"Late {past_deadline.days} days"
+                    diff = (submission_time - student_deadline)
+                    if diff.days > 0:
+                        past_deadline = f"Late {diff.days} days"
+                if extension:
+                    extension=f"(Extension: {extension})"
                 print(
-                    f"{student.name():40} | {submission_time.strftime('%c')} - {days_ago:15} {past_deadline}"
+                    f"{student.name():40} | {submission_time.strftime('%c')} - {days_ago:15} {past_deadline} {extension}"
                 )
             else:
                 print(f"{student.name():40} | Unknown {' ':32} |")

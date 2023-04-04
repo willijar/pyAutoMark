@@ -85,7 +85,7 @@ class ConfigManager:
             thetype: A type to covert value to
         """
         if thetype == datetime:
-            return datetime.fromisoformat(value)
+            return datetime.fromisoformat(value).astimezone()
         elif thetype == Path:
             return Path(value)
         elif thetype == float:
@@ -267,6 +267,10 @@ SCHEMA = {
             "description": "Column name to use to record submission dates",
             "default": "Submission Date",
         },
+        "extension": {
+            "description": "Column name to use for student extensions",
+            "default": "Extension"
+        }
     },
     "mark-column": {
         "studentid": {
