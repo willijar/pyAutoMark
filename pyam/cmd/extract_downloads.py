@@ -85,7 +85,7 @@ def main(args=None):
         if student not in students:
             student.check_manifest(log=True)
         else:
-            cohort.log.warning("No download found for %s", student)
+            cohort.log.warning("No download: %s", student)
 
 
 if __name__ == "__main__":
