@@ -15,7 +15,7 @@ from pyam.cohort import get_cohort
 def pytest_addoption(parser):
     """Add in pyAutoTest control options for pytest"""
     parser.addoption("--cohort", action="store", default=None)
-    parser.addoption("--student", action="store", default="solution")
+    parser.addoption("--student", action="store", default=None)
 
 
 def pytest_configure(config):
@@ -94,6 +94,17 @@ def student_files(student):
         return files
 
     return __student_files
+
+@pytest.fixture
+def solution(cohort):
+    """*Fixture* The solution "student" in the cohort.
+    
+    - if set in configuration"""
+    username=cohort.get("solution.username",None)
+    if username:
+        return cohort.students(username)
+    return None
+
 
 
 # @pytest.fixture(autouse=True)

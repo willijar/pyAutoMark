@@ -54,12 +54,12 @@ def main(args=None):
         for record in records:
             if record.student.cohort not in cohorts:
                 cohorts.append(record.student.cohort)
-        msg = f"Duplicate files found."
+        msg = "Duplicate '%s' files." % records[0].file.name
         for coh in cohorts:
             coh.start_log_section(msg)
         CONFIG.log.warning(msg)
         for record in records:
-            msg = f"Duplicate file {record.file.relative_to(CONFIG.root_path)} '{record.student.name()}'"\
+            msg = f"Duplicate file {record.file.relative_to(CONFIG.cohorts_path)} '{record.student.name()}'"\
             + f" : modified {datetime.fromtimestamp(record.stat.st_mtime)}"
             for coh in cohorts:
                 coh.log.warning(msg)
@@ -75,7 +75,7 @@ def get_records(cohort_names: Sequence[str]) -> List[FileRecord]:
         files: dict = coh.get("files", ())
         for student in coh.students():
             for file in files.keys():
-                filepath = student.path / file[0]
+                filepath = student.path / file
                 if filepath.exists():
                     records.append(FileRecord(student=student, file=filepath))
     return records
@@ -84,7 +84,7 @@ def get_records(cohort_names: Sequence[str]) -> List[FileRecord]:
 def group_records(records: List[FileRecord]) -> Dict:
     """GIve a list of file records group them by digest.
     Return a dictionary of matching records indexed by digest"""
-    groups = {}
+    groups={}
     for record in records:
         key = record.digest
         if key in groups:

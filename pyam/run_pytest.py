@@ -26,7 +26,7 @@ def run_pytest(cohort: 'pyam.cohort.Cohort', *extras: Union[List[str],None]) -> 
     sep=":"
     if os.name == "nt":
         sep=";"
-    env["PYTHONPATH"] = str(Path(__file__).parent.parent.resolve()) + sep + env["PYTHONPATH"]
+    env["PYTHONPATH"] = str(Path(__file__).parent.parent.resolve()) + sep + env.get("PYTHONPATH","")
     #set up fixtures argument
     extras = list(extras)
     #Get fixtures list -either from config or all

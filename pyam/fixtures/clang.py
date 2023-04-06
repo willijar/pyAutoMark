@@ -209,6 +209,8 @@ class CTestFile(pytest.File):
         ctest_glob: The string from #define PYAM_TEST "glob" - glob to find student file
         clint_threshold: Numeric threshold value from #define PYAM_LINT theshold,"checks"
         clint_checks: Lint checks from   #define PYAM_LINT threshold,"checks"
+        cflags: List of flags from PYAM_FLAGS to pass to compiler
+        link: List of link items to pass to compiler
         timeout: timout in seconds specified using #DEFINE PYAM_TIMEOUT <float>
         cohort: Student cohort under for test
         student: student under test
@@ -218,6 +220,8 @@ class CTestFile(pytest.File):
     re_ctest = re.compile(r'#define\s+PYAM_TEST\s+\"(.*)\"')
     re_clint = re.compile(r'#define\s+PYAM_LINT\s+(\d+)?(,\"(.*)\")?')
     re_timeout = re.compile(r'#define\s+PYAM_TIMEOUT\s+(.+)')
+    re_cflags = re.compile(r'#define\s+PYAM_CFLAGS\s+\"(.+)\"')
+    re_link = re.compile(r'#define\s+PYAM_LINK\s+\"(.+)\"')
     # attributes from initialisation
     text: str
     ctest_glob: str
@@ -229,6 +233,8 @@ class CTestFile(pytest.File):
     student: pyam.cohort.Student = None
     test_file_path: Path
     compile_file_path: Path
+    cflags: List[str]
+    link: List[str]
 
     @classmethod
     def from_parent(cls, parent, *, fspath=None, path=None, text="", **kw):
@@ -249,6 +255,14 @@ class CTestFile(pytest.File):
         match = self.re_timeout.search(text)
         if match:
             self.timeout = float(match.group(1))
+        self.cflags = ["-Wall", "-std=gnu99"]
+        match = self.re_cflags.search(text)
+        if match:
+            self.cflags = match.group(1).split()
+        self.link = []
+        match = self.re_link.search(text)
+        if match:
+            self.link = match.group(1).split()
         return self
 
     def collect(self):
@@ -270,16 +284,20 @@ class CTestFile(pytest.File):
         if self.cohort:  #already configured
             return
         self.cohort = pyam.cohort.get_cohort(config.getoption("--cohort"))
-        self.student = self.cohort.students(config.getoption("--student"))
+        student = config.getoption("--student")
+        if not student:  # no student specified - probably collecting tests only
+            return
+        self.student = self.cohort.students(student)
         paths = list(self.student.path.glob(self.ctest_glob))
         if not paths:
-            self.cohort.log("No CTest file matching '%s' found for %s",
-                            self.ctest_glob, self.student.name())
+            self.cohort.log.warning("No file matching '%s' found for %s",
+                                    self.ctest_glob, self.student.name())
+            self.test_file_path = None
             raise FileNotFoundError(self.student, self.ctest_glob)
         self.test_file_path = paths[0]
         if len(paths) > 1:
-            self.cohort.log(
-                "Multiple CTest files matching '%s' found for %s, using %s",
+            self.cohort.log.warning(
+                "Multiple files matching '%s' found for %s, using %s",
                 self.ctest_glob, self.student.name(), self.test_file_path)
         #insert include to student file
         self.compile_file_path = CONFIG.build_path / self.path.name
@@ -294,20 +312,20 @@ class CTestFile(pytest.File):
     def c_compile(self, item):
         """Compile the test for item - its name is set as a command line definition"""
         try:
-            return cunit.c_compile(
-                binary=CONFIG.build_path / self.test_file_path.stem,
-                source=self.compile_file_path,
-                include=self.includes(),
-                cflags=[
-                    "-funsigned-char", "-funsigned-bitfields", "-fpack-struct",
-                    "-fshort-enums", "-Wall", "-std=gnu99"
-                ],
-                declarations=[item.name])
+            return cunit.c_compile(binary=CONFIG.build_path /
+                                   self.test_file_path.stem,
+                                   source=self.compile_file_path,
+                                   include=self.includes(),
+                                   cflags=self.cflags,
+                                   link=self.link,
+                                   declarations=[item.name])
         except cunit.CompilationError as err:
             raise err
 
     def c_exec(self, item):
         """Execute the compiled binary for item."""
+        if not self.test_file_path:
+            raise FileNotFoundError
         binary = self.c_compile(item)
         result = cunit.c_exec(binary, timeout=self.timeout)
         if result.returncode != 0:
@@ -315,6 +333,8 @@ class CTestFile(pytest.File):
 
     def c_lint(self, item):
         """Use clang-tidy to lint the file"""
+        if not self.test_file_path:
+            raise FileNotFoundError
         includes = [(lambda s: f"-I{s}")(s) for s in self.includes()]
         # pylint: disable=subprocess-run-check
         result = run(
@@ -347,11 +367,14 @@ class CTestItem(pytest.Item):
             return excinfo.value.args[0]
         if isinstance(excinfo.value, subprocess.TimeoutExpired):
             return f"Time taken >{excinfo.value.args[1]}s"
+        if isinstance(excinfo.value, FileNotFoundError):
+            return f"File Not Found: {self.parent.ctest_glob}"
         return super().repr_failure(excinfo, style)
 
     def reportinfo(self):
         """Short Report info for a test item"""
-        return self.parent.test_file_path.stem, 0, self.parent.test_file_path.stem + ":" + self.name
+        stem = self.parent.path.stem
+        return stem, 0, stem + ":" + self.name
 
 
 class CLintItem(pytest.Item):
@@ -365,15 +388,21 @@ class CLintItem(pytest.Item):
         """Called when self.runtest() raises an exception."""
         if isinstance(excinfo.value, cunit.LintError):
             return excinfo.value.args[0]
+        if isinstance(excinfo.value, FileNotFoundError):
+            return f"File Not Found: {self.parent.ctest_glob}"
         return super().repr_failure(excinfo, style)
 
     def reportinfo(self):
         """Short Report info for a lint item"""
-        return self.parent.test_file_path.stem, 0, self.parent.test_file_path.stem + ":" + self.name
+        stem = self.parent.path.stem
+        return stem, 0, stem + ":" + self.name
 
 
 def pytest_collection_modifyitems(config, items):
     """ENsure that if we have a test item that the file collector is configured"""
     for item in items:
         if isinstance(item, (CTestItem, CLintItem)):
-            item.parent.configure(config)
+            try:
+                item.parent.configure(config)
+            except FileNotFoundError:
+                pass

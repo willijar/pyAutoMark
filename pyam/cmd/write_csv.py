@@ -5,8 +5,7 @@ import csv
 import openpyxl
 from pyam.cohort import get_cohort
 from pyam.cmd.args import add_common_args
-from pyam.files import set_csv_column
-
+from pyam.files import set_csv_column, PathGlob
 
 def main(args=None):
     """Read marks from a set of mark spreadsheets and write them into csv files"""
@@ -97,15 +96,15 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     parser.add_argument(
         '--mark-sheets',
         nargs="*",
-        type=Path,
-        default=[],
+        action=PathGlob,
+        default=None,
         help="list of mark sheets to be processed. "
         "Defaults to those in report directory with matching prefix")
     parser.add_argument(
         '--csv-files',
         nargs="*",
-        type=Path,
-        default=[],
+        action=PathGlob,
+        default=None,
         help="List of csv files to be modified. "
         "Default is those starting with prefix in report directory.")
     parser.add_argument(
@@ -114,6 +113,6 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     )
     parser.add_argument(
         '--mark-col',
-        help="Name column of csv file where marks are to be written.")
+        help="Name of column in csv file where marks are to be written.")
     parser.add_argument('--student-col',
-                        help="Name student id column in CSV file")
+                        help="Name of student id column in CSV files")
