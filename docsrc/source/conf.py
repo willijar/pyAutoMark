@@ -16,9 +16,12 @@ import os
 import sys
 import time
 from importlib.metadata import version
+from pyam.config_manager import write_schema_rst
 
 sys.path.insert(0, os.path.abspath('../../'))
 
+with open("schema.rst","w") as fid:
+    write_schema_rst(fid)
 
 # -- Project information -----------------------------------------------------
 
