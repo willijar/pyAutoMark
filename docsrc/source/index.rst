@@ -93,15 +93,11 @@ Reference Guide
 A complete collection of reference information.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   configuration<schema>
-   
-   modules
-
+   pyam package<modules>
+   configuration
    glossary
-
-   
 
 
 Indices and tables
