@@ -30,6 +30,9 @@ Here are pyAutoMark's major features:
   for specific use cases such as using mock C testing for checking embedded systems desing (e.g. AVR),
   Python code and VHDL designs.
 
+  While using python to write your tests provides the most flexibility, support is given to write your tests for C or VHDL directly
+  without writing any python harness. See the :ref:`example C` and :ref:`example VHDL` examples.
+
 * **Marking Templates**: A template marking spreadsheet can be automatically generated from the set 
   of tests. This can then be customised and added to either with your own marking scheme or
   to including manual input for those aspects which cannot be automatically marked
@@ -95,7 +98,7 @@ A complete collection of reference information.
 .. toctree::
    :maxdepth: 1
 
-   pyam package<modules>
+   pyam python package<modules>
    configuration
    glossary
 
