@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyam.cmd.cohort &#8212; pyAutoMark 0.5.0 documentation</title>
+    <title>pyam.cmd.cohort &#8212; pyAutoMark 0.7.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -57,7 +57,7 @@
 <span class="sd">    If given a cohort name but no further command set the default cohort.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">cohort</span><span class="p">:</span>
-        <span class="n">cohort</span><span class="o">=</span><span class="n">get_cohort</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">cohort</span><span class="p">)</span>
+        <span class="n">cohort</span> <span class="o">=</span> <span class="n">get_cohort</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">cohort</span><span class="p">)</span>
         <span class="n">CONFIG</span><span class="p">[</span><span class="s2">&quot;cohort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">cohort</span>
         <span class="n">CONFIG</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
@@ -68,16 +68,16 @@
         <span class="k">if</span> <span class="n">deadline</span><span class="p">:</span>
             <span class="n">deadline</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">deadline</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deadline: </span><span class="si">{</span><span class="n">deadline</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Student&#39;</span><span class="si">:</span><span class="s2">40</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;Submission Date&#39;</span><span class="si">:</span><span class="s2">40</span><span class="si">}</span><span class="s2"> | Lateness&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">cohort</span><span class="o">.</span><span class="n">students</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">student</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">student</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">:</span><span class="s2">40</span><span class="si">}</span><span class="s2"> | No submission&quot;</span><span class="p">)</span>
                 <span class="k">continue</span>
-            <span class="n">submission_time</span> <span class="o">=</span> <span class="n">student</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Submission Date&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">submission_time</span> <span class="o">=</span> <span class="n">student</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;submission-date&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">submission_time</span><span class="p">:</span>
-                <span class="n">submission_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">submission_time</span><span class="p">)</span>
+                <span class="n">submission_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">submission_time</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
                 <span class="n">days_ago</span> <span class="o">=</span> <span class="p">(</span><span class="n">today</span> <span class="o">-</span> <span class="n">submission_time</span><span class="p">)</span><span class="o">.</span><span class="n">days</span>
                 <span class="n">days_ago</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">days_ago</span><span class="si">:</span><span class="s2">3</span><span class="si">}</span><span class="s2"> days ago. |&quot;</span>
                 <span class="n">past_deadline</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -89,8 +89,8 @@
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">student</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">:</span><span class="s2">40</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">submission_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%c</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">days_ago</span><span class="si">:</span><span class="s2">15</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">past_deadline</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">student</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">:</span><span class="s2">40</span><span class="si">}</span><span class="s2">: Unknown Submission Time&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">student</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">:</span><span class="s2">40</span><span class="si">}</span><span class="s2"> | Unknown </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="si">:</span><span class="s2">32</span><span class="si">}</span><span class="s2"> |&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">list_files</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">file</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cohort</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file</span><span class="si">:</span><span class="s2">30</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -100,7 +100,7 @@
     <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">check_submissions</span><span class="p">:</span>
         <span class="n">cohort</span><span class="o">.</span><span class="n">start_log_section</span><span class="p">(</span><span class="s2">&quot;Checking Student Submissions&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">cohort</span><span class="o">.</span><span class="n">students</span><span class="p">():</span>
-            <span class="n">missing</span><span class="o">=</span><span class="n">student</span><span class="o">.</span><span class="n">check_manifest</span><span class="p">(</span><span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">student</span><span class="o">.</span><span class="n">check_manifest</span><span class="p">(</span><span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">list_cohorts</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cohort&quot;</span><span class="p">):</span>
@@ -120,9 +120,11 @@
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--list-files&#39;</span><span class="p">,</span>
                         <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print out file manifest (from manifest.json)&quot;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--check-submissions&#39;</span><span class="p">,</span>
-                        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Check student submissions listing missing files for each student.&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">&#39;--check-submissions&#39;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Check student submissions listing missing files for each student.&quot;</span>
+    <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--list-tests&#39;</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
@@ -165,7 +167,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -1,0 +1,278 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Configuration &#8212; pyAutoMark 0.7.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Glossary" href="glossary.html" />
+    <link rel="prev" title="pyam.fixtures package" href="pyam.fixtures.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="glossary.html" title="Glossary"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyam.fixtures.html" title="pyam.fixtures package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p>The operation of pyAutoMark is highly customisable with a number of parameters that can be set
+either at the toplevel, in the top level <code class="file docutils literal notranslate"><span class="pre">pyAutoMark.json</span></code> file, or for each cohort in the <code class="file docutils literal notranslate"><span class="pre">manifest.json</span></code> file in the cohort directory.
+These json files can be edited manually, or the parameters may be set using the <a class="reference internal" href="cmds/config.html#subcommand-config"><span class="std std-ref">config</span></a> command.</p>
+<p>Configuration Keys may be in a ‘.’ format e.g. 2022.assessor.username sets assessor.username in cohort 2022.
+global name may be used to set global parameters across all cohorts (unless set locally).</p>
+<div class="section" id="configuration-parameters">
+<h2>Configuration Parameters<a class="headerlink" href="#configuration-parameters" title="Permalink to this headline">¶</a></h2>
+<p>The heirarchical list of configurable parameters is given below.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">assessor:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">email:</th><td class="field-body">assessor’s email address</td>
+</tr>
+<tr class="field-even field"><th class="field-name">name:</th><td class="field-body">assessor’s name</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">course:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">code:</th><td class="field-body">code for module/course</td>
+</tr>
+<tr class="field-even field"><th class="field-name">name:</th><td class="field-body">title for module/course</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">institution:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">name of institution</td>
+</tr>
+<tr class="field-even field"><th class="field-name">department:</th><td class="field-body">name of department</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">domain:</th><td class="field-body">domain to add to usernames for email</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">github:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">url:</th><td class="field-body">url for organisation on github (if applicable)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">assignment:</th><td class="field-body">Title of github assignment (prefix for student repositories)</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">fixtures:</th><td class="field-body"><p class="first">(list) List of pytest fixture sets to use</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">path:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">tests:</th><td class="field-body">(Path) file path to tests - default: ‘tests’</td>
+</tr>
+<tr class="field-even field"><th class="field-name">build:</th><td class="field-body">(Path) file path to build directory for temporary files - default: ‘build’</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">cohorts:</th><td class="field-body">(Path) file path to directory for cohort/student submissions - default: ‘cohorts’</td>
+</tr>
+<tr class="field-even field"><th class="field-name">reports:</th><td class="field-body">(Path) file path for reports - default: ‘reports’</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">deadline:</th><td class="field-body"><p class="first">(datetime) deadline for assessment submission</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">student-folder-name:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first">What field to use for students folder name - default: ‘username’</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">filematch:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">pattern:</th><td class="field-body">How to match/search for students files - one off exact, glob or regexp. - default: ‘glob’</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">solution:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">username:</th><td class="field-body">Username for ‘solution’ student in cohort</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">workbook:</th><td class="field-body"><p class="first">Name/relative path to students workbook for xlsx fixtures</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">student-column:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">studentid:</th><td class="field-body">The column to read for studentid - default: ‘(?i)Students*ID’</td>
+</tr>
+<tr class="field-even field"><th class="field-name">username:</th><td class="field-body">Column to read for students username - default: ‘(?i)Username’</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">lastname:</th><td class="field-body">Column to read for students last (family) name - default: ‘(?i)Lasts*name’</td>
+</tr>
+<tr class="field-even field"><th class="field-name">firstname:</th><td class="field-body">Column to read for students first (given) name - default: ‘(?i)Firsts*name’</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">course:</th><td class="field-body">Column to read specifying which course student is on (if different from default) - default: ‘(?i)Child Course ID’</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">github-username:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">Column to read for the students username on github - default: ‘(?i)Github Username’</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">submission-date:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">Column name to use to record submission dates - default: ‘Submission Date’</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">mark-column:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">studentid:</th><td class="field-body">Column name in marking csv file with student id - default: ‘#Cand Key’</td>
+</tr>
+<tr class="field-even field"><th class="field-name">mark:</th><td class="field-body">Column name in marking csv file for mark - default: ‘Mark’</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">template:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">report:</th><td class="field-body">Name of cell in marking template for report - default: ‘report’</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Configuration</a><ul>
+<li><a class="reference internal" href="#configuration-parameters">Configuration Parameters</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyam.fixtures.html"
+                        title="previous chapter">pyam.fixtures package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="glossary.html"
+                        title="next chapter">Glossary</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/configuration.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="glossary.html" title="Glossary"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyam.fixtures.html" title="pyam.fixtures package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023-2023, John Williams.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>C &#8212; pyAutoMark 0.5.0 documentation</title>
+    <title>C &#8212; pyAutoMark 0.7.1 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../cmds/write-csv.html" title="write-csv"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -46,23 +46,24 @@
           <div class="body" role="main">
             
   <div class="section" id="c">
-<h1>C<a class="headerlink" href="#c" title="Permalink to this headline">¶</a></h1>
+<span id="example-c"></span><h1>C<a class="headerlink" href="#c" title="Permalink to this headline">¶</a></h1>
 <p>pyAutoMark can detect simple C unit test files in the tests directory.</p>
 <div class="section" id="directory-structure">
 <h2>Directory structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h2>
 <p>Below is the directory structure for these tests. Under the cohort directory we will have a directory for each student which will
 contain their submitted code - in this case <code class="file docutils literal notranslate"><span class="pre">Q1.c</span></code> and <code class="file docutils literal notranslate"><span class="pre">Q2.c</span></code>. In our tests folder for the cohort we have the C unit test files <code class="file docutils literal notranslate"><span class="pre">test1_Q1.c</span></code>, <code class="file docutils literal notranslate"><span class="pre">test1_Q1.c</span></code> etc. The
-unittes files must start with “test_” and must contain some definitions to be recognised as test files.</p>
-<div class="line-block">
-<div class="line">root</div>
-<div class="line">├─ cohorts</div>
-<div class="line">│     ├─ cohort1</div>
-<div class="line">│     │   └─ student1</div>
-<div class="line">│     │   │  └─ Q1.c</div>
-<div class="line">│     │   │  └─ Q2.c</div>
-<div class="line">└─ tests</div>
-<div class="line">│     └─ test_Q1.c</div>
-<div class="line">│     └─ test_Q2.c</div>
+unittest files must start with “test_” and must contain some definitions to be recognised as test files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>root
+├─ cohorts
+│     ├─ cohort1
+│     │   └─ student1
+│     │   │  └─ Q1.c
+│     │   │  └─ Q2.c
+|
+├─ tests
+│     └─ test_Q1.c
+│     └─ test_Q2.c
+</pre></div>
 </div>
 <p>The clang fixtures provided by pyAutoMark will set up the compilation include directories to point to the appropriate test folder and student folder. Compilation is performed as one unit with the students file included automatically at the beginning of the unit test C file.</p>
 <p>To be collected the C test filenames must start with “test_” and contain
@@ -78,12 +79,18 @@ the following definitions</p>
 <tr class="field-odd field"><th class="field-name">PYAM_LINT:</th><td class="field-body">(Optional) A number specifying the naximum number of LINT warnings allowed
 for the test to pass and optionally followed by the list of LINT checks to perform</td>
 </tr>
+<tr class="field-even field"><th class="field-name">PYAM_CFLAGS:</th><td class="field-body">(Optional) Quoted list of options for the compiler e.g. optimisations, language features etc</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">PYAM_LINK:</th><td class="field-body">(Optional) Quoted list of extra link options e.g. “-lm” to link the math library etc.</td>
+</tr>
 </tbody>
 </table>
 <p>e.g.</p>
 <div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="cp">#DEFINE PYAM_TEST &quot;UUT.c&quot;</span>
 <span class="cp">#DEFINE PYAM_LINT N,CHECKS</span>
 <span class="cp">#DEFINE PYAM_TIMEOUT TIMEOUT</span>
+<span class="cp">#DEFINE PYAM_CFLAGS &quot;C_OPTIONS&quot;</span>
+<span class="cp">#DEFINE PYAM_LINK &quot;LINK_OPTIONS&quot;</span>
 </pre></div>
 </div>
 <dl class="option">
@@ -101,13 +108,25 @@ for the test to pass and optionally followed by the list of LINT checks to perfo
 <dl class="option">
 <dt id="cmdoption-arg-checks">
 <code class="descname">CHECKS</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-arg-checks" title="Permalink to this definition">¶</a></dt>
-<dd><p>The list fo checks (passed to clang-tidy)</p>
+<dd><p>The list of checks (passed to clang-tidy)</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-arg-timeout">
 <code class="descname">TIMEOUT</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-arg-timeout" title="Permalink to this definition">¶</a></dt>
-<dd><p>THe maximum run time for a test in seconds.</p>
+<dd><p>The maximum run time for a test in seconds.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-arg-c-options">
+<code class="descname">C_OPTIONS</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-arg-c-options" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of options for the compiler e.g. optimisations, language features etc</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-arg-link-options">
+<code class="descname">LINK_OPTIONS</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-arg-link-options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extra link options e.g. “-lm” to link the math library etc.</p>
 </dd></dl>
 
 <p>For each test that we want to perform this code will be compiled and and then executed with a different definition set using the -d argument on the compiler. We therefore use <code class="code docutils literal notranslate"><span class="pre">#ifdef</span></code> or <code class="code docutils literal notranslate"><span class="pre">#ifdefined</span></code> blocks in the C program
@@ -178,7 +197,7 @@ to select which test we want to carry out. To be recognised as tests the definit
         <li class="right" >
           <a href="../cmds/write-csv.html" title="write-csv"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

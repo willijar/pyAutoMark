@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyam.fixtures package &#8212; pyAutoMark 0.5.0 documentation</title>
+    <title>pyam.fixtures package &#8212; pyAutoMark 0.7.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -18,7 +18,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Glossary" href="glossary.html" />
+    <link rel="next" title="Configuration" href="configuration.html" />
     <link rel="prev" title="pyam.cmd package" href="pyam.cmd.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -31,12 +31,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="glossary.html" title="Glossary"
+          <a href="configuration.html" title="Configuration"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="pyam.cmd.html" title="pyam.cmd package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyam</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyam.html" accesskey="U">pyam package</a> &#187;</li> 
       </ul>
@@ -105,6 +105,18 @@ in the mock test.</p>
 <dt id="pyam.fixtures.clang.CTestFile.clint_checks">
 <code class="descname">clint_checks</code><a class="headerlink" href="#pyam.fixtures.clang.CTestFile.clint_checks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lint checks from   #define PYAM_LINT threshold,”checks”</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyam.fixtures.clang.CTestFile.cflags">
+<code class="descname">cflags</code><a class="headerlink" href="#pyam.fixtures.clang.CTestFile.cflags" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of flags from PYAM_FLAGS to pass to compiler</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyam.fixtures.clang.CTestFile.link">
+<code class="descname">link</code><a class="headerlink" href="#pyam.fixtures.clang.CTestFile.link" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of link items to pass to compiler</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -197,6 +209,11 @@ C Mock unit test executable.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="pyam.fixtures.clang.CTestFile.re_cflags">
+<code class="descname">re_cflags</code><em class="property"> = re.compile('#define\\s+PYAM_CFLAGS\\s+\\&quot;(.+)\\&quot;')</em><a class="headerlink" href="#pyam.fixtures.clang.CTestFile.re_cflags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="pyam.fixtures.clang.CTestFile.re_clint">
 <code class="descname">re_clint</code><em class="property"> = re.compile('#define\\s+PYAM_LINT\\s+(\\d+)?(,\\&quot;(.*)\\&quot;)?')</em><a class="headerlink" href="#pyam.fixtures.clang.CTestFile.re_clint" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -204,6 +221,11 @@ C Mock unit test executable.</p>
 <dl class="attribute">
 <dt id="pyam.fixtures.clang.CTestFile.re_ctest">
 <code class="descname">re_ctest</code><em class="property"> = re.compile('#define\\s+PYAM_TEST\\s+\\&quot;(.*)\\&quot;')</em><a class="headerlink" href="#pyam.fixtures.clang.CTestFile.re_ctest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyam.fixtures.clang.CTestFile.re_link">
+<code class="descname">re_link</code><em class="property"> = re.compile('#define\\s+PYAM_LINK\\s+\\&quot;(.+)\\&quot;')</em><a class="headerlink" href="#pyam.fixtures.clang.CTestFile.re_link" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -431,6 +453,15 @@ which the tests will be run.</p>
 <dt id="pyam.fixtures.common.pytest_configure">
 <code class="descclassname">pyam.fixtures.common.</code><code class="descname">pytest_configure</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/common.html#pytest_configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.common.pytest_configure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add in pyAutoTest markers for pytest</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.common.solution">
+<code class="descclassname">pyam.fixtures.common.</code><code class="descname">solution</code><span class="sig-paren">(</span><em>cohort</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/fixtures/common.html#solution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.common.solution" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Fixture</em> The solution “student” in the cohort.</p>
+<ul class="simple">
+<li>if set in configuration</li>
+</ul>
 </dd></dl>
 
 <dl class="function">
@@ -1011,6 +1042,35 @@ e.g. to provide working implementations for student work to use</li>
 </dd></dl>
 
 </div>
+<div class="section" id="module-pyam.fixtures.xlsx">
+<span id="pyam-fixtures-xlsx-module"></span><h2>pyam.fixtures.xlsx module<a class="headerlink" href="#module-pyam.fixtures.xlsx" title="Permalink to this headline">¶</a></h2>
+<p>Test Fixtures to check students xlsx spreadsheet submissions:</p>
+<dl class="docutils">
+<dt>Support fixtures:</dt>
+<dd>workbook: students workbook
+solution_workbook: The workbook for the solution</dd>
+<dt>Configuration fixtures:</dt>
+<dd>student_xlsx_file: relative path for students submission xlsx file</dd>
+</dl>
+<dl class="function">
+<dt id="pyam.fixtures.xlsx.solution_workbook">
+<code class="descclassname">pyam.fixtures.xlsx.</code><code class="descname">solution_workbook</code><span class="sig-paren">(</span><em>solution</em>, <em>student_xlsx_file</em><span class="sig-paren">)</span> &#x2192; openpyxl.workbook.workbook.Workbook<a class="reference internal" href="_modules/pyam/fixtures/xlsx.html#solution_workbook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.xlsx.solution_workbook" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Fixture</em>: The exemplar/reference workbook for answers</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.xlsx.student_xlsx_file">
+<code class="descclassname">pyam.fixtures.xlsx.</code><code class="descname">student_xlsx_file</code><span class="sig-paren">(</span><em>cohort</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/pyam/fixtures/xlsx.html#student_xlsx_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.xlsx.student_xlsx_file" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Fixture</em>: Name of the student workbook. <em>Must be set in the test</em>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.fixtures.xlsx.workbook">
+<code class="descclassname">pyam.fixtures.xlsx.</code><code class="descname">workbook</code><span class="sig-paren">(</span><em>student</em>, <em>student_xlsx_file</em><span class="sig-paren">)</span> &#x2192; openpyxl.workbook.workbook.Workbook<a class="reference internal" href="_modules/pyam/fixtures/xlsx.html#workbook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.fixtures.xlsx.workbook" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Fixture</em>: The workbook object under test</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-pyam.fixtures">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyam.fixtures" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -1030,6 +1090,7 @@ e.g. to provide working implementations for student work to use</li>
 <li><a class="reference internal" href="#module-pyam.fixtures.common">pyam.fixtures.common module</a></li>
 <li><a class="reference internal" href="#module-pyam.fixtures.python">pyam.fixtures.python module</a></li>
 <li><a class="reference internal" href="#module-pyam.fixtures.vhdl">pyam.fixtures.vhdl module</a></li>
+<li><a class="reference internal" href="#module-pyam.fixtures.xlsx">pyam.fixtures.xlsx module</a></li>
 <li><a class="reference internal" href="#module-pyam.fixtures">Module contents</a></li>
 </ul>
 </li>
@@ -1039,8 +1100,8 @@ e.g. to provide working implementations for student work to use</li>
   <p class="topless"><a href="pyam.cmd.html"
                         title="previous chapter">pyam.cmd package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="glossary.html"
-                        title="next chapter">Glossary</a></p>
+  <p class="topless"><a href="configuration.html"
+                        title="next chapter">Configuration</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -1074,12 +1135,12 @@ e.g. to provide working implementations for student work to use</li>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="glossary.html" title="Glossary"
+          <a href="configuration.html" title="Configuration"
              >next</a> |</li>
         <li class="right" >
           <a href="pyam.cmd.html" title="pyam.cmd package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyam</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="pyam.html" >pyam package</a> &#187;</li> 
       </ul>

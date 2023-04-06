@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyam.cmd.run &#8212; pyAutoMark 0.5.0 documentation</title>
+    <title>pyam.cmd.run &#8212; pyAutoMark 0.7.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -67,12 +67,18 @@
         <span class="sa">f</span><span class="s2">&quot;Running tests </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">test</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">students</span> <span class="ow">or</span> <span class="s1">&#39;all&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">students</span> <span class="o">=</span> <span class="n">cohort</span><span class="o">.</span><span class="n">students</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">students</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">students</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">student</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">cohort</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No Submission Folder: &#39;</span><span class="si">%s</span><span class="s2">&#39;.&quot;</span><span class="p">,</span> <span class="n">student</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
+            <span class="k">continue</span>
         <span class="n">report_path</span> <span class="o">=</span> <span class="n">cohort</span><span class="o">.</span><span class="n">report_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">prefix</span><span class="si">}{</span><span class="n">student</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">.txt&quot;</span>
         <span class="k">if</span> <span class="n">report_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">new_only</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">overwrite</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="n">report_path</span><span class="p">)</span>
+                <span class="n">cohort</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Using Existing Report for &#39;</span><span class="si">%s</span><span class="s2">&#39; - &#39;</span><span class="si">%s</span><span class="s2">&#39;.&quot;</span><span class="p">,</span> 
+                                <span class="n">student</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="n">report_path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">CONFIG</span><span class="o">.</span><span class="n">root_path</span><span class="p">))</span>
+                <span class="n">CONFIG</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Use --overwrite option to overwrite report.&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
         <span class="n">extras</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">mark</span><span class="p">:</span>
             <span class="n">extras</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">mark</span><span class="p">]</span>
@@ -155,7 +161,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

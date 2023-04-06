@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyam.cmd.find_duplicates &#8212; pyAutoMark 0.5.0 documentation</title>
+    <title>pyam.cmd.find_duplicates &#8212; pyAutoMark 0.7.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -95,12 +95,12 @@
         <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">record</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">cohort</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cohorts</span><span class="p">:</span>
                 <span class="n">cohorts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">cohort</span><span class="p">)</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Duplicate files found.&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Duplicate &#39;</span><span class="si">%s</span><span class="s2">&#39; files.&quot;</span> <span class="o">%</span> <span class="n">records</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">name</span>
         <span class="k">for</span> <span class="n">coh</span> <span class="ow">in</span> <span class="n">cohorts</span><span class="p">:</span>
             <span class="n">coh</span><span class="o">.</span><span class="n">start_log_section</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="n">CONFIG</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Duplicate file </span><span class="si">{</span><span class="n">record</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">CONFIG</span><span class="o">.</span><span class="n">root_path</span><span class="p">)</span><span class="si">}</span><span class="s2"> &#39;</span><span class="si">{</span><span class="n">record</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span>\
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Duplicate file </span><span class="si">{</span><span class="n">record</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">CONFIG</span><span class="o">.</span><span class="n">cohorts_path</span><span class="p">)</span><span class="si">}</span><span class="s2"> &#39;</span><span class="si">{</span><span class="n">record</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span>\
             <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; : modified </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">stat</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">for</span> <span class="n">coh</span> <span class="ow">in</span> <span class="n">cohorts</span><span class="p">:</span>
                 <span class="n">coh</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -116,7 +116,7 @@
         <span class="n">files</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">coh</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;files&quot;</span><span class="p">,</span> <span class="p">())</span>
         <span class="k">for</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">coh</span><span class="o">.</span><span class="n">students</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">filepath</span> <span class="o">=</span> <span class="n">student</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="n">file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">filepath</span> <span class="o">=</span> <span class="n">student</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="n">file</span>
                 <span class="k">if</span> <span class="n">filepath</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                     <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FileRecord</span><span class="p">(</span><span class="n">student</span><span class="o">=</span><span class="n">student</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">filepath</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">records</span></div>
@@ -125,7 +125,7 @@
 <div class="viewcode-block" id="group_records"><a class="viewcode-back" href="../../../pyam.cmd.html#pyam.cmd.find_duplicates.group_records">[docs]</a><span class="k">def</span> <span class="nf">group_records</span><span class="p">(</span><span class="n">records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FileRecord</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;GIve a list of file records group them by digest.</span>
 <span class="sd">    Return a dictionary of matching records indexed by digest&quot;&quot;&quot;</span>
-    <span class="n">groups</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">groups</span><span class="o">=</span><span class="p">{}</span>
     <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
         <span class="n">key</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">digest</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
@@ -179,7 +179,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

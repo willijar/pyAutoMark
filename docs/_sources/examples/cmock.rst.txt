@@ -1,3 +1,5 @@
+.. _example Embedded C:
+
 Embedded C using the C mock fixtures
 ====================================
 

@@ -36,6 +36,14 @@ pyam.fixtures.vhdl module
     :undoc-members:
     :show-inheritance:
 
+pyam.fixtures.xlsx module
+-------------------------
+
+.. automodule:: pyam.fixtures.xlsx
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

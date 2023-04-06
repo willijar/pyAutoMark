@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Welcome to pyAutoMark &#8212; pyAutoMark 0.5.0 documentation</title>
+    <title>Welcome to pyAutoMark &#8212; pyAutoMark 0.7.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="installation.html" title="Installing pyAutoMark"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">pyAutoMark 0.5.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -46,17 +46,21 @@
 <blockquote class="epigraph">
 <div>pyAutoMark simplifies automating your marking and feedback</div></blockquote>
 <p>Here are pyAutoMark’s major features:</p>
-<ul class="simple">
+<ul>
 <li><dl class="first docutils">
 <dt><strong>Collection:</strong>  Collection and collation of student work into folders for a cohort/assessment.</dt>
-<dd>This may be from a Blackboard dump of files and archives from grade centre or (preferred)
-the cloning and pulling of student work from <a class="reference external" href="https://classroom.github.com/">Github Classroom</a> repositories.</dd>
+<dd><p class="first last">This may be from a Blackboard dump of files and archives from grade centre or (preferred)
+the cloning and pulling of student work from <a class="reference external" href="https://classroom.github.com/">Github Classroom</a> repositories.</p>
+</dd>
 </dl>
 </li>
-<li><strong>Testing:</strong> It builds upon the <cite>pytest`_</cite> testing framework to collect and run tests against each student submission.</li>
-<li><strong>Feedback:</strong> The results of the tests are collected feedback reports per student which list the tests failed
-and guidance on what what was wrong. These can then be  used to fill in marking spreadsheets.</li>
-<li><strong>Flexibility:</strong> Tests can be anything that can be tested or measured using software. Some examples include<ul>
+<li><p class="first"><strong>Testing:</strong> It builds upon the <cite>pytest`_</cite> testing framework to collect and run tests against each student submission.</p>
+</li>
+<li><p class="first"><strong>Feedback:</strong> The results of the tests are collected feedback reports per student which list the tests failed
+and guidance on what what was wrong. These can then be  used to fill in marking spreadsheets.</p>
+</li>
+<li><p class="first"><strong>Flexibility:</strong> Tests can be anything that can be tested or measured using software. Some examples include</p>
+<ul class="simple">
 <li>Software unitests in any language (not just Python, but C or even VHDL simulation and synthesis
 for hardware desing)</li>
 <li>Measured data measured from instruments in a practical or generated from simulations.</li>
@@ -64,22 +68,30 @@ for hardware desing)</li>
 <li>A memory dump output from a debugger on an embedded system.</li>
 </ul>
 </li>
-<li><strong>Extendable:</strong> <a class="reference external" href="https://docs.pytest.org/en/6.2.x/fixture.html">pytest fixtures</a> are extensively used to enable customisation and extension. Provided fixtures
+<li><p class="first"><strong>Extendable:</strong> <a class="reference external" href="https://docs.pytest.org/en/6.2.x/fixture.html">pytest fixtures</a> are extensively used to enable customisation and extension. Provided fixtures
 which student files are tested and where the result should be reported. Additional sets provided
 for specific use cases such as using mock C testing for checking embedded systems desing (e.g. AVR),
-Python code and VHDL designs.</li>
-<li><strong>Marking Templates</strong>: A template marking spreadsheet can be automatically generated from the set
+Python code and VHDL designs.</p>
+<p>While using python to write your tests provides the most flexibility, support is given to write your tests for C or VHDL directly
+without writing any python harness. See the <a class="reference internal" href="examples/clang.html#example-c"><span class="std std-ref">C</span></a> and <a class="reference internal" href="examples/vhdl.html#example-vhdl"><span class="std std-ref">VHDL</span></a> examples.</p>
+</li>
+<li><p class="first"><strong>Marking Templates</strong>: A template marking spreadsheet can be automatically generated from the set
 of tests. This can then be customised and added to either with your own marking scheme or
-to including manual input for those aspects which cannot be automatically marked</li>
-<li><strong>Multiple Assessments</strong>: pyAutoMark manages a directory heirachy to accomodate multiple assignments or
-cohorts of students.</li>
-<li><strong>Student management</strong>: pyAutoMark uses a simple csv file of student details which can be provided e.g. from Blackboard.
+to including manual input for those aspects which cannot be automatically marked</p>
+</li>
+<li><p class="first"><strong>Multiple Assessments</strong>: pyAutoMark manages a directory heirachy to accomodate multiple assignments or
+cohorts of students.</p>
+</li>
+<li><p class="first"><strong>Student management</strong>: pyAutoMark uses a simple csv file of student details which can be provided e.g. from Blackboard.
 It can provide reports on who has submitted, and when, and if they have missed a deadline.
 When combined with <a class="reference external" href="https://classroom.github.com/">Github Classroom</a> this provides a very effective
-mechanism to monitor student engagement.</li>
-<li><strong>Logging</strong>: Most activities on a cohort or assessment are logged to provide a historic record.</li>
-<li><strong>Mark Collection</strong>: Marks from the marking spreadsheets can be collated into a csv file for
-adminsitrative purposes such as sending to the office.</li>
+mechanism to monitor student engagement.</p>
+</li>
+<li><p class="first"><strong>Logging</strong>: Most activities on a cohort or assessment are logged to provide a historic record.</p>
+</li>
+<li><p class="first"><strong>Mark Collection</strong>: Marks from the marking spreadsheets can be collated into a csv file for
+adminsitrative purposes such as sending to the office.</p>
+</li>
 </ul>
 <div class="section" id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
@@ -141,10 +153,8 @@ including setting up your directory structure for submissions, reports and tests
 <p>A complete collection of reference information.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">pyam</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pyam.html">pyam package</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">pyam python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 </div>
@@ -215,7 +225,7 @@ including setting up your directory structure for submissions, reports and tests
         <li class="right" >
           <a href="installation.html" title="Installing pyAutoMark"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">pyAutoMark 0.5.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyam package &#8212; pyAutoMark 0.5.0 documentation</title>
+    <title>pyam package &#8212; pyAutoMark 0.7.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="modules.html" title="pyam"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">pyam</a> &#187;</li> 
       </ul>
     </div>  
@@ -74,6 +74,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pyam.fixtures.html#module-pyam.fixtures.common">pyam.fixtures.common module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyam.fixtures.html#module-pyam.fixtures.python">pyam.fixtures.python module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyam.fixtures.html#module-pyam.fixtures.vhdl">pyam.fixtures.vhdl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyam.fixtures.html#module-pyam.fixtures.xlsx">pyam.fixtures.xlsx module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyam.fixtures.html#module-pyam.fixtures">Module contents</a></li>
 </ul>
 </li>
@@ -183,6 +184,20 @@
 <dt id="pyam.cohort.Cohort.start_log_section">
 <code class="descname">start_log_section</code><span class="sig-paren">(</span><em>title: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/pyam/cohort.html#Cohort.start_log_section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.cohort.Cohort.start_log_section" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a section header in cohort log file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyam.cohort.Cohort.student_columns">
+<code class="descname">student_columns</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[tuple]<a class="reference internal" href="_modules/pyam/cohort.html#Cohort.student_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.cohort.Cohort.student_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of student column information for this cohort configuration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of tuples of regex and column titles suitable for read_csv</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -357,6 +372,29 @@ Value is a dictionary of test attributes from the test manifest if provided.</td
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of missing files</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyam.cohort.Student.file">
+<code class="descname">file</code><span class="sig-paren">(</span><em>pattern: str</em>, <em>log: Optional[logging.Logger] = None</em><span class="sig-paren">)</span> &#x2192; Optional[pathlib.Path]<a class="reference internal" href="_modules/pyam/cohort.html#Student.file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.cohort.Student.file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to find file matching given pathname pattern based on the configuration setting
+filematch.pattern.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pattern</strong> – The file pattern to search for - either an exact path, glob or regexp
+depending on the configuration setting filematch.pattern</li>
+<li><strong>log</strong> – If given use to log if no file found or multiple files found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The path to the (first) matching file found or None if none found</p>
 </td>
 </tr>
 </tbody>
@@ -625,8 +663,8 @@ Or use calculated current_academic_year</td>
 <dt id="pyam.config_manager.SCHEMA">
 <code class="descclassname">pyam.config_manager.</code><code class="descname">SCHEMA</code><a class="headerlink" href="#pyam.config_manager.SCHEMA" title="Permalink to this definition">¶</a></dt>
 <dd><p>A nested dictionary of discriptors for known configuration parameters.
-For each leaf parameter there should be a dictionary with a “description” and possibly also a
-“type”</p>
+For each leaf parameter there should be a dictionary with a “description”
+and possibly also a “type”</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -707,9 +745,9 @@ If no default is given loop it up in global config - return None if not found</p
 </table>
 </dd></dl>
 
-<dl class="method">
+<dl class="classmethod">
 <dt id="pyam.config_manager.ConfigManager.getconfig">
-<code class="descname">getconfig</code><span class="sig-paren">(</span><em>index: str</em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="_modules/pyam/config_manager.html#ConfigManager.getconfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.config_manager.ConfigManager.getconfig" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">getconfig</code><span class="sig-paren">(</span><em>dic: dict</em>, <em>index: str</em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="_modules/pyam/config_manager.html#ConfigManager.getconfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.config_manager.ConfigManager.getconfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Look up nested dictionaries to retrieve a value</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -746,12 +784,49 @@ If no default is given loop it up in global config - return None if not found</p
 </table>
 </dd></dl>
 
+<dl class="classmethod">
+<dt id="pyam.config_manager.ConfigManager.parse_type">
+<em class="property">classmethod </em><code class="descname">parse_type</code><span class="sig-paren">(</span><em>value: str</em>, <em>thetype: type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/config_manager.html#ConfigManager.parse_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.config_manager.ConfigManager.parse_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a type from schema parse COnfig value using this type</p>
+<p>Class Method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> – The configuration value to be parsed</li>
+<li><strong>thetype</strong> – A type to covert value to</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="pyam.config_manager.ConfigManager.store">
 <code class="descname">store</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/pyam/config_manager.html#ConfigManager.store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.config_manager.ConfigManager.store" title="Permalink to this definition">¶</a></dt>
 <dd><p>Store manifest to configuration file, overwriting it.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.config_manager.write_schema_rst">
+<code class="descclassname">pyam.config_manager.</code><code class="descname">write_schema_rst</code><span class="sig-paren">(</span><em>fid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/config_manager.html#write_schema_rst"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.config_manager.write_schema_rst" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write schema out as RST to given file descriptor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fid</strong> – A file descriptor to write to</li>
+<li><strong>schema</strong> – The schema</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -782,7 +857,7 @@ If no default is given loop it up in global config - return None if not found</p
 
 <dl class="function">
 <dt id="pyam.cunit.c_compile">
-<code class="descclassname">pyam.cunit.</code><code class="descname">c_compile</code><span class="sig-paren">(</span><em>binary: Union[pathlib.Path, str], source: Union[pathlib.Path, str], include: Sequence[Union[pathlib.Path, str]] = (), cflags: Sequence[str] = (), declarations: Sequence[str] = (), compiler: str = 'gcc'</em><span class="sig-paren">)</span> &#x2192; Union[pathlib.Path, str]<a class="reference internal" href="_modules/pyam/cunit.html#c_compile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.cunit.c_compile" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyam.cunit.</code><code class="descname">c_compile</code><span class="sig-paren">(</span><em>binary: Union[pathlib.Path, str], source: Union[pathlib.Path, str], include: Sequence[Union[pathlib.Path, str]] = (), cflags: Sequence[str] = (), declarations: Sequence[str] = (), compiler: str = 'gcc', link: Sequence[str] = ()</em><span class="sig-paren">)</span> &#x2192; Union[pathlib.Path, str]<a class="reference internal" href="_modules/pyam/cunit.html#c_compile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.cunit.c_compile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use C compile to compile source files into an executable binary</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -795,6 +870,7 @@ If no default is given loop it up in global config - return None if not found</p
 <li><strong>cflags</strong> – additional flags to add during compilation</li>
 <li><strong>declarations</strong> – list of compile declarations (-D flags)</li>
 <li><strong>compiler</strong> – name of compiler to use</li>
+<li><strong>link</strong> – sequence of flags to pass for linkage</li>
 </ul>
 </td>
 </tr>
@@ -838,6 +914,23 @@ a list of strings can be given - these will be joined with a newline character.<
 <div class="section" id="module-pyam.files">
 <span id="pyam-files-module"></span><h2>pyam.files module<a class="headerlink" href="#module-pyam.files" title="Permalink to this headline">¶</a></h2>
 <p>Various file searching utilities for the tests</p>
+<dl class="class">
+<dt id="pyam.files.PathGlob">
+<em class="property">class </em><code class="descclassname">pyam.files.</code><code class="descname">PathGlob</code><span class="sig-paren">(</span><em>option_strings</em>, <em>dest</em>, <em>nargs=None</em>, <em>const=None</em>, <em>default=None</em>, <em>type=None</em>, <em>choices=None</em>, <em>required=False</em>, <em>help=None</em>, <em>metavar=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/files.html#PathGlob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.files.PathGlob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Action</span></code></p>
+<p>File Glob Action aimed to works for Windows and Linux</p>
+<p>On Windows it treats every value as a potential glob expression to be expanded
+and adds the results onto the stored values.</p>
+<p>On other systems the shell will already have expanded the expressions so just treat as a path</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyam.files.expand_files">
+<code class="descclassname">pyam.files.</code><code class="descname">expand_files</code><span class="sig-paren">(</span><em>filearg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyam/files.html#expand_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.files.expand_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a files value (from args.files) expand the list using glob</p>
+<p>This is needed as Windows OS does not expand the file globs before passing to programmes</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="pyam.files.find_executable">
 <code class="descclassname">pyam.files.</code><code class="descname">find_executable</code><span class="sig-paren">(</span><em>name: str, paths: List[Union[pathlib.Path, str]]</em><span class="sig-paren">)</span> &#x2192; pathlib.Path<a class="reference internal" href="_modules/pyam/files.html#find_executable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyam.files.find_executable" title="Permalink to this definition">¶</a></dt>
@@ -901,12 +994,13 @@ dependency graph. Recurses the depends graph, will return dependencies in order.
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>filename</strong> – csv file to read</li>
-<li><strong>columns</strong> – A list of column names, or if True read column names from first line.</li>
+<li><strong>columns</strong> – A list of tuples of regex’s to match against csv titles and column names,
+or if True read column names from first line.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li>If columns is a list - return as dictionary using these as column names</li>
+<li>If columns is a list - use these to remap names.</li>
 <li>Else if columns is true use first line as column names.</li>
 <li>Else return just as list of lists</li>
 </ul>
@@ -927,8 +1021,8 @@ dependency graph. Recurses the depends graph, will return dependencies in order.
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filename</strong> – path to the csv file</li>
-<li><strong>column_name</strong> – name of column name to be written to</li>
-<li><strong>key_name</strong> – name of column to use as key</li>
+<li><strong>column_name</strong> – name or regex matching column name to be written to</li>
+<li><strong>key_name</strong> – name or regex matching column to use as key</li>
 <li><strong>get_value</strong> – a function which, given a key returns a new value
 if it returns None old value is kept.</li>
 </ul>
@@ -1063,7 +1157,7 @@ if it returns None old value is kept.</li>
         <li class="right" >
           <a href="modules.html" title="pyam"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >pyam</a> &#187;</li> 
       </ul>
     </div>

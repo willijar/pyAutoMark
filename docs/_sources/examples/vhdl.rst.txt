@@ -1,3 +1,5 @@
+.. _example VHDL:
+
 VHDL
 ====
 
@@ -11,8 +13,6 @@ having seen the students work in the laboratory without having to program the de
 both for intermediate digital desing courses using VHDL bu also for a digital systems hardware course where the students
 explore the tradeoffs in a microprocessor design using VHDL.
 
-.. highlight:: vhdl
-
 Directory structure
 -------------------
 
@@ -24,29 +24,32 @@ own test bench based on using a truth table for their full adder in file :file:`
 
 In the tests folder we have the python unit test script :file:`test_full_adder.py`, our own testbench for the full adder :file:`full_adder_check.vhd` 
 and two files to test the students testbench - one which implements a correct full adder :file:`full_adder_success` and one which has errors
-:file:`full_adder_fail` to check that they detect a failed design.
+:file:`full_adder_fail` to check that they detect a failed design::
 
-| root
-| ├─ cohorts
-| │     ├─ cohort1
-| │     │   └─ student1
-| │     │   │  └─ full_adder.vhd
-| │     │   │  └─ full_adder_testbench.vhd
-| │     │   │  └─ full_adder.xdc
-| └─ tests
-| │     ├─ cohort1
-| │     │   └─ test_full_adder.py
-| │     │   └─ full_adder_check.vhd
-| │     │   └─ full_adder_fail.vhd
-| │     │   └─ full_adder_success.vhd
+    root
+    ├─ cohorts
+    │     ├─ cohort1
+    │     │   └─ student1
+    │     │   │  └─ full_adder.vhd
+    │     │   │  └─ full_adder_testbench.vhd
+    │     │   │  └─ full_adder.xdc
+    |
+    ├─ tests
+    |     ├─ cohort1
+    |     │   └─ test_full_adder.py
+    |     │   └─ full_adder_check.vhd
+    |     │   └─ full_adder_fail.vhd
+    |     │   └─ full_adder_success.vhd
 
 
 
 Example 1 - Testing simulation and synthesis
 --------------------------------------------
 
-In the fist case we want to check that the students design pass a simulation and can be synthesised. They provide their implementation
-to a given entity specification and an associate constraints (xdc) file. I normally specify that the constraints file name must match that of the top level vhdl file and that these should match the entity name as a matter of good practice and the students work will fail if they do not follow this practice. It also makes automated marking easier to have a strict specification.
+In the first case we want to check that the students design pass a simulation and can be synthesised. They provide their implementation
+to a given entity specification and an associate constraints (xdc) file. I normally specify that the constraints
+file name must match that of the top level vhdl file and that these should match the entity name as a matter of good practice and the students
+work will fail if they do not follow this practice. It also makes automated marking easier to have a strict specification.
 
 .. code-block:: vhdl
     :caption: full_adder.vhd - sutdnets full adder implementation
@@ -68,7 +71,7 @@ to a given entity specification and an associate constraints (xdc) file. I norma
     -- students implementation goes here
     end;
 
-The constrains file will be a modified version of a template provided that has all of the pins on their 
+The constraints file will be a modified version of a template provided that has all of the pins on their 
 development board listed but commented out - they just have to comment out the lines for the appropriate switches, buttons, LEDs etc and make sure they connect to the correctly named VHDL ports.
 
 My testbench for  this is from the truth table - exactly the same as I expect the students to produce.
@@ -160,5 +163,61 @@ To detect test bench failure we use the lower level :func:`pyam.fixtures.vhdl.gh
                 ghdl("--elab-run", "full_adder_testbench", run_options=["--assert-level=error"])
 
 
+Example 3 - Testing simulation and synthesis with VHDL only (without Python fixtures)
+-------------------------------------------------------------------------------------
+
+Directory structure
+...................
+
+Below is the directory structure for these tests. Under the cohort directory we will have a directory for each student which will
+contain their submitted code - in this case :file:`entity1.vhd` and :file:`entity2.vhd`. In our tests folder for the cohort we have the VHDL test bench files :file:`test_entity1.vhd`, :file:`test_entity2.vhd` etc. The
+test  files must start with "test\_" and must contain some comments to be recognised as test files::
+
+    root
+    ├─ cohorts
+    │     ├─ cohort1
+    │     │   └─ student1
+    │     │   │  └─ entity1.vhd
+    │     │   │  └─ entity2.vhd
+    |
+    ├─ tests
+    │     └─ test_entity1.vhd
+    │     └─ test_entity2.vhd
+
+The VHDL fixtures provided by pyAutoMark will set up the analysis to point to the appropriate test folder and student folder. It is assumed that the entity specification and architecture under test are both defined in the same students file.
+
+To be collected the VHDL test filenames must start with "test\_" and contain
+the following definition
+
+:PYAM_TEST: A unix glob string used to find the students file (by name) under test.
+
+Additional parameters may be specified
+
+:PYAM_TIMEOUT: (Optional) A floating point value spcifying the timeout for these tests.
+
+:PYAM_TEST_VALUE: (Optional) This may be specified multiple times to enable multiple test
+  using the same testbench file. For each value given the simulaition will be called
+  with a generic parameter "PYAM_TEST_VALUE" set to the corresponding value.
+
+e.g.
+
+.. code-block:: VHDL
+
+    -- PYAM_TEST "UUT.vhdl"
+    -- PYAM_TIMEOUT TIMEOUT
+    -- PYAM_TEST_VALUE VALUE1
+    -- PYAM_TEST_VALUE VALUE2
+
+.. option:: UUT.vhdl
+
+    The filename glob to the entity and architecture definition file under test in the students directory 
+
+.. option:: TIMEOUT
+
+    The maximum run time for a test in seconds.
+
+.. option:: VALUE1, VALUE2
+
+    This is the list of test values which will be passed as "PYAM_TEST_VALUE generic values to the simulation in turn
 
 
