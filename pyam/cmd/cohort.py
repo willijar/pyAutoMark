@@ -61,6 +61,9 @@ def main(args=None):
     elif args.list_tests:
         for test in cohort.tests().keys():
             print(test)
+    elif args.list_hashes:
+        for student in sorted(cohort.students(),key=lambda s: s.username):
+            print(f"{student.username:10} | {hex(student.hash())}")
     elif args.check_submissions:
         cohort.start_log_section("Checking Student Submissions")
         for student in cohort.students():
@@ -84,6 +87,9 @@ def add_args(parser: argparse.ArgumentParser):
     parser.add_argument('--list-files',
                         action="store_true",
                         help="Print out file manifest (from manifest.json)")
+    parser.add_argument('--list-hashes',
+                        action="store_true",
+                        help="Print hexadecimal hash for each student id")
     parser.add_argument(
         '--check-submissions',
         action="store_true",

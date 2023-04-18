@@ -22,6 +22,7 @@ import logging
 import json
 import glob
 import re
+import hashlib
 from os import walk
 from typing import Union, Dict, List
 from datetime import date, datetime
@@ -312,6 +313,11 @@ class Student:
             +f" for '{self.name()}: {proc.stdout} {proc.stderr}"
         )
         return False
+    
+    def hash(self) -> int:
+        """Return a hash based on students username - this will be first integer of first 8 characters of md5hash of username"""
+        return int("0x"+hashlib.md5(self.username.encode("utf-8")).hexdigest()[:8],16)
+
 
     def github_lastcommit(self) -> Union[datetime, None]:
         "Return last github commit time if applicable"
