@@ -29,6 +29,7 @@ import re
 from io import StringIO
 from pathlib import Path
 from typing import List
+from datetime import datetime
 import pytest
 from pyam.files import find_executable
 import pyam.cohort
@@ -216,6 +217,14 @@ def vhdl_simulate(ghdl, student, test_path):
 
     return _vhdl_simulate
 
+def bitfile_properties(file):
+    """Given a path to a bitfile return the file UserID and date in a dictionary
+    - Linux only"""
+    properties=subprocess.run(("file",  file), text=True, capture_output=True,).stdout
+    userid=re.search(r";UserID=([^;]+)",properties).group(1)
+    datestr=re.search(r"built\s+([^\s]+)",properties).group(1)
+    date=datetime.strptime(datestr,"%Y/%m/%d(%H:%M:%S)")
+    return {"UserID": userid, "Date": date}
 
 @pytest.fixture
 def vivado_options() -> List[str]:
