@@ -7,10 +7,10 @@ are required to submit their work electronically and where the submission can be
 
 * Software which can be tested using unit testing (in any language).
 * Embedded Systems which can be tested using mock libraries and headers instead of the hardware
-* Digital desines using a hardware description language (e.g. VHDL) whic can be tested in simulation or synthesis
+* Digital designs using a hardware description language (e.g. VHDL) whic can be tested in simulation or synthesis
 * Data files which can be read and analysed - these might br created from simulations, or experimental measurements
   or data recorded from test instruments
-* Spreadhseet files which might be used to capture student readings and answers to questions.
+* Spreadsheet files which might be used to capture student readings and answers to questions.
 
 The toolset is written in Python and can run on almost any Platform - PCs, Linux or Mac.
 Users will need to isntall other software needed for the actual tests such as C compilers
