@@ -330,7 +330,7 @@ def pytest_collect_file(parent, path) -> List:
 
     Tests are recognised as symbols matching "TEST_[A-Z0-9_]+"
 
-    A test timeout may be specified using #DEFINE PYAM_TIMEOUT <float>
+    A test timeout may be specified using -- PYAM_TIMEOUT <float>
 
     Returns:
         List of  tuples of filepath and a list of tests declarations.
@@ -393,7 +393,7 @@ class VHDLTestFile(pytest.File):
         Overridden collect method to collect the results from a vhdl file.
         If PYAM_TEST_VALUEs are specified these will be used
         """
-        if self.test_values is not None:
+        if self.test_values:
             for test in self.test_values:
                 yield VHDLTestItem.from_parent(name=test,
                                                parent=self,
