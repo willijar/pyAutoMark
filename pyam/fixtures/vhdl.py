@@ -408,6 +408,7 @@ class VHDLTestFile(pytest.File):
         if self.cohort:  #already configured
             return
         self.cohort = pyam.cohort.get_cohort(config.getoption("--cohort"))
+        if not(config.getoption("--student")): return # if no student collecting tests only
         self.student = self.cohort.students(config.getoption("--student"))
         paths = list(self.student.path.glob(self.test_glob))
         if not paths:
