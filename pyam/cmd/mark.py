@@ -11,6 +11,7 @@ import openpyxl
 from pyam.cohort import get_cohort
 from pyam.cmd.args import add_common_args
 from pyam.cmd.generate_template import to_defined_name
+from pyam.files import PathGlob
 
 def main(args=None):
     """Generate mark spreadsheets for each student
@@ -62,7 +63,7 @@ def get_reports(cohort, students, paths, prefix) -> dict:
         for path in paths:
             found = False
             for student in students:
-                if student.username in str(path) and path.suffix()=="txt":
+                if student.username in str(path):
                     reports[student] = path
                     found = True
                     break
@@ -101,14 +102,13 @@ def fill_workbook(template, student, report):
     set_field("course_assessment",student.cohort.get("course.assessment"),required=False)
     set_field("institution_name",student.cohort.get("institution.name"),required=False)
     set_field("institution_department",student.cohort.get("institution.department"),required=False)
+    set_field(student.cohort.get("template.report"),report.read_text(), required=False)
     course=student.rec.get("Course")
     if course:
         set_field("student_course",course)
-
     for key, value in analyse_report(report, cohort.tests(),
                                      cohort.log).items():
-        set_field(to_defined_name(key),value)
-
+        set_field(to_defined_name(key), value)
 
 def analyse_report(report_path: Path, tests: dict, log=None):
     """Returns a dictionary of results from a report file at path"""
@@ -151,9 +151,9 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     )
     parser.add_argument(
         '--reports',
-        nargs=argparse.REMAINDER,
-        type=Path,
-        default=[],
+        nargs='*',
+        action=PathGlob,
+        default=None,
         help="list of workbooks files to be processed. "
         "Defaults to those in report directory with matching prefix")
 

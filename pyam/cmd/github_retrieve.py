@@ -28,9 +28,9 @@ def main(args=None):
     """Retrieve files from student repositories on github (classroom).
 
     Cohort manifest be configured with:
-       github.template: 
+       github.template:
          The name of the template repository (prefix for student repositories)
-       github.url: 
+       github.url:
          URL to github organisation where repositories reside
 
     Students must have 'Github Username' field in csv file."""
@@ -46,8 +46,8 @@ def main(args=None):
     submission_dates = {}
     for student in students:
         submission_dates[student.username] = student.github_lastcommit()
-
-    pyam.files.set_csv_column(cohort.path / "students.csv", "Submission Date",
+    column_name = cohort.get("student-column.submission-date")
+    pyam.files.set_csv_column(cohort.path / "students.csv", column_name,
                               "Username",
                               lambda x: submission_dates.get(x, None))
 

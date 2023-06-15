@@ -22,10 +22,11 @@ import logging
 import json
 import glob
 import re
-from typing import Union,Dict,List
+from os import walk
+from typing import Union, Dict, List
 from datetime import date, datetime
 from pathlib import Path
-import pyam.config as config
+import pyam.config_manager as config
 from pyam.config import CONFIG
 from pyam.files import read_csv
 from pyam.run_pytest import run_pytest
@@ -86,18 +87,33 @@ class Cohort(config.ConfigManager):
         for path in (self.test_path, self.report_path):
             path.mkdir(exist_ok=True)
         student_list = []
-        for rec in read_csv(self.path / "students.csv",True):
+        for rec in read_csv(self.path / "students.csv",
+                            self.student_columns()):
             student_list.append(Student(self, rec))
         self._students: 'tuple[Student]' = tuple(student_list)
 
-    def students(self, name: Union[str, None, List[str]] = None
+    def student_columns(self) -> List[tuple]:
+        """Return a list of student column information for this cohort configuration
+
+        Returns:
+            A list of tuples of regex and column titles suitable for read_csv
+        """
+        cols = []
+        for name, value in config.SCHEMA["student-column"].items():
+            regex = self.get(f"student-column.{name}",
+                             value.get("default", name))
+            cols.append((regex, name))
+        return cols
+
+    def students(self,
+                 name: Union[str, None, List[str]] = None
                 ) -> 'Union[Student, List[Student]]':
         """Return student or students from a cohort.
 
         Finds students by full name, student id or username in cohort.
 
         Args:
-          name: Name or names to be found in the cohort. 
+          name: Name or names to be found in the cohort.
             May be *username*, *student_id* or *common name*
 
         Returns:
@@ -125,7 +141,7 @@ class Cohort(config.ConfigManager):
         fix = "=" * (40 - len(title) // 2)
         self.log.info("%s %s %s", fix, title, fix)
 
-    def tests(self) -> Dict[str,Dict]:
+    def tests(self) -> Dict[str, Dict]:
         """Return dictionary of tests for this cohort indexed by pytest nodeids
 
         If a manifest.json is provided in the test directory then this is the "tests"
@@ -176,12 +192,12 @@ class Student:
         """
         self.rec = rec
         self.cohort = cohort
-        self.username = rec["Username"]
-        self.student_id = rec["Student ID"]
-        self.last_name = rec["Last Name"]
-        self.first_name = rec["First Name"]
-        self.course = rec.get("Child Course ID", self.cohort.get("course"))
-        self.github_username = rec.get("Github Username", None)
+        self.username = rec["username"]
+        self.student_id = rec["studentid"]
+        self.last_name = rec["lastname"]
+        self.first_name = rec["firstname"]
+        self.course = rec.get("course", self.cohort.get("course"))
+        self.github_username = rec.get("github-username", None)
         folder = cohort.get("student-folder-name")
         if folder:
             folder = self.rec[folder]
@@ -195,6 +211,9 @@ class Student:
     def __repr__(self):
         return f"<Student {self.cohort.name}/{self.student_id}>"
 
+    def __lt__(self,other):
+        return (self.last_name, self.first_name) < (other.last_name, other.first_name) 
+    
     def __str__(self):
         return self.name()
 
@@ -231,18 +250,20 @@ class Student:
         if not files:
             files = self.cohort.get("files", ())
         if not self.path.exists():
-            self.cohort.log.warning("No submission: %s",self.name())
+            self.cohort.log.warning("No submission: %s", self.name())
             return files.keys()
         missing = []
+        if log:
+            log=self.cohort.log
         for rec in files.keys():
-            if not (self.path / rec).exists():
+            if not self.file(rec,False):
                 missing.append(rec)
         if missing and log:
-            self.cohort.log.warning("Missing Files: %-40s: %2d missing: %s",
-                                    self.name(), len(missing), missing)
+            self.cohort.log.warning("Missing Files: %s - %s",
+                                    self.name(), missing)
         return missing
 
-    def repository_name(self) -> Union[str,None]:
+    def repository_name(self) -> Union[str, None]:
         """Return Github repository name if applicable else False
         """
         if self.github_username:
@@ -251,7 +272,7 @@ class Student:
                 return f"{github}-{self.github_username}"
         return None
 
-    def repository_url(self) -> Union[str,None]:
+    def repository_url(self) -> Union[str, None]:
         """Return students github repository url if present else False"""
         name = self.repository_name()
         if name:
@@ -260,7 +281,7 @@ class Student:
 
     def github_retrieve(self, reset: bool=True) -> bool:
         """Clone or pull asssessments for this student from their repository.
-        
+
         Returns:
           Success of retrieval
         """
@@ -312,6 +333,43 @@ class Student:
                                          "%a %b %d %H:%M:%S %Y %z\n")
             raise ValueError(result.stderr)
         return None
+
+    def file(self, pattern: str, log: Union[logging.Logger,None] = None) -> Union[Path,None]:
+        """Attempt to find file matching given pathname pattern based on the configuration setting
+        filematch.pattern.
+
+        Args:
+            pattern: The file pattern to search for - either an exact path, glob or regexp
+                depending on the configuration setting filematch.pattern
+            log: If given use to log if no file found or multiple files found
+
+        Returns:
+            The path to the (first) matching file found or None if none found
+        """
+        matchtype=self.cohort.get("filematch.pattern")
+        files=[]
+        if matchtype=="exact":
+            path=self.path / pattern
+            if path.exists():
+                files.append(path)
+        elif matchtype=="glob":
+            files=list(self.path.glob(pattern))
+        elif matchtype=="regexp":
+            matcher = re.compile(pattern)
+            for path in self.path.glob("**/*"):
+                if matcher.search(str(path)):
+                    files.append(path)
+        else:
+            raise ValueError("Invalid filematch.pattern", matchtype)
+        if not files:
+            if log:
+                log.warning("File Not Found: %s: '%s'",self.name(), pattern)
+            return None
+        if len(files)>1 and log:
+            log.warning("Multiple files found: %s matching '%s': using %s",
+                self.name(), pattern,  files[0].relative_to(self.path))
+        return files[0]
+
 
     def find_files(self,
                    pathname: str,

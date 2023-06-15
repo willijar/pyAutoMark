@@ -12,7 +12,7 @@ readme = "README.md"
 license = {text = "GPL-3.0-openpyxl"}
 requires-python = ">=3.8"
 dependencies = [
-    "openpyxl>=3.0",
+    "openpyxl>=3.1.2",
     "pytest>=7.2.1", 
     "pytest-timeout>=2.1.0"
 ]
@@ -20,7 +20,7 @@ keywords = ["pytest", "assessment"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: C",
     "Framework :: Pytest",
     "Topic :: Education :: Testing",

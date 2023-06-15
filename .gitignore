@@ -2,9 +2,8 @@ build/
 __pycache__
 .pytest_cache
 .vscode
-/20*/
-docsrc
 docs
+docsrc
 dist
 pyAutoMark.egg-info
 *.code-workspace

@@ -17,12 +17,10 @@ import pyam.files
 def add_args(parser):
     """Get and parse arguments for this script"""
     add_common_args(parser)
-    parser.add_argument('--files',
-                        dest="files",
-                        nargs=argparse.REMAINDER,
-                        type=Path,
-                        default=[],
-                        help="list of workbooks files to be processed")
+    parser.add_argument("files",
+                        nargs='+',
+                        action=pyam.files.PathGlob,
+                        help="list of downloaded files to be processed")
 
 
 _GRADECENTRE_RE = re.compile(".+_(.+?)_attempt_(.+?)[_.](.+)")
@@ -37,7 +35,7 @@ def extract_details(file, log: logging.Logger = None):
             match.group(3),  # filename or txt
             datetime.strptime(match.group(2), "%Y-%m-%d-%H-%M-%S"))  # date
     log.warning("Unable to decode details from download file %s", file)
-    return None
+    return (None,None,None)
 
 
 def main(args=None):
@@ -53,7 +51,7 @@ def main(args=None):
     cohort = pyam.cohort.get_cohort(args.cohort)
     cohort.path.mkdir(exist_ok=True)
     cohort.start_log_section(f"Extracting downloads for Cohort {args.cohort}")
-    students = list(cohort.students)
+    students = list(cohort.students())
     submission_dates = {}
     for file in args.files:
         (username, filename, date) = extract_details(file, cohort.log)
@@ -65,6 +63,7 @@ def main(args=None):
             cohort.log.warning(
                 "Download file from %s who is not student in cohort", username)
             continue
+        student.path.mkdir(exist_ok=True)
         if filename == "txt":  # this is the download details txt - copy to student directory
             shutil.copy2(file, student.path)
         else:
@@ -72,7 +71,7 @@ def main(args=None):
                 shutil.unpack_archive(file, student.path)
                 cohort.log.info("Extracted files for %s from %s",
                                 student.username, file.name)
-            except ValueError:  # not recognised archive format
+            except (ValueError, shutil.ReadError):  # not recognised archive format
                 shutil.copy2(file, student.path / filename)
                 cohort.log.info("Copied %s to %s", file.name,
                                 student.path / filename)
@@ -86,7 +85,7 @@ def main(args=None):
         if student not in students:
             student.check_manifest(log=True)
         else:
-            cohort.log.warning("No download found for student %s", student)
+            cohort.log.warning("No download: %s", student)
 
 
 if __name__ == "__main__":

@@ -26,12 +26,18 @@ def main(args=None):
         f"Running tests {args.test} for {args.students or 'all'}")
     students = cohort.students(args.students)
     for student in students:
+        if not student.path.exists():
+            cohort.log.warning("No Submission Folder: '%s'.", student.name())
+            continue
         report_path = cohort.report_path / f"{args.prefix}{student.username}.txt"
         if report_path.exists():
             if args.new_only:
                 continue
             if not args.overwrite:
-                raise FileExistsError(report_path)
+                cohort.log.warning("Using Existing Report for '%s' - '%s'.", 
+                                student.name(), report_path.relative_to(CONFIG.root_path))
+                CONFIG.log.warning("Use --overwrite option to overwrite report.")
+                continue
         extras = []
         if args.mark:
             extras += ['-m', args.mark]

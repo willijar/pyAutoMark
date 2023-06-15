@@ -1,1 +1,1 @@
-__all__=("common", "python", "c_mock", "vhdl")
+__all__=("common", "python", "clang", "vhdl", "xlsx")
