@@ -280,7 +280,7 @@ class Student:
             return f"{self.cohort['github.url']}/{self.repository_name()}"
         return None
 
-    def github_retrieve(self) -> bool:
+    def github_retrieve(self, reset: bool=True) -> bool:
         """Clone or pull asssessments for this student from their repository.
 
         Returns:
@@ -289,10 +289,17 @@ class Student:
         if self.path.exists():
             action = ["git", "pull"]
             cwd = self.path
+            #need to do a reset hard first to ensure workarea is clean
+            if reset:
+                if subprocess.run(("git","reset","--hard"), cwd=cwd, capture_output=True).returncode !=0:
+                    self.cohort.log.warning(
+                    f"Unable to reset {self.repository_name()}"\
+                    +f" for '{self.name()}")
         elif not self.repository_url():
             self.cohort.log.warning(f"No repository known for '{self.name()}'")
             return False
         else:
+
             action = ["git", "clone", self.repository_url(), self.path]
             cwd = self.cohort.path
         # pylint: disable=W1510
