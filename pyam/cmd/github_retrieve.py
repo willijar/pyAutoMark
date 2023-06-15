@@ -19,6 +19,9 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
         '--students',
         nargs="*",
         help='Names of specific student for which tests are to be run')
+    parser.add_argument("--no-reset", 
+                        action="store_true",
+                        help="If specified then local repositories won't be reset before a pull.")
 
 
 def main(args=None):
@@ -39,7 +42,7 @@ def main(args=None):
     cohort.start_log_section(f"Github retrieve {args.students or 'all'}")
     students = cohort.students(args.students)
     for student in students:
-        student.github_retrieve()
+        student.github_retrieve(reset=not(args.no_reset))
     submission_dates = {}
     for student in students:
         submission_dates[student.username] = student.github_lastcommit()
