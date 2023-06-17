@@ -381,7 +381,7 @@ class VHDLTestFile(pytest.File):
         self.test_globs = self.RE_TEST.findall(text)[0]
         match = self.RE_TIMEOUT.search(text)
         if match:
-            self.timeout = float(match.group(1))
+            self.test_timeout = float(match.group(1))
         self.test_values = self.RE_TEST_VALUE.findall(text)
         match = self.RE_DEPENDS.findall(text)
         if match:
