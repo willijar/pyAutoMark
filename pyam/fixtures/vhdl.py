@@ -208,7 +208,6 @@ def vhdl_simulate(ghdl, student, test_path):
         try:
             ghdl("--elab-run", top, run_options=["--assert-level=error"])
         except VHDLError as err:
-            # print(str(err.args[0]))
             assert True, err.args[0]
 
     return _vhdl_simulate
@@ -347,7 +346,7 @@ class VHDLTestFile(pytest.File):
 
     Attributes:
         text (str): The text of the file under test
-        test_glob (str): The string from -- PYAM_TEST "glob" - glob to find student file(s)
+        test_globs (str): The string from -- PYAM_TEST "glob"+ - glob sto find student file(s)
         timeout (fload): timout in seconds specified using -- PYAM_TIMEOUT <float>
         tests (list): List of tests to be performed set usuing -- PYAM_TEST_VALUE value
               These will be passed as PYAM_TEST generci value using -gPYAM_TEST=VALUE
@@ -356,20 +355,20 @@ class VHDLTestFile(pytest.File):
         student: student under test
         uut_path (Path): first file in student directory matching glob
     """
-    RE_TEST = re.compile(r'--\s+PYAM_TEST\s+\"(.*)\"')
+    RE_TEST = re.compile(r'--\s+PYAM_TEST\s+\"(.*?)\"(?:[,\s]+\"(.*)\")*')
     RE_TIMEOUT = re.compile(r'--\s+PYAM_TIMEOUT\s+(.+)')
     RE_TEST_VALUE = re.compile(r'--\s+PYAM_TEST_VALUE\s+(.+)$')
     RE_DEPENDS = re.compile(r'--\s+PYAM_DEPENDS\s+\"(.*?)\"(?:[,\s]+\"(.*)\")*')
     # attributes from initialisation
     text: str
-    test_glob: str
+    test_globs: List[str]
     test_timeout = None
     test_values = None
     test_depends = []
     # attributes after configure
     cohort: pyam.cohort.Cohort = None
     student: pyam.cohort.Student = None
-    uut_path: Path
+    uut_paths: List[Path]
 
     @classmethod
     def from_parent(cls, parent, *, fspath=None, path=None, text="", **kw):
@@ -379,7 +378,7 @@ class VHDLTestFile(pytest.File):
                                    path=path,
                                    **kw)
         self.text = text
-        self.test_glob = self.RE_TEST.search(text).group(1)
+        self.test_globs = self.RE_TEST.findall(text)[0]
         match = self.RE_TIMEOUT.search(text)
         if match:
             self.timeout = float(match.group(1))
@@ -412,17 +411,19 @@ class VHDLTestFile(pytest.File):
         self.cohort = pyam.cohort.get_cohort(config.getoption("--cohort"))
         if not(config.getoption("--student")): return # if no student collecting tests only
         self.student = self.cohort.students(config.getoption("--student"))
-        paths = list(self.student.path.glob(self.test_glob))
-        if not paths:
-            self.cohort.log("No VHDL Test file matching '%s' found for %s",
-                            self.test_glob, self.student.name())
-            raise FileNotFoundError(self.student, self.test_glob)
-        self.uut_path = paths[0]
-        if len(paths) > 1:
-            self.cohort.log(
-                "Multiple VHDL Test files matching '%s' found for %s: using %s",
-                self.test_glob, self.student.name(), self.uut_path)
-        #clean out library
+        self.uut_paths=[]
+        for glob in self.test_globs:
+            if glob:
+                paths = list(self.student.path.glob(glob))
+                if not paths:
+                    self.cohort.log("No VHDL Test file matching '%s' found for %s",
+                                    glob, self.student.name())
+                    raise FileNotFoundError(self.student, glob)
+                self.uut_paths.append(paths[0])
+                if len(paths) > 1:
+                    self.cohort.log(
+                        "Multiple VHDL Test files matching '%s' found for %s: using %s",
+                        glob, self.student.name(), self.uut_path)
         # pylint: disable=subprocess-run-check
         run(("ghdl", "--clean", f"--workdir={CONFIG.build_path}"),
             cwd=CONFIG.build_path)
@@ -441,10 +442,12 @@ class VHDLTestFile(pytest.File):
         if item.test_generic:
             run_options = ["-gPYAM_TEST_VALUE={item.test_generic}"]
         run_ghdl(command="-a", unit=self.path, build_path=CONFIG.build_path, timeout=self.test_timeout)
-        run_ghdl(command="-a",
-                 unit=self.uut_path,
-                 build_path=CONFIG.build_path, 
-                 timeout=self.test_timeout)
+        for uut in self.uut_paths:
+            if uut:
+                run_ghdl(command="-a",
+                        unit=uut,
+                        build_path=CONFIG.build_path, 
+                        timeout=self.test_timeout)
         run_ghdl(command="--elab-run",
                  unit=self.path.stem,
                  build_path=CONFIG.build_path,
@@ -480,9 +483,9 @@ class VHDLTestItem(pytest.Item):
     
     def reportinfo(self):
         if self.test_generic:
-            return self.parent.path, 0, f"{self.parent.path.name}[{self.test_generic}]"
+            return self.parent.path, 0, f"{self.parent.path.stem}[{self.test_generic}]"
         else:
-            return self.parent.path, 0, f"{self.parent.path.name}"
+            return self.parent.path, 0, f"{self.parent.path.stem}"
 
 def pytest_collection_modifyitems(config, items):
     """Ensure that if we have a test item that the file collector is configured"""
