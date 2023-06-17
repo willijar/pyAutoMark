@@ -115,10 +115,7 @@ def run_ghdl(command,
       subprocess.TimeoutExpired
     """
     # pylint: disable=W1510
-    result = run([
-        ghdl_exec, command, *options, f"--workdir={build_path}", unit,
-        *run_options
-    ],
+    result = run([ghdl_exec, command, *options, unit,*run_options],
                  cwd=build_path,
                  text=True,
                  capture_output=True,
@@ -350,7 +347,7 @@ class VHDLTestFile(pytest.File):
 
     Attributes:
         text (str): The text of the file under test
-        test_glob (str): The string from -- PYAM_TEST "glob" - glob to find student file
+        test_glob (str): The string from -- PYAM_TEST "glob" - glob to find student file(s)
         timeout (fload): timout in seconds specified using -- PYAM_TIMEOUT <float>
         tests (list): List of tests to be performed set usuing -- PYAM_TEST_VALUE value
               These will be passed as PYAM_TEST generci value using -gPYAM_TEST=VALUE
@@ -362,11 +359,13 @@ class VHDLTestFile(pytest.File):
     RE_TEST = re.compile(r'--\s+PYAM_TEST\s+\"(.*)\"')
     RE_TIMEOUT = re.compile(r'--\s+PYAM_TIMEOUT\s+(.+)')
     RE_TEST_VALUE = re.compile(r'--\s+PYAM_TEST_VALUE\s+(.+)$')
+    RE_DEPENDS = re.compile(r'--\s+PYAM_DEPENDS\s+\"(.*?)\"(?:[,\s]+\"(.*)\")*')
     # attributes from initialisation
     text: str
     test_glob: str
     test_timeout = None
     test_values = None
+    test_depends = []
     # attributes after configure
     cohort: pyam.cohort.Cohort = None
     student: pyam.cohort.Student = None
@@ -385,6 +384,9 @@ class VHDLTestFile(pytest.File):
         if match:
             self.timeout = float(match.group(1))
         self.test_values = self.RE_TEST_VALUE.findall(text)
+        match = self.RE_DEPENDS.findall(text)
+        if match:
+            self.test_depends=match[0]
         return self
 
     def collect(self):
@@ -398,7 +400,7 @@ class VHDLTestFile(pytest.File):
                                                parent=self,
                                                test=test)
         else:
-            yield VHDLTestItem.from_parent(name="", parent=self)
+            yield VHDLTestItem.from_parent(name=self.path.name, parent=self)
 
     def configure(self, config):
         """Set up this VHDLTestFIle from configuration information once it is available
@@ -424,20 +426,30 @@ class VHDLTestFile(pytest.File):
         # pylint: disable=subprocess-run-check
         run(("ghdl", "--clean", f"--workdir={CONFIG.build_path}"),
             cwd=CONFIG.build_path)
+  
+
 
     def run_test(self, item):
         "Run a VHDL test item"
+        # analyse test dependencies before running tests
+        for filename in self.test_depends:
+            if filename:
+                run_ghdl(command="-a", unit=self.path.with_name(filename),
+                         build_path=CONFIG.build_path,
+                         timeout=self.test_timeout)
         run_options = []
         if item.test_generic:
             run_options = ["-gPYAM_TEST_VALUE={item.test_generic}"]
-        run_ghdl(command="-a", unit=self.path, build_path=CONFIG.build_path)
+        run_ghdl(command="-a", unit=self.path, build_path=CONFIG.build_path, timeout=self.test_timeout)
         run_ghdl(command="-a",
                  unit=self.uut_path,
-                 build_path=CONFIG.build_path)
+                 build_path=CONFIG.build_path, 
+                 timeout=self.test_timeout)
         run_ghdl(command="--elab-run",
                  unit=self.path.stem,
                  build_path=CONFIG.build_path,
-                 run_options=["--assert-level=error", *run_options])
+                 run_options=["--assert-level=error", *run_options],
+                 timeout=self.test_timeout)
 
 
 class VHDLTestItem(pytest.Item):
@@ -465,7 +477,12 @@ class VHDLTestItem(pytest.Item):
         if isinstance(excinfo.value, subprocess.TimeoutExpired):
             return f"Timeout Expired: {excinfo.value.args[1]}s"
         return super().repr_failure(excinfo, style)
-
+    
+    def reportinfo(self):
+        if self.test_generic:
+            return self.parent.path, 0, f"{self.parent.path.name}[{self.test_generic}]"
+        else:
+            return self.parent.path, 0, f"{self.parent.path.name}"
 
 def pytest_collection_modifyitems(config, items):
     """Ensure that if we have a test item that the file collector is configured"""
