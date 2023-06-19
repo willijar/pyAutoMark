@@ -20,9 +20,10 @@ Functions
 import subprocess
 import logging
 import json
-import glob
-import re
+import shutil
 import hashlib
+import re
+import glob
 from os import walk
 from typing import Union, Dict, List
 from datetime import date, datetime
@@ -279,6 +280,14 @@ class Student:
         if name:
             return f"{self.cohort['github.url']}/{self.repository_name()}"
         return None
+    
+    def git(self,*args):
+        """Run git with given args in the student repository. 
+        
+        Returns subprocess.CompletedProcess if successful.
+        Raises subprocess.CalledProcessError if not
+        """
+        return subprocess.run(("git",*args), cwd=str(self.path), text=True, check=True, capture_output=True)
 
     def github_retrieve(self, reset: bool=True) -> bool:
         """Clone or pull asssessments for this student from their repository.
@@ -299,7 +308,6 @@ class Student:
             self.cohort.log.warning(f"No repository known for '{self.name()}'")
             return False
         else:
-
             action = ["git", "clone", self.repository_url(), self.path]
             cwd = self.cohort.path
         # pylint: disable=W1510
@@ -321,6 +329,44 @@ class Student:
         )
         return False
     
+
+    def github_push(self, files: List[Path], subdir=None, reset: bool=True, branch: str=None, msg: str = "Push from pyAutoMark"):
+        """Push given set of files into student repository
+
+        Args:
+          files: List of files or directories to copy
+          subdir: If set - the name of subdirectory in student repository to copy files into
+          reset: If True, do a github_retrieve first to ensure we are consistent with student repo
+          branch: If set checkout and push files into this branch
+        """
+        try: 
+            if reset:
+                #rensure we are syned with student work if reset is true
+                self.github_retrieve(True)
+            if branch:
+                #save current branch name and checkout specified branch
+                original_branch = self.git("branch", "--show-current").stdout
+                proc = self.git("checkout", branch)
+            destination = self.path
+            if subdir:
+                destination = destination / subdir
+                destination.mkdir(parents=True, exist_ok=True)
+            for file in files:
+                #do stuffd
+                if file.is_file():
+                    shutil.copy(file,destination/file.stem)
+                elif file.is_dir():
+                    shutil.copytree(file,destination)
+            proc = self.git("add","--all")
+            proc = self.git("commit","-m", msg)
+            proc = self.git("push")
+            if branch:
+                proc = self.git("checkout", original_branch)
+            self.cohort.log.info(f"Successful Push to {self.repository_name()} for '{self.name()}'")
+        except subprocess.CalledProcessError: 
+            self.cohort.log.error(
+            f"Unable to push files {self.repository_name()} for '{self.name()} - {proc.stdout} {proc.stderr}'")
+
     def hash(self) -> int:
         """Return a hash based on students username - this will be first integer of first 8 characters of md5hash of username"""
         return int("0x"+hashlib.md5(self.username.encode("utf-8")).hexdigest()[:8],16)
