@@ -10,17 +10,17 @@ authors = [ {name = "John Williams", email = "j.a.r.williams@jarw.org.uk"}]
 description = "Automated marking of student electronic submissions"
 readme = "README.md"
 license = {text = "GPL-3.0-openpyxl"}
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "openpyxl>=3.1.2",
-    "pytest>=7.2.1", 
+    "pytest>=7.3.2", 
     "pytest-timeout>=2.1.0"
 ]
 keywords = ["pytest", "assessment"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: C",
     "Framework :: Pytest",
     "Topic :: Education :: Testing",
