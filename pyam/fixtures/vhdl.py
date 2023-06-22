@@ -61,7 +61,7 @@ def clean(ghdl_exec, build_path) -> None:
 @pytest.fixture
 def search_paths() -> List[str]:
     "*Fixture*: A list of additional paths to search for the executables"
-    return ("/opt/Xilinx/", "/usr/local/")
+    return ("/usr/bin", "/opt/Xilinx/", "/usr/local/")
 
 
 @pytest.fixture
@@ -89,13 +89,13 @@ def ghdl_options() -> List[str]:
 
 
 def run_ghdl(command,
-             unit="",
+             unit=None,
              ghdl_exec="ghdl",
              options=("--std=08", "--warn-no-hide"),
              build_path="./",
              run_options=(),
              timeout=None):
-    """RUn the ghdl command
+    """Run the ghdl command
     Args:
       ghdl_exec (Union[Path|str]): ghdl executable
       command (str): the ghdl command string to use e.g.
@@ -115,12 +115,20 @@ def run_ghdl(command,
       VHDLError: if ghdl failed but netiehr of above commands
       subprocess.TimeoutExpired
     """
-    # pylint: disable=W1510
-    result = run([ghdl_exec, command, *options, unit,*run_options],
-                 cwd=build_path,
-                 text=True,
-                 capture_output=True,
-                 timeout=timeout)
+    #pylint: disable=subprocess-run-check
+    #DEBUG: print(ghdl_exec, command, *options, unit,*run_options)
+    if unit:
+        result = run([ghdl_exec, command, *options, unit,*run_options],
+                    cwd=build_path,
+                    text=True,
+                    capture_output=True,
+                    timeout=timeout)
+    else:
+        result = run([ghdl_exec, command],
+                    cwd=build_path,
+                    text=True,
+                    capture_output=True,
+                    timeout=timeout)
     if result.returncode != 0:
         msg = result.stdout + result.stderr
         if command == "-a":
@@ -216,7 +224,7 @@ def vhdl_simulate(ghdl, student, test_path):
 def bitfile_properties(file):
     """Given a path to a bitfile return the file UserID and date in a dictionary
     - Linux only"""
-    properties=subprocess.run(("file",  file), text=True, capture_output=True,).stdout
+    properties=subprocess.run(("file",  file), text=True, check=True, capture_output=True,).stdout
     userid=re.search(r";UserID=([^;]+)",properties).group(1)
     datestr=re.search(r"built\s+([^\s]+)",properties).group(1)
     date=datetime.strptime(datestr,"%Y/%m/%d(%H:%M:%S)")
@@ -333,7 +341,7 @@ def pytest_collect_file(parent, path) -> List:
     """
     path = Path(path)
     if path.suffix == ".vhd" and path.name.startswith("test_"):
-        text = path.read_text()
+        text = path.read_text(encoding="ascii")
         if re.search(r'--\s+PYAM_TEST\s+\"(.*)\"', text):
             return VHDLTestFile.from_parent(parent=parent,
                                             path=path,
@@ -364,7 +372,7 @@ class VHDLTestFile(pytest.File):
     text: str
     test_globs: List[str]
     test_timeout = None
-    test_values = None
+    test_values = []
     test_depends = []
     # attributes after configure
     cohort: pyam.cohort.Cohort = None
@@ -374,17 +382,14 @@ class VHDLTestFile(pytest.File):
     @classmethod
     def from_parent(cls, parent, *, fspath=None, path=None, text="", **kw):
         """Class constructor as required by pytest"""
-        self = super().from_parent(parent=parent,
-                                   fspath=fspath,
-                                   path=path,
-                                   **kw)
-        self.text = text
-        self.test_globs = self.RE_TEST.findall(text)[0]
-        match = self.RE_TIMEOUT.search(text)
+        self = super().from_parent(parent=parent, fspath=fspath, path=path, **kw)
+        self.text =  text
+        self.test_globs = self.RE_TEST.findall(self.text)[0]
+        match = self.RE_TIMEOUT.search(self.text)
         if match:
             self.test_timeout = float(match.group(1))
-        self.test_values = self.RE_TEST_VALUE.findall(text)
-        match = self.RE_DEPENDS.findall(text)
+        self.test_values = self.RE_TEST_VALUE.findall(self.text)
+        match = self.RE_DEPENDS.findall(self.text)
         if match:
             self.test_depends=match[0]
         return self
@@ -396,11 +401,9 @@ class VHDLTestFile(pytest.File):
         """
         if self.test_values:
             for test in self.test_values:
-                yield VHDLTestItem.from_parent(name=test,
-                                               parent=self,
-                                               test=test)
+                yield VHDLTestItem.from_parent(parent=self, name=test, test=test)
         else:
-            yield VHDLTestItem.from_parent(name=self.path.name, parent=self)
+            yield VHDLTestItem.from_parent(parent=self, name=self.path.name)
 
     def configure(self, config):
         """Set up this VHDLTestFIle from configuration information once it is available
@@ -410,7 +413,8 @@ class VHDLTestFile(pytest.File):
         if self.cohort:  #already configured
             return
         self.cohort = pyam.cohort.get_cohort(config.getoption("--cohort"))
-        if not(config.getoption("--student")): return # if no student collecting tests only
+        if not config.getoption("--student"):
+            return # if no student collecting tests only
         self.student = self.cohort.students(config.getoption("--student"))
         self.uut_paths=[]
         for glob in self.test_globs:
@@ -424,16 +428,15 @@ class VHDLTestFile(pytest.File):
                 if len(paths) > 1:
                     self.cohort.log(
                         "Multiple VHDL Test files matching '%s' found for %s: using %s",
-                        glob, self.student.name(), self.uut_path)
-        # pylint: disable=subprocess-run-check
-        run(("ghdl", "--clean", f"--workdir={CONFIG.build_path}"),
-            cwd=CONFIG.build_path)
-  
+                        glob, self.student.name(), self.uut_paths)
 
 
     def run_test(self, item):
         "Run a VHDL test item"
         # analyse test dependencies before running tests
+        #DEBUG: print("VHDL Test File", self.path)
+        #DEBUG: print("UUT Fles:",self.uut_paths)
+        run_ghdl("--remove")
         for filename in self.test_depends:
             if filename:
                 run_ghdl(command="-a", unit=self.path.with_name(filename),
@@ -442,12 +445,14 @@ class VHDLTestFile(pytest.File):
         run_options = []
         if item.test_generic:
             run_options = ["-gPYAM_TEST_VALUE={item.test_generic}"]
-        run_ghdl(command="-a", unit=self.path, build_path=CONFIG.build_path, timeout=self.test_timeout)
+        run_ghdl(command="-a", unit=self.path,
+                 build_path=CONFIG.build_path,
+                 timeout=self.test_timeout)
         for uut in self.uut_paths:
             if uut:
                 run_ghdl(command="-a",
                         unit=uut,
-                        build_path=CONFIG.build_path, 
+                        build_path=CONFIG.build_path,
                         timeout=self.test_timeout)
         run_ghdl(command="--elab-run",
                  unit=self.path.stem,
@@ -462,11 +467,8 @@ class VHDLTestItem(pytest.Item):
     test_generic = None
 
     @classmethod
-    def from_parent(cls, parent, *, fspath=None, path=None, **kw):
-        self = super().from_parent(parent=parent,
-                                   fspath=fspath,
-                                   path=path,
-                                   **kw)
+    def from_parent(cls, parent, **kw):
+        self = super().from_parent(parent=parent, **kw)
         self.test_generic = kw.get("test", None)
         return self
 
@@ -481,12 +483,11 @@ class VHDLTestItem(pytest.Item):
         if isinstance(excinfo.value, subprocess.TimeoutExpired):
             return f"Timeout Expired: {excinfo.value.args[1]}s"
         return super().repr_failure(excinfo, style)
-    
+
     def reportinfo(self):
         if self.test_generic:
             return self.parent.path, 0, f"{self.parent.path.stem}[{self.test_generic}]"
-        else:
-            return self.parent.path, 0, f"{self.parent.path.stem}"
+        return self.parent.path, 0, f"{self.parent.path.stem}"
 
 def pytest_collection_modifyitems(config, items):
     """Ensure that if we have a test item that the file collector is configured"""
