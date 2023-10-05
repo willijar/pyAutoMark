@@ -60,7 +60,7 @@ def main(args=None):
             print(f"{file:30}: {value['description']}")
     elif args.list_tests:
         for test in cohort.tests().keys():
-            print(test)
+            print(f"{test:40}: {cohort.tests()[test]}")
     elif args.list_hashes:
         for student in sorted(cohort.students(),key=lambda s: s.username):
             print(f"{student.username:10} | {hex(student.hash())}")

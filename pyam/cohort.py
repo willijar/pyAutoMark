@@ -153,20 +153,23 @@ class Cohort(config.ConfigManager):
         Returns:
           A dictionary of tests for this cohort indexed by pytest nodeids.
           Value is a dictionary of test attributes from the test manifest if provided.
+          Currently "description" is used to provide a human readable description
+          and "mark" to provide a numerical mark for this test in the generated template.
         """
+        #Load manifest data if present
         test_manifest_path = self.test_path / "manifest.json"
-        test_manifest = None
+        test_manifest = {}
         if test_manifest_path.exists():
             with open(test_manifest_path, "r") as fid:
                 test_manifest = json.load(fid).get("tests", None)
-        if not test_manifest:
-            result = run_pytest(self, '--collect-only', '-q')
-            test_manifest = {}
-            for line in result.stdout.splitlines():
-                if len(line) == 0:
-                    break
-                if line.startswith(self.name + "/"):
-                    line = line[len(self.name) + 1:]
+        #Ensure all tests are included by collecting from pytest
+        result = run_pytest(self, '--collect-only', '-q')
+        for line in result.stdout.splitlines():
+            if len(line) == 0:
+                break
+            if line.startswith(self.name + "/"):
+                line = line[len(self.name) + 1:]
+            if not test_manifest.get(line):
                 test_manifest[line] = {}
         return test_manifest
 
