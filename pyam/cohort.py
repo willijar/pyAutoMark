@@ -334,14 +334,15 @@ class Student:
         "Return last github commit time if applicable"
         if self.path.exists():
             result = subprocess.run(("git", "log", "-1", r"--format=%cd"),
-                                    cwd=self.path,
-                                    capture_output=True,
-                                    text=True,
-                                    check=True)
+                                cwd=self.path,
+                                capture_output=True,
+                                text=True,
+                                check=False)
             if result.returncode == 0:
                 return datetime.strptime(result.stdout,
-                                         "%a %b %d %H:%M:%S %Y %z\n")
-            raise ValueError(result.stderr)
+                                        "%a %b %d %H:%M:%S %Y %z\n") 
+            self.cohort.log.error(
+                    f"Unable to get last commit time for {self.repository_name()} for '{self.name()}' -- {result.stderr}")
         return None
 
     def file(self, pattern: str, log: Union[logging.Logger,None] = None) -> Union[Path,None]:
