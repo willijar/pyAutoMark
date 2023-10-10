@@ -344,7 +344,7 @@ class Student:
         """
         try: 
             if reset:
-                #rensure we are syned with student work if reset is true
+                #rensure we are synced with student work if reset is true
                 self.github_retrieve(True)
             if branch:
                 #save current branch name and checkout specified branch
@@ -353,13 +353,14 @@ class Student:
             destination = self.path
             if subdir:
                 destination = destination / subdir
-                destination.mkdir(parents=True, exist_ok=True)
+                if not destination.exists():
+                    destination.mkdir(parents=True, exist_ok=True)
             for file in files:
                 #do stuffd
                 if file.is_file():
-                    shutil.copy(file,destination/file.stem)
+                    shutil.copyfile(file,destination/file.name)
                 elif file.is_dir():
-                    shutil.copytree(file,destination)
+                    shutil.copytree(file,destination/file.name,copy_function=shutil.copyfile,dirs_exist_ok=True)
             proc = self.git("add","--all")
             proc = self.git("commit","-m", msg)
             proc = self.git("push")
