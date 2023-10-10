@@ -281,7 +281,7 @@ def vivado(request, vivado_exec, build_path, student, vivado_options,
             if "ERROR:" in line:
                 no_errors+=1
                 errors.append(line)
-            if "WARNING" in line:
+            if "CRITICAL WARNING" in line:
                 errors.append(line)
         if no_errors!=0:
             raise AssertionError("\n".join(errors))
