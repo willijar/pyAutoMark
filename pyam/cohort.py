@@ -283,8 +283,16 @@ class Student:
         if name:
             return f"{self.cohort['github.url']}/{self.repository_name()}"
         return None
+    
+    def git(self,*args):
+        """Run git with given args in the student repository. 
+        
+        Returns subprocess.CompletedProcess if successful.
+        Raises subprocess.CalledProcessError if not
+        """
+        return subprocess.run(("git",*args), cwd=str(self.path), text=True, check=True, capture_output=True)
 
-    def github_retrieve(self, reset: bool=True) -> bool:
+    def github_retrieve(self, branch="main",reset: bool=True) -> bool:
         """Clone or pull asssessments for this student from their repository.
 
         Returns:
@@ -292,6 +300,7 @@ class Student:
         """
         if self.path.exists():
             action = ["git", "pull"]
+            
             cwd = self.path
             #need to do a reset hard first to ensure workarea is clean
             if reset:
@@ -324,11 +333,62 @@ class Student:
             +f" for '{self.name()}: {proc.stdout} {proc.stderr}"
         )
         return False
-    
+
+    def github_push(self, files: List[Path], subdir=None, reset: bool=True, branch: str=None, msg: str = "Push from pyAutoMark"):
+        """Push given set of files into student repository
+
+        Args:
+          files: List of files or directories to copy
+          subdir: If set - the name of subdirectory in student repository to copy files into
+          reset: If True, do a github_retrieve first to ensure we are consistent with student repo
+          branch: If set checkout and push files into this branch
+        """
+        try: 
+            if reset:
+                #rensure we are synced with student work if reset is true
+                self.github_retrieve(True)
+            if branch:
+                #save current branch name and checkout specified branch
+                original_branch = self.git("branch", "--show-current").stdout
+                proc = self.git("checkout", branch)
+            destination = self.path
+            if subdir:
+                destination = destination / subdir
+                if not destination.exists():
+                    destination.mkdir(parents=True, exist_ok=True)
+            for file in files:
+                #do stuffd
+                if file.is_file():
+                    shutil.copyfile(file,destination/file.name)
+                elif file.is_dir():
+                    shutil.copytree(file,destination/file.name,copy_function=shutil.copyfile,dirs_exist_ok=True)
+            proc = self.git("add","--all")
+            proc = self.git("commit","-m", msg)
+            proc = self.git("push")
+            if branch:
+                proc = self.git("checkout", original_branch)
+            self.cohort.log.info(f"Successful Push to {self.repository_name()} for '{self.name()}'")
+        except subprocess.CalledProcessError as error: 
+            self.cohort.log.error(
+            f"Unable to push files {self.repository_name()} for '{self.name()} - {error.output} {error.stderr}'")
+
     def hash(self) -> int:
         """Return a hash based on students username - this will be first integer of first 8 characters of md5hash of username"""
         return int("0x"+hashlib.md5(self.username.encode("utf-8")).hexdigest()[:8],16)
 
+    def checkout(self,until,branch="main"):
+        """Checkout last repository for student before given date until"""
+        if self.path.exists():
+            try:
+                if until:
+                    result=self.git("log", r"--pretty='%h%'","-1", r"--format=%h","--until", until.isoformat())
+                    self.git("checkout",result.stdout.strip())
+                    branch=until
+                elif branch:
+                    self.git("checkout",branch)
+                self.cohort.log.info(f"Successful checkout for '{self.name()} to {branch}")
+            except subprocess.CalledProcessError as error:
+                self.cohort.log.error(f"Unable to checkout until {branch} - {error.output} {error.stderr}'")
 
     def github_lastcommit(self) -> Union[datetime, None]:
         "Return last github commit time if applicable"
