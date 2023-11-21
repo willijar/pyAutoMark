@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """Main ROtine for github-retirieve command"""
 import argparse
+from datetime import datetime
 import pyam.files
 from pyam.config import CONFIG
 from pyam.cohort import get_cohort, current_academic_year
@@ -14,6 +15,15 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
                         '--cohort',
                         default=CONFIG.get("cohort", current_academic_year()),
                         help="Name of student cohort")
+    parser.add_argument('--until', 
+                        default=None,
+                        type=lambda s: datetime.strptime(s,'%Y/%m/%d %H:%M'),
+                        help="If specified will checkout out last repository before given date - format Y/M/D H:M"
+                        )
+    parser.add_argument('--branch', 
+                        default="main",
+                        help="If specified will checkout to specified branch"
+                        )
     parser.add_argument(
         '-s',
         '--students',
@@ -41,11 +51,14 @@ def main(args=None):
     cohort = get_cohort(args.cohort)
     cohort.start_log_section(f"Github retrieve {args.students or 'all'}")
     students = cohort.students(args.students)
-    for student in students:
-        student.github_retrieve(reset=not(args.no_reset))
     submission_dates = {}
     for student in students:
+        if not args.no_reset:
+            student.checkout(until=None,branch=args.branch)
+        student.github_retrieve(reset=not(args.no_reset))
         submission_dates[student.username] = student.github_lastcommit()
+        if args.until:
+            student.checkout(until=args.until,branch=args.branch)
     column_name = cohort.get("student-column.submission-date")
     pyam.files.set_csv_column(cohort.path / "students.csv", column_name,
                               "Username",

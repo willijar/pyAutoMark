@@ -292,7 +292,7 @@ class Student:
         """
         return subprocess.run(("git",*args), cwd=str(self.path), text=True, check=True, capture_output=True)
 
-    def github_retrieve(self, reset: bool=True) -> bool:
+    def github_retrieve(self, branch="main",reset: bool=True) -> bool:
         """Clone or pull asssessments for this student from their repository.
 
         Returns:
@@ -300,6 +300,7 @@ class Student:
         """
         if self.path.exists():
             action = ["git", "pull"]
+            
             cwd = self.path
             #need to do a reset hard first to ensure workarea is clean
             if reset:
@@ -331,7 +332,6 @@ class Student:
             +f" for '{self.name()}: {proc.stdout} {proc.stderr}"
         )
         return False
-    
 
     def github_push(self, files: List[Path], subdir=None, reset: bool=True, branch: str=None, msg: str = "Push from pyAutoMark"):
         """Push given set of files into student repository
@@ -367,14 +367,27 @@ class Student:
             if branch:
                 proc = self.git("checkout", original_branch)
             self.cohort.log.info(f"Successful Push to {self.repository_name()} for '{self.name()}'")
-        except subprocess.CalledProcessError: 
+        except subprocess.CalledProcessError as error: 
             self.cohort.log.error(
-            f"Unable to push files {self.repository_name()} for '{self.name()} - {proc.stdout} {proc.stderr}'")
+            f"Unable to push files {self.repository_name()} for '{self.name()} - {error.output} {error.stderr}'")
 
     def hash(self) -> int:
         """Return a hash based on students username - this will be first integer of first 8 characters of md5hash of username"""
         return int("0x"+hashlib.md5(self.username.encode("utf-8")).hexdigest()[:8],16)
 
+    def checkout(self,until,branch="main"):
+        """Checkout last repository for student before given date until"""
+        if self.path.exists():
+            try:
+                if until:
+                    result=self.git("log", r"--pretty='%h%'","-1", r"--format=%h","--until", until.isoformat())
+                    self.git("checkout",result.stdout.strip())
+                    branch=until
+                elif branch:
+                    self.git("checkout",branch)
+                self.cohort.log.info(f"Successful checkout for '{self.name()} to {branch}")
+            except subprocess.CalledProcessError as error:
+                self.cohort.log.error(f"Unable to checkout until {branch} - {error.output} {error.stderr}'")
 
     def github_lastcommit(self) -> Union[datetime, None]:
         "Return last github commit time if applicable"
