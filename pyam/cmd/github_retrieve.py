@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2023, Dr John A.R. Williams
 # SPDX-License-Identifier: GPL-3.0-only
-"""Main ROtine for github-retirieve command"""
+"""Main Routine for github-retirieve command"""
 import argparse
 from datetime import datetime
 import pyam.files
@@ -18,11 +18,11 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     parser.add_argument('--until', 
                         default=None,
                         type=lambda s: datetime.strptime(s,'%Y/%m/%d %H:%M'),
-                        help="If specified will checkout out last repository before given date - format Y/M/D H:M"
+                        help="If specified will checkout out last repository before given date - format Y/M/D H:M. This may be a headless checkout."
                         )
     parser.add_argument('--branch', 
-                        default="main",
-                        help="If specified will checkout to specified branch"
+                        default=CONFIG.get("github.branch"),
+                        help="If specified checkout repositories to specified branch - defaults to github.branch"
                         )
     parser.add_argument(
         '-s',

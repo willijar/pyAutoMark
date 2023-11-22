@@ -185,9 +185,13 @@ SCHEMA = {
             "description": "url for organisation on github (if applicable)"
         },
         "assignment": {
-            "description":
-            "Title of github assignment (prefix for student repositories)"
+            "description": "Title of github assignment (prefix for student repositories)",
+            "default": "main"
         },
+        "branch": {
+            "description":
+            "Name of default branch to use in student's repositories"
+        }
     },
     "fixtures": {
         "description": "List of pytest fixture sets to use",
