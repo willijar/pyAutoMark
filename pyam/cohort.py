@@ -292,7 +292,7 @@ class Student:
         """
         return subprocess.run(("git",*args), cwd=str(self.path), text=True, check=True, capture_output=True)
 
-    def github_retrieve(self, branch="main",reset: bool=True) -> bool:
+    def github_retrieve(self, branch=CONFIG.get("github.branch"),reset: bool=True) -> bool:
         """Clone or pull asssessments for this student from their repository.
 
         Returns:
