@@ -11,6 +11,7 @@
 :github:
     :url: url for organisation on github (if applicable)
     :assignment: Title of github assignment (prefix for student repositories)
+    :branch: Name of default branch to use in student's repositories - default: 'main'
 :fixtures: (list) List of pytest fixture sets to use
 :path:
     :tests: (Path) file path to tests - default: 'tests'
@@ -32,6 +33,7 @@
     :course: Column to read specifying which course student is on (if different from default) - default: '(?i)Child Course ID'
     :github-username: Column to read for the students username on github - default: '(?i)Github Username'
     :submission-date: Column name to use to record submission dates - default: 'Submission Date'
+    :extension: Column name to use for student extensions - default: 'Extension'
 :mark-column:
     :studentid: Column name in marking csv file with student id - default: '#Cand Key'
     :mark: Column name in marking csv file for mark - default: 'Mark'
