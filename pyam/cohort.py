@@ -284,54 +284,49 @@ class Student:
             return f"{self.cohort['github.url']}/{self.repository_name()}"
         return None
     
-    def git(self,*args):
+    def git(self,*args,**kwargs):
         """Run git with given args in the student repository. 
-        
-        Returns subprocess.CompletedProcess if successful.
-        Raises subprocess.CalledProcessError if not
-        """
-        return subprocess.run(("git",*args), cwd=str(self.path), text=True, check=True, capture_output=True)
 
-    def github_retrieve(self, branch=CONFIG.get("github.branch"),reset: bool=True) -> bool:
+        Return stdout if successful.
+        if log keyword is set Logs action either as info or as an error depending on success
+        """
+        log=kwargs.get("log",True)
+        try:
+            # pylint: disable=W1510
+            proc=subprocess.run(("git",*args), cwd=self.path, text=True, check=True, capture_output=True)
+            if log:
+                self.cohort.log.info(
+                f"Successful {args} {self.repository_name()}"\
+                 + f" for '{self.name()}': {proc.stdout.strip()}"
+                )
+            return proc.stdout.strip()
+        except subprocess.CalledProcessError as error:
+            if log:
+                self.cohort.log.error(
+                    f"Unable to {args} {self.repository_name()}"\
+                    + f" to '{self.path.relative_to(self.cohort.path)}'"\
+                    +f" for '{self.name()}: {error.output.strip()} {error.stderr.strip()}"
+                )
+            return False
+
+
+    def github_retrieve(self,reset: bool=True,branch=None) -> bool:
         """Clone or pull asssessments for this student from their repository.
 
         Returns:
           Success of retrieval
         """
-        if self.path.exists():
-            action = ["git", "pull"]
-            
-            cwd = self.path
-            #need to do a reset hard first to ensure workarea is clean
-            if reset:
-                if subprocess.run(("git","reset","--hard"), cwd=cwd, capture_output=True).returncode !=0:
-                    self.cohort.log.warning(
-                    f"Unable to reset {self.repository_name()}"\
-                    +f" for '{self.name()}")
-        elif not self.repository_url():
+        if not self.repository_url():
             self.cohort.log.warning(f"No repository known for '{self.name()}'")
             return False
+        if self.path.exists():
+            if reset: # by default do a reset hard first to ensure workarea is clean
+                self.git("reset","--hard",log=False)
+                if branch:
+                    self.git("checkout",branch)
+            return self.git("pull")
         else:
-            action = ["git", "clone", self.repository_url(), self.path]
-            cwd = self.cohort.path
-        # pylint: disable=W1510
-        proc = subprocess.run(action,
-                              cwd=str(cwd),
-                              capture_output=True,
-                              text=True)
-        if proc.returncode == 0:  # successful
-            self.cohort.log.info(
-                f"Successful {action[:2]} {self.repository_name()}"\
-                 + f" to '{self.path.relative_to(self.cohort.path)}'"\
-                 + f" for '{self.name()}': {proc.stdout.strip()}"
-            )
-            return True
-        self.cohort.log.error(
-            f"Unable to {action[:2]} {self.repository_name()}"\
-            + f" to '{self.path.relative_to(self.cohort.path)}'"\
-            +f" for '{self.name()}: {proc.stdout} {proc.stderr}"
-        )
-        return False
+            return self.git("git", "clone", self.repository_url(), self.path)
 
     def github_push(self, files: List[Path], subdir=None, reset: bool=True, branch: str=None, msg: str = "Push from pyAutoMark"):
         """Push given set of files into student repository
@@ -342,67 +337,51 @@ class Student:
           reset: If True, do a github_retrieve first to ensure we are consistent with student repo
           branch: If set checkout and push files into this branch
         """
-        try: 
-            if reset:
-                #rensure we are synced with student work if reset is true
-                self.github_retrieve(True)
-            if branch:
-                #save current branch name and checkout specified branch
-                original_branch = self.git("branch", "--show-current").stdout
-                proc = self.git("checkout", branch)
-            destination = self.path
-            if subdir:
-                destination = destination / subdir
-                if not destination.exists():
-                    destination.mkdir(parents=True, exist_ok=True)
-            for file in files:
-                #do stuffd
-                if file.is_file():
-                    shutil.copyfile(file,destination/file.name)
-                elif file.is_dir():
-                    shutil.copytree(file,destination/file.name,copy_function=shutil.copyfile,dirs_exist_ok=True)
-            proc = self.git("add","--all")
-            proc = self.git("commit","-m", msg)
-            proc = self.git("push")
-            if branch:
-                proc = self.git("checkout", original_branch)
-            self.cohort.log.info(f"Successful Push to {self.repository_name()} for '{self.name()}'")
-        except subprocess.CalledProcessError as error: 
-            self.cohort.log.error(
-            f"Unable to push files {self.repository_name()} for '{self.name()} - {error.output} {error.stderr}'")
+        if reset:
+            #rensure we are synced with student work if reset is true
+            self.github_retrieve(reset=True)
+        if branch:
+            #save current branch name and checkout specified branch
+            original_branch = self.git("branch", "--show-current").stdout
+            self.git("checkout", branch,log=False)
+        destination = self.path
+        if subdir:
+            destination = destination / subdir
+            if not destination.exists():
+                destination.mkdir(parents=True, exist_ok=True)
+        for file in files:
+            #do stuffd
+            if file.is_file():
+                shutil.copyfile(file,destination/file.name)
+            elif file.is_dir():
+                shutil.copytree(file,destination/file.name,copy_function=shutil.copyfile,dirs_exist_ok=True)
+        self.git("add","--all",log=False)
+        self.git("commit","-m", msg,log=False)
+        self.git("push")
+        if branch:
+            self.git("checkout", original_branch,log=False)
 
-    def hash(self) -> int:
-        """Return a hash based on students username - this will be first integer of first 8 characters of md5hash of username"""
-        return int("0x"+hashlib.md5(self.username.encode("utf-8")).hexdigest()[:8],16)
 
-    def checkout(self,until,branch="main"):
-        """Checkout last repository for student before given date until"""
+    def checkout(self,until,branch=None):
+        """Checkout last repository for student before given date until or to a specified branch"""
         if self.path.exists():
-            try:
-                if until:
-                    result=self.git("log", r"--pretty='%h%'","-1", r"--format=%h","--until", until.isoformat())
-                    self.git("checkout",result.stdout.strip())
-                    branch=until
-                elif branch:
-                    self.git("checkout",branch)
-                self.cohort.log.info(f"Successful checkout for '{self.name()} to {branch}")
-            except subprocess.CalledProcessError as error:
-                self.cohort.log.error(f"Unable to checkout until {branch} - {error.output} {error.stderr}'")
+            if branch:
+                self.git("checkout",branch)
+            if until:
+                result=self.git("log", r"--pretty='%h%'","-1", r"--format=%h","--until", until.isoformat(),log=False)
+                if result:
+                    self.git("checkout",result)
 
     def github_lastcommit(self) -> Union[datetime, None]:
         "Return last github commit time if applicable"
         if self.path.exists():
-            result = subprocess.run(("git", "log", "-1", r"--format=%cd"),
-                                cwd=self.path,
-                                capture_output=True,
-                                text=True,
-                                check=False)
-            if result.returncode == 0:
-                return datetime.strptime(result.stdout,
-                                        "%a %b %d %H:%M:%S %Y %z\n") 
-            self.cohort.log.error(
-                    f"Unable to get last commit time for {self.repository_name()} for '{self.name()}' -- {result.stderr}")
-        return None
+            result=self.git("log", "-1", r"--format=%cd",log=False)
+            if result:
+                return datetime.strptime(result,"%a %b %d %H:%M:%S %Y %z") 
+
+    def hash(self) -> int:
+        """Return a hash based on students username - this will be first integer of first 8 characters of md5hash of username"""
+        return int("0x"+hashlib.md5(self.username.encode("utf-8")).hexdigest()[:8],16)
 
     def file(self, pattern: str, log: Union[logging.Logger,None] = None) -> Union[Path,None]:
         """Attempt to find file matching given pathname pattern based on the configuration setting

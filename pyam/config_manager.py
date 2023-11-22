@@ -186,11 +186,11 @@ SCHEMA = {
         },
         "assignment": {
             "description": "Title of github assignment (prefix for student repositories)",
-            "default": "main"
         },
         "branch": {
             "description":
-            "Name of default branch to use in student's repositories"
+            "Name of default branch to use in student's repositories",
+            "default": "main"
         }
     },
     "fixtures": {
