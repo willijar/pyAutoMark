@@ -30,6 +30,7 @@ from io import StringIO
 from pathlib import Path
 from typing import List
 from datetime import datetime
+from datetime import datetime
 import pytest
 from pyam.files import find_executable
 import pyam.cohort
@@ -62,6 +63,7 @@ def clean(ghdl_exec, build_path) -> None:
 def search_paths() -> List[str]:
     "*Fixture*: A list of additional paths to search for the executables"
     return ("/usr/bin", "/opt/Xilinx/", "/usr/local/")
+    return ("/usr/bin", "/opt/Xilinx/", "/usr/local/")
 
 
 @pytest.fixture
@@ -90,6 +92,7 @@ def ghdl_options() -> List[str]:
 
 def run_ghdl(command,
              unit=None,
+             unit=None,
              ghdl_exec="ghdl",
              options=("--std=08", "--warn-no-hide"),
              build_path="./",
@@ -114,6 +117,20 @@ def run_ghdl(command,
       VHDLError: if ghdl failed but netiehr of above commands
       subprocess.TimeoutExpired
     """
+    #pylint: disable=subprocess-run-check
+    #DEBUG: print(ghdl_exec, command, *options, unit,*run_options)
+    if unit:
+        result = run([ghdl_exec, command, *options, unit,*run_options],
+                    cwd=build_path,
+                    text=True,
+                    capture_output=True,
+                    timeout=timeout)
+    else:
+        result = run([ghdl_exec, command],
+                    cwd=build_path,
+                    text=True,
+                    capture_output=True,
+                    timeout=timeout)
     #pylint: disable=subprocess-run-check
     #DEBUG: print(ghdl_exec, command, *options, unit,*run_options)
     if unit:

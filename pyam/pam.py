@@ -20,6 +20,7 @@ import pyam.cmd.find_duplicates
 import pyam.cmd.config
 import pyam.cmd.cohort
 import pyam.cmd.write_csv
+import pyam.cmd.github_push
 
 def main():
     """Automatically retrieve, mark and provide feedback for digital student submissions"""
@@ -39,7 +40,8 @@ def main():
             ('config', pyam.cmd.config),
             ('cohort', pyam.cmd.cohort),
             ('write-csv', pyam.cmd.write_csv),
-            ('init', pyam.cmd.init)):
+            ('init', pyam.cmd.init),
+            ('push', pyam.cmd.github_push)):
         description=module.main.__doc__
         doc=description.splitlines()[0]
         sub = subparsers.add_parser(

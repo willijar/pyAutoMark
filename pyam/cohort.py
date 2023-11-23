@@ -20,10 +20,10 @@ Functions
 import subprocess
 import logging
 import json
-import glob
+import shutil
+import hashlib
 import re
-import hashlib
-import hashlib
+import glob
 from os import walk
 from typing import Union, Dict, List
 from datetime import date, datetime
@@ -336,6 +336,8 @@ class Student:
           subdir: If set - the name of subdirectory in student repository to copy files into
           reset: If True, do a github_retrieve first to ensure we are consistent with student repo
           branch: If set checkout and push files into this branch
+
+        If branch is specified original branch checkou in local repository is restored after push
         """
         if reset:
             #rensure we are synced with student work if reset is true
