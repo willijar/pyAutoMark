@@ -1,20 +1,19 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Installing pyAutoMark &#8212; pyAutoMark 0.7.1 documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Installing pyAutoMark &#8212; pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -36,7 +35,8 @@
         <li class="right" >
           <a href="index.html" title="Welcome to pyAutoMark"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Installing pyAutoMark</a></li> 
       </ul>
     </div>  
 
@@ -45,24 +45,24 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="installing-pyautomark">
+  <section id="installing-pyautomark">
 <h1>Installing pyAutoMark<a class="headerlink" href="#installing-pyautomark" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#overview" id="toc-entry-1">Overview</a></li>
-<li><a class="reference internal" href="#installation" id="toc-entry-2">Installation</a></li>
-<li><a class="reference internal" href="#installation-from-source" id="toc-entry-3">Installation from source</a></li>
+<li><p><a class="reference internal" href="#overview" id="id1">Overview</a></p></li>
+<li><p><a class="reference internal" href="#installation" id="id2">Installation</a></p></li>
+<li><p><a class="reference internal" href="#installation-from-source" id="id3">Installation from source</a></p></li>
 </ul>
 </div>
-<div class="section" id="overview">
+<section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>pyAutoMark is written in
 <a class="reference external" href="https://www.python.org/">Python</a> and supports Python 3.8+. It is built
 upon the <a class="reference external" href="https://pytest.org/">pytest</a> unit testing framework,
 <a class="reference external" href="https://openpyxl.readthedocs.io/">openpyxl</a> for reading and writing xlsx files
 and uses the <a class="reference external" href="https://pypi.org/project/pytest-timeout/">pytest-timeout</a> plugin for <a class="reference external" href="https://pytest.org/">pytest</a>.</p>
-</div>
-<div class="section" id="installation">
+</section>
+<section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Python is distributed as a Python package and should work on most platforms that support Python.
 It has been tested on Both Windows 10 and Ubuntu</p>
@@ -73,13 +73,13 @@ versions of Python.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip install pyAutoMark
 </pre></div>
 </div>
-<p>On Windows, you should open <em>Command Prompt</em> or <em>PowerShell</em> (<kbd class="kbd docutils literal notranslate">⊞Win-r</kbd> and type
+<p>On Windows, you should open <em>Command Prompt</em> or <em>PowerShell</em> (<kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">⊞Win</kbd>-<kbd class="kbd docutils literal notranslate">r</kbd></kbd> and type
 <strong class="command">cmd</strong>) and run the same command.</p>
 <div class="highlight-doscon notranslate"><div class="highlight"><pre><span></span><span class="gp">C:\&gt;</span> pip install pyAutoMark
 </pre></div>
 </div>
-</div>
-<div class="section" id="installation-from-source">
+</section>
+<section id="installation-from-source">
 <h2>Installation from source<a class="headerlink" href="#installation-from-source" title="Permalink to this headline">¶</a></h2>
 <p>You can install Sphinx directly from a clone of the <a class="reference external" href="https://github.com/willijar/pyAutoMark">Git repository</a>.</p>
 <p>This can be done either by cloning the repo and installing from the local clone</p>
@@ -92,10 +92,11 @@ versions of Python.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip install https://github.com/willijar/pyAutoMark
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -125,17 +126,15 @@ versions of Python.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -155,12 +154,13 @@ versions of Python.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to pyAutoMark"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Installing pyAutoMark</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2023-2023, John Williams.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

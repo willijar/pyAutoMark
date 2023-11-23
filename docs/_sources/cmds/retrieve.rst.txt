@@ -21,6 +21,10 @@ Description
        github.url: 
          URL to github organisation where repositories reside
 
+       github.branch:
+         Name of students main branch
+
+
     Students must have 'Github Username' field in csv file.
 
 Options
@@ -39,3 +43,11 @@ Options
 .. option::  -s [STUDENTS [STUDENTS ...]], --students [STUDENTS [STUDENTS ...]]
     
     List of specific students to process in cohort.
+
+.. option:: --branch BRANCH
+
+    Name of branch to retrieve and checkout
+
+.. option:: --until DATE
+
+    If specified will checkout out last repository before given date - format Y/M/D H:M. This may be a headless checkout.

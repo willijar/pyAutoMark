@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyam.cmd.github_push &#8212; pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
+    
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyam.cmd.github_push</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyam.cmd.github_push</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># Copyright 2023, Dr John A.R. Williams</span>
+<span class="c1"># SPDX-License-Identifier: GPL-3.0-only</span>
+<span class="sd">&quot;&quot;&quot;Main ROtine for github-retirieve command&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">from</span> <span class="nn">pyam.config</span> <span class="kn">import</span> <span class="n">CONFIG</span>
+<span class="kn">from</span> <span class="nn">pyam.cohort</span> <span class="kn">import</span> <span class="n">get_cohort</span><span class="p">,</span> <span class="n">current_academic_year</span>
+<span class="kn">from</span> <span class="nn">pyam.files</span> <span class="kn">import</span> <span class="n">PathGlob</span>
+
+<div class="viewcode-block" id="add_args"><a class="viewcode-back" href="../../../pyam.cmd.html#pyam.cmd.github_push.add_args">[docs]</a><span class="k">def</span> <span class="nf">add_args</span><span class="p">(</span><span class="n">parser</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="vm">__doc__</span><span class="p">)):</span>
+    <span class="s2">&quot;Parse and return args for this script&quot;</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;--cohort&#39;</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="n">CONFIG</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cohort&quot;</span><span class="p">,</span> <span class="n">current_academic_year</span><span class="p">()),</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of student cohort&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">&#39;-s&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;--students&#39;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Names of specific student for which tests are to be run&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--no-reset&quot;</span><span class="p">,</span> 
+                        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;If specified then local repositories won&#39;t be reset and retrieved before a push.&quot;</span><span class="p">),</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="s2">&quot;--branch&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of branch to push to (if different from main&quot;</span><span class="p">),</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;--message&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Push files from tutor&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Commit message to use.&quot;</span> <span class="p">)</span>               
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">&#39;--subdir&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Subdirectory in student repository to push files into&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--branch&#39;</span><span class="p">,</span> 
+                        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;If specified files will be put in this branch - otherwise github.branch configuration will be used&quot;</span>
+                        <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="s2">&quot;files&quot;</span><span class="p">,</span> 
+        <span class="n">nargs</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">REMAINDER</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">PathGlob</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;List of files for directories to push&quot;</span><span class="p">)</span></div>
+    
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../pyam.cmd.html#pyam.cmd.github_push.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Push files into student repositories on github (classroom).</span>
+
+<span class="sd">    Cohort manifest be configured with:</span>
+<span class="sd">        github.template:</span>
+<span class="sd">            The name of the template repository (prefix for student repositories)</span>
+<span class="sd">        github.url:</span>
+<span class="sd">            URL to github organisation where repositories reside</span>
+<span class="sd">        github.branch:</span>
+<span class="sd">            Name of students main branch</span>
+
+<span class="sd">    Students must have &#39;Github Username&#39; field in csv file and an assessment specified.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="vm">__doc__</span><span class="p">)</span>
+        <span class="n">add_args</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">cohort</span> <span class="o">=</span> <span class="n">get_cohort</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">cohort</span><span class="p">)</span>
+    <span class="n">cohort</span><span class="o">.</span><span class="n">start_log_section</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Github push </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">students</span> <span class="ow">or</span> <span class="s1">&#39;all&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">cohort</span><span class="o">.</span><span class="n">start_log_section</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pushing </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">files</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">students</span> <span class="o">=</span> <span class="n">cohort</span><span class="o">.</span><span class="n">students</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">students</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">students</span><span class="p">:</span>
+        <span class="n">student</span><span class="o">.</span><span class="n">github_push</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">files</span><span class="p">,</span> <span class="n">subdir</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">subdir</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="ow">not</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">no_reset</span><span class="p">),</span> 
+                            <span class="n">branch</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span> <span class="ow">or</span> <span class="n">cohort</span><span class="o">.</span><span class="n">getconfig</span><span class="p">(</span><span class="s2">&quot;github.branch&quot;</span><span class="p">),</span> <span class="n">msg</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyam.cmd.github_push</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023-2023, John Williams.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    </div>
+  </body>
+</html>

@@ -1,20 +1,19 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Embedded C using the C mock fixtures &#8212; pyAutoMark 0.7.1 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Embedded C using the C mock fixtures &#8212; pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -36,7 +35,8 @@
         <li class="right" >
           <a href="clang.html" title="C"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Embedded C using the C mock fixtures</a></li> 
       </ul>
     </div>  
 
@@ -45,14 +45,14 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="embedded-c-using-the-c-mock-fixtures">
+  <section id="embedded-c-using-the-c-mock-fixtures">
 <span id="example-embedded-c"></span><h1>Embedded C using the C mock fixtures<a class="headerlink" href="#embedded-c-using-the-c-mock-fixtures" title="Permalink to this headline">¶</a></h1>
 <p>We often want to mark students embedded C designs without having to execute the code on hardware. For this we use mock
 headers and C functions.</p>
 <p>In this example I show how we can create a C mock to test their code on the host computer rather than
 on the embedded system. I have two examples, using embedded AVR C, which are typical of the kinds
 of tasks students are given when they start out on their embedded programming journey.</p>
-<div class="section" id="directory-structure">
+<section id="directory-structure">
 <h2>Directory structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h2>
 <p>Below is the directory structure for these tests. Under the cohort directory we will have a directory for each student which will
 contain their submitted code - in this case <code class="file docutils literal notranslate"><span class="pre">Q1.c</span></code> and <code class="file docutils literal notranslate"><span class="pre">Q2.c</span></code>. In our tests folder for the cohort we
@@ -79,15 +79,15 @@ system headers so for these simple cases we only have <code class="file docutils
 </div>
 <p>The cmock fixtures provided by pyAutoMark will set up the compilation include directories to point to the appropriate test folder
 and student folder and add in the necessary compilation units.</p>
-</div>
-<div class="section" id="example-1-replacing-function-calls">
+</section>
+<section id="example-1-replacing-function-calls">
 <h2>Example 1 - Replacing function calls<a class="headerlink" href="#example-1-replacing-function-calls" title="Permalink to this headline">¶</a></h2>
 <p>Below is a typical example of a “first” embedded program - the students have to include the
 correct header files, setup some defines and then have a main program which is an infinite loop that
 sets and reads some registers to do stuff (using the defines from the header files). In this case it has a call
 to the <code class="code docutils literal notranslate"><span class="pre">_delay_ms</span></code> function to slow down operation  so the student cans see the LEDS or whatever flashing.</p>
-<div class="literal-block-wrapper docutils container" id="container-1">
-<div class="code-block-caption"><span class="caption-text">Q1.c - A student AVR Embedded C Program Q1</span><a class="headerlink" href="#container-1" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Q1.c - A student AVR Embedded C Program Q1</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Include relevant libraries</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;avr/io.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;util/delay.h&gt;</span><span class="cp"></span>
@@ -113,8 +113,8 @@ to the <code class="code docutils literal notranslate"><span class="pre">_delay_
 to define the necessary constants, and we will replace the registers with external variables
 of the appropriate type which we can then read or write in our code to test the students
 funcitonality.</p>
-<div class="literal-block-wrapper docutils container" id="container-2">
-<div class="code-block-caption"><span class="caption-text">delay.h - mock replacement delay header</span><a class="headerlink" href="#container-2" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">delay.h - mock replacement delay header</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef __DELAY_H_</span>
 <span class="cp">#define __DELAY_H_</span>
 <span class="kt">void</span><span class="w"> </span><span class="nf">_delay_ms</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">__ms</span><span class="p">);</span><span class="w"></span>
@@ -123,8 +123,8 @@ funcitonality.</p>
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="container-3">
-<div class="code-block-caption"><span class="caption-text">Mock io.h - replacement io header</span><a class="headerlink" href="#container-3" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Mock io.h - replacement io header</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Constant defines can be copied from real io.header e.g.</span>
 <span class="cp">#define PD2 2</span>
 
@@ -148,8 +148,8 @@ On iteration 0 we can put in all of the register intialisation checks we want to
 that a particular register is changing over time, or that it changes when we set anoter variable/register to simulate an input. In the
 example provided we check if <code class="code docutils literal notranslate"><span class="pre">F_CPU</span></code> ise set correctly as the <code class="code docutils literal notranslate"><span class="pre">TEST_DELAY_HEADER</span></code> test,
 and if <code class="code docutils literal notranslate"><span class="pre">PORTC</span></code> is set correctly to soem expected value as the <code class="code docutils literal notranslate"><span class="pre">TEST_DIGITS</span></code> test.</p>
-<div class="literal-block-wrapper docutils container" id="container-4">
-<div class="code-block-caption"><span class="caption-text">Q1_test.c – the C test file</span><a class="headerlink" href="#container-4" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Q1_test.c – the C test file</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;student.h&gt;</span><span class="c1"> // this header file will include actual student C file</span><span class="cp"></span>
 <span class="cp">#if defined(TEST_DELAY_HEADER) &amp;&amp; !defined(__DELAY_H_)</span>
 <span class="cp">#error &quot;delay.h header not included&quot;</span>
@@ -192,8 +192,8 @@ the student c file under test, and the <code class="code docutils literal notran
 <code class="code docutils literal notranslate"><span class="pre">test_code</span></code> which will be run with the provided definitions, and, since we often check style, I have a <code class="code docutils literal notranslate"><span class="pre">test_style</span></code>
 test function that runs c_lint on the student file with a particular threshold of warning that constitute a failure for this test.
 The fixture <code class="code docutils literal notranslate"><span class="pre">c_lint_checks</span></code> sets which style checks are carried out - I don’t recommend setting them all at this early stage.</p>
-<div class="literal-block-wrapper docutils container" id="container-5">
-<div class="code-block-caption"><span class="caption-text">test_Q1.py - the pytest Python file for this task.</span><a class="headerlink" href="#container-5" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">test_Q1.py - the pytest Python file for this task.</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">def</span> <span class="nf">student_c_file</span><span class="p">(</span><span class="n">student</span><span class="p">):</span>
     <span class="s2">&quot;Path to students C file under test&quot;</span>
@@ -220,8 +220,8 @@ The fixture <code class="code docutils literal notranslate"><span class="pre">c_
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="example-2-no-function-calls-registers-only">
+</section>
+<section id="example-2-no-function-calls-registers-only">
 <h2>Example 2 - No function calls - registers only<a class="headerlink" href="#example-2-no-function-calls-registers-only" title="Permalink to this headline">¶</a></h2>
 <p>In the previous example the student submission had function calls for which we could provide a mock
 function to carry out our tests. However simple embedded programs may only address registers.
@@ -229,8 +229,8 @@ Typically, however, the will use macros to address those registers (or at least 
 exploit that to inject function calls into the student code that we can then use to test and set the register/variable state
 for the students work. An example is given below which has one student written function that dets a register bit to start an
 ADC conversion and then waits for a conversion finished bit to be set before returning the value in the ADC register.</p>
-<div class="literal-block-wrapper docutils container" id="container-6">
-<div class="code-block-caption"><span class="caption-text">Q2.c - an AVR EMbedded C Program with- no function calls</span><a class="headerlink" href="#container-6" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Q2.c - an AVR EMbedded C Program with- no function calls</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Include relevant libraries</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;avr/io.h&gt;</span><span class="cp"></span>
 
@@ -269,8 +269,8 @@ In the example below I have defined the <code class="code docutils literal notra
 to represent a register as a call to
 a function which we will use to test/set state be provided followed by the name of our external variable that we will use to
 represent that register. Similarly for the <code class="code docutils literal notranslate"><span class="pre">ADC</span></code> register.</p>
-<div class="literal-block-wrapper docutils container" id="container-7">
-<div class="code-block-caption"><span class="caption-text">io.h replacing registers with function call and variable</span><a class="headerlink" href="#container-7" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">io.h replacing registers with function call and variable</span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">/// Constant defines can be copied from real io.header</span>
 
 <span class="c1">// Replace register defines with external variables</span>
@@ -296,8 +296,8 @@ student program and then on the next call check to see if the student has correc
 The pytest test file for this will very similar to the first example, seting the student file and test C file
 using fixtures, compiling and executing the code with different defines to run each test and possibly running a style check
 on the students submitted code.</p>
-<div class="literal-block-wrapper docutils container" id="container-8">
-<div class="code-block-caption"><span class="caption-text">Q2_test.c our mock C implementation with the two functions</span><a class="headerlink" href="#container-8" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Q2_test.c our mock C implementation with the two functions</span><a class="headerlink" href="#id8" title="Permalink to this code">¶</a></div>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">conversion_requested</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
 <span class="c1">// FUnction called everytime ADCSRA is referenced</span>
 <span class="kt">void</span><span class="w"> </span><span class="nf">_F_ADCSRA</span><span class="p">()</span><span class="w"></span>
@@ -337,27 +337,26 @@ on the students submitted code.</p>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="example-3-detecting-c-tests-without-python">
+</section>
+<section id="example-3-detecting-c-tests-without-python">
 <h2>Example 3: Detecting C tests without Python<a class="headerlink" href="#example-3-detecting-c-tests-without-python" title="Permalink to this headline">¶</a></h2>
 <p>In the previous examples I show how to use pytest fixtures and tests written in Python
 combined with C tests.</p>
 <p>pyam has the ability to collect and run C tests directly from C files.</p>
 <p>To be collected the C test filenames must start with “test_” and must contain
 the following definition</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">PYAM_TEST:</th><td class="field-body">A unix glob string used to find the students file under test.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">PYAM_TIMEOUT:</th><td class="field-body">(Optional) A floating point value spcifying the timeout for these tests.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">PYAM_LINT:</th><td class="field-body">(Optional) A number specifying the naximum number of LINT warnings allowed
-for the test to pass, optionally followed by the list of LINT checks to perform</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">PYAM_TEST</dt>
+<dd class="field-odd"><p>A unix glob string used to find the students file under test.</p>
+</dd>
+<dt class="field-even">PYAM_TIMEOUT</dt>
+<dd class="field-even"><p>(Optional) A floating point value spcifying the timeout for these tests.</p>
+</dd>
+<dt class="field-odd">PYAM_LINT</dt>
+<dd class="field-odd"><p>(Optional) A number specifying the naximum number of LINT warnings allowed
+for the test to pass, optionally followed by the list of LINT checks to perform</p>
+</dd>
+</dl>
 <p>As with the examples above tests are collect from the C file as directives starting with
 TEST_</p>
 <div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="cp">#DEFINE PYAM_TEST &quot;UUT.c&quot;</span>
@@ -365,34 +364,35 @@ TEST_</p>
 <span class="cp">#DEFINE PYAM_TIMEOUT TIMEOUT</span>
 </pre></div>
 </div>
-<dl class="option">
-<dt id="cmdoption-arg-uut-c">
-<code class="descname">UUT.c</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-arg-uut-c" title="Permalink to this definition">¶</a></dt>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-UUT.c">
+<span id="cmdoption-arg-uut-c"></span><span class="sig-name descname"><span class="pre">UUT.c</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-UUT.c" title="Permalink to this definition">¶</a></dt>
 <dd><p>The filename glob in the students directory</p>
 </dd></dl>
 
-<dl class="option">
-<dt id="cmdoption-arg-n">
-<code class="descname">N</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-arg-n" title="Permalink to this definition">¶</a></dt>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-N">
+<span id="cmdoption-arg-n"></span><span class="sig-name descname"><span class="pre">N</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-N" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of warnings to allow before a lint check is considered a fail.</p>
 </dd></dl>
 
-<dl class="option">
-<dt id="cmdoption-arg-checks">
-<code class="descname">CHECKS</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-arg-checks" title="Permalink to this definition">¶</a></dt>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-CHECKS">
+<span id="cmdoption-arg-checks"></span><span class="sig-name descname"><span class="pre">CHECKS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-CHECKS" title="Permalink to this definition">¶</a></dt>
 <dd><p>The list fo checks (passed to clang-tidy)</p>
 </dd></dl>
 
-<dl class="option">
-<dt id="cmdoption-arg-timeout">
-<code class="descname">TIMEOUT</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-arg-timeout" title="Permalink to this definition">¶</a></dt>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-TIMEOUT">
+<span id="cmdoption-arg-timeout"></span><span class="sig-name descname"><span class="pre">TIMEOUT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-TIMEOUT" title="Permalink to this definition">¶</a></dt>
 <dd><p>THe maximum run time for a test in seconds.</p>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -423,17 +423,15 @@ TEST_</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -453,12 +451,13 @@ TEST_</p>
         <li class="right" >
           <a href="clang.html" title="C"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Embedded C using the C mock fixtures</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2023-2023, John Williams.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

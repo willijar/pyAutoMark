@@ -1,20 +1,19 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Python &#8212; pyAutoMark 0.7.1 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Python &#8212; pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -36,7 +35,8 @@
         <li class="right" >
           <a href="cmock.html" title="Embedded C using the C mock fixtures"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Python</a></li> 
       </ul>
     </div>  
 
@@ -45,12 +45,12 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="python">
+  <section id="python">
 <span id="example-python"></span><h1>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h1>
 <p>Since pyAutoMark is written in Python testing students Python code is realtively straightforward. Typically you can reuse
 pytest unit tests which you give the students to get their own feedback as they work with little modification in pyAutoMark.
 In these examples I will show the case where you want to test a students script, and a function in a module.</p>
-<div class="section" id="directory-structure">
+<section id="directory-structure">
 <h2>Directory structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h2>
 <p>Below is the directory structure for these tests. Under the cohort directory we will have a directory for each student which will
 contain their submitted code - in this case a script <code class="file docutils literal notranslate"><span class="pre">task1.py</span></code> and a module file <code class="file docutils literal notranslate"><span class="pre">cross_product.py</span></code> which will contain some
@@ -68,14 +68,14 @@ will need the pytest unittest files e.g. <code class="file docutils literal notr
 <div class="line">│     │   └─ test_task1.py</div>
 <div class="line">│     │   └─ test_cross_product.py</div>
 </div>
-</div>
-<div class="section" id="example-1-testing-a-student-script">
+</section>
+<section id="example-1-testing-a-student-script">
 <h2>Example 1 - Testing a student script<a class="headerlink" href="#example-1-testing-a-student-script" title="Permalink to this headline">¶</a></h2>
 <p>A typical first program for students is to write a script which takes input from the user and prints our some result.
 Below is an example which inputs a day, month and year and does the day of week calculation from a formula given to the
 students for the Georgian calendar.</p>
-<div class="literal-block-wrapper docutils container" id="container-1">
-<div class="code-block-caption"><span class="caption-text">task1.py - Day-of-Week Calculation</span><a class="headerlink" href="#container-1" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">task1.py - Day-of-Week Calculation</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">month</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Month:&quot;</span><span class="p">))</span>
 <span class="n">day</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Day:&quot;</span><span class="p">))</span>
 <span class="n">year</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Year:&quot;</span><span class="p">))</span>
@@ -93,8 +93,8 @@ a function that will run a script in the current students directory and pass the
 input separated by newlines. It returns as a string the ouput from the script which we can then test as usual and
 if it fails give an appropriate answer. This is probably over complicated as a unit test and simnply providing a couple of specific examples
 would be better (particularly if giving it as a student unittest).</p>
-<div class="literal-block-wrapper docutils container" id="container-2">
-<div class="code-block-caption"><span class="caption-text">test_task1.py</span><a class="headerlink" href="#container-2" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">test_task1.py</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_task3</span><span class="p">(</span><span class="n">run_script</span><span class="p">):</span>
     <span class="n">days</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Sunday&quot;</span><span class="p">,</span><span class="s2">&quot;Monday&quot;</span><span class="p">,</span><span class="s2">&quot;Tuesday&quot;</span><span class="p">,</span><span class="s2">&quot;Wednesday&quot;</span><span class="p">,</span><span class="s2">&quot;Thursday&quot;</span><span class="p">,</span><span class="s2">&quot;Friday&quot;</span><span class="p">,</span><span class="s2">&quot;Saturday&quot;</span><span class="p">]</span>
     <span class="n">days_in_month</span><span class="o">=</span><span class="p">[</span><span class="mi">31</span><span class="p">,</span><span class="mi">28</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">]</span>
@@ -111,15 +111,15 @@ would be better (particularly if giving it as a student unittest).</p>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="example-2-testing-student-functions">
+</section>
+<section id="example-2-testing-student-functions">
 <h2>Example 2 - Testing student functions<a class="headerlink" href="#example-2-testing-student-functions" title="Permalink to this headline">¶</a></h2>
 <p>As students develop we will want to have them usew write and test functions so for this second example
 I will show how we test functions in student modules. THis example has the student write
 a function <code class="xref py py-func docutils literal notranslate"><span class="pre">gen_vec()</span></code> to generate a vector of length 3 and then a function <code class="xref py py-func docutils literal notranslate"><span class="pre">cross_product()</span></code> to calculate
 a 3x3 cross product of two vectors.</p>
-<div class="literal-block-wrapper docutils container" id="container-3">
-<div class="code-block-caption"><span class="caption-text">cross_product.py - students 3x3 cross_product and gen_vec functions</span><a class="headerlink" href="#container-3" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">cross_product.py - students 3x3 cross_product and gen_vec functions</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
 <span class="k">def</span> <span class="nf">cross_product</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">!=</span><span class="mi">3</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">!=</span><span class="mi">3</span><span class="p">:</span>
@@ -141,8 +141,8 @@ made availabe to tests as <code class="xref py py-mod docutils literal notransla
 <p>I have then created my own solutions to test the students work against and then the two test functions which
 simply use the <code class="xref py py-mod docutils literal notranslate"><span class="pre">student_module</span></code> to sccess the student functions and compare their results
 with some expected results.</p>
-<div class="literal-block-wrapper docutils container" id="container-4">
-<div class="code-block-caption"><span class="caption-text">test_cross_product.py - test student gen_vec and cross_product functions</span><a class="headerlink" href="#container-4" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">test_cross_product.py - test student gen_vec and cross_product functions</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">def</span> <span class="nf">module_name</span><span class="p">(</span><span class="n">student</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Module name under test&quot;&quot;&quot;</span>
@@ -180,10 +180,11 @@ with some expected results.</p>
 </pre></div>
 </div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -213,17 +214,15 @@ with some expected results.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -243,12 +242,13 @@ with some expected results.</p>
         <li class="right" >
           <a href="cmock.html" title="Embedded C using the C mock fixtures"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Python</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2023-2023, John Williams.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

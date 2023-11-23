@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyam.config_manager &#8212; pyAutoMark 0.7.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyam.config_manager &#8212; pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -28,8 +26,9 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyam.config_manager</a></li> 
       </ul>
     </div>  
 
@@ -126,7 +125,7 @@
 <span class="sd">            thetype: A type to covert value to</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">thetype</span> <span class="o">==</span> <span class="n">datetime</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">thetype</span> <span class="o">==</span> <span class="n">Path</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">thetype</span> <span class="o">==</span> <span class="nb">float</span><span class="p">:</span>
@@ -226,9 +225,13 @@
             <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;url for organisation on github (if applicable)&quot;</span>
         <span class="p">},</span>
         <span class="s2">&quot;assignment&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;description&quot;</span><span class="p">:</span>
-            <span class="s2">&quot;Title of github assignment (prefix for student repositories)&quot;</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Title of github assignment (prefix for student repositories)&quot;</span><span class="p">,</span>
         <span class="p">},</span>
+        <span class="s2">&quot;branch&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span>
+            <span class="s2">&quot;Name of default branch to use in student&#39;s repositories&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;main&quot;</span>
+        <span class="p">}</span>
     <span class="p">},</span>
     <span class="s2">&quot;fixtures&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;List of pytest fixture sets to use&quot;</span><span class="p">,</span>
@@ -308,6 +311,10 @@
             <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Column name to use to record submission dates&quot;</span><span class="p">,</span>
             <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;Submission Date&quot;</span><span class="p">,</span>
         <span class="p">},</span>
+        <span class="s2">&quot;extension&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Column name to use for student extensions&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;Extension&quot;</span>
+        <span class="p">}</span>
     <span class="p">},</span>
     <span class="s2">&quot;mark-column&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;studentid&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -358,23 +365,22 @@
     <span class="n">write_section</span><span class="p">(</span><span class="n">SCHEMA</span><span class="p">)</span></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -388,13 +394,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyam.config_manager</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2023-2023, John Williams.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

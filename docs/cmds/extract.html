@@ -1,20 +1,19 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>extract &#8212; pyAutoMark 0.7.1 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>extract &#8212; pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -36,7 +35,8 @@
         <li class="right" >
           <a href="config.html" title="config"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">extract</a></li> 
       </ul>
     </div>  
 
@@ -45,49 +45,51 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="extract">
+  <section id="extract">
 <span id="subcommand-extract"></span><h1>extract<a class="headerlink" href="#extract" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="synopsis">
+<section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
 <p><strong>pyam extract</strong>  [-h] [-c COHORT] [-s [STUDENTS [STUDENTS …]]] [–overwrite] [–prefix PREFIX] [–files …]</p>
-</div>
-<div class="section" id="description">
+</section>
+<section id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p><strong class="program">pyam extract</strong> extracts student submissions from downloads files.</p>
 <blockquote>
-<div>Currently supports Blackboard GradeCenter download format where the downloaded file names
-contain the username and submission date.</div></blockquote>
-</div>
-<div class="section" id="options">
+<div><p>Currently supports Blackboard GradeCenter download format where the downloaded file names
+contain the username and submission date.</p>
+</div></blockquote>
+</section>
+<section id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
-<dl class="option">
-<dt id="cmdoption-pyam-extract-h">
-<code class="descname">-h</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--help</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-pyam-extract-h" title="Permalink to this definition">¶</a></dt>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-pyam-extract-h">
+<span id="cmdoption-pyam-extract-help"></span><span class="sig-name descname"><span class="pre">-h</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--help</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-pyam-extract-h" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show a help message and exit</p>
 </dd></dl>
 
-<dl class="option">
-<dt id="cmdoption-pyam-extract-c">
-<code class="descname">-c</code><code class="descclassname"> COHORT</code><code class="descclassname">, </code><code class="descname">--cohort</code><code class="descclassname"> COHORT</code><a class="headerlink" href="#cmdoption-pyam-extract-c" title="Permalink to this definition">¶</a></dt>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-pyam-extract-c">
+<span id="cmdoption-pyam-extract-cohort"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"> <span class="pre">COHORT</span></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--cohort</span></span><span class="sig-prename descclassname"> <span class="pre">COHORT</span></span><a class="headerlink" href="#cmdoption-pyam-extract-c" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of cohort if different from current.</p>
 </dd></dl>
 
-<dl class="option">
-<dt id="cmdoption-pyam-extract-s">
-<code class="descname">-s</code><code class="descclassname"> [STUDENTS [STUDENTS ...]]</code><code class="descclassname">, </code><code class="descname">--students</code><code class="descclassname"> [STUDENTS [STUDENTS ...]]</code><a class="headerlink" href="#cmdoption-pyam-extract-s" title="Permalink to this definition">¶</a></dt>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-pyam-extract-s">
+<span id="cmdoption-pyam-extract-students"></span><span class="sig-name descname"><span class="pre">-s</span></span><span class="sig-prename descclassname"> <span class="pre">[STUDENTS</span> <span class="pre">[STUDENTS</span> <span class="pre">...]]</span></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--students</span></span><span class="sig-prename descclassname"> <span class="pre">[STUDENTS</span> <span class="pre">[STUDENTS</span> <span class="pre">...]]</span></span><a class="headerlink" href="#cmdoption-pyam-extract-s" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of specific students to process in cohort.</p>
 </dd></dl>
 
-<dl class="option">
-<dt id="cmdoption-pyam-extract-overwrite">
-<code class="descname">--overwrite</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-pyam-extract-overwrite" title="Permalink to this definition">¶</a></dt>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-pyam-extract-overwrite">
+<span class="sig-name descname"><span class="pre">--overwrite</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-pyam-extract-overwrite" title="Permalink to this definition">¶</a></dt>
 <dd><p>If set overwrite existing output files.</p>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -117,17 +119,15 @@ contain the username and submission date.</div></blockquote>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -147,12 +147,13 @@ contain the username and submission date.</div></blockquote>
         <li class="right" >
           <a href="config.html" title="config"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">extract</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2023-2023, John Williams.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>
