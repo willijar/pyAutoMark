@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pyam.fixtures.clang &#8212; pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</title>
+    <title>pyam.fixtures.clang &#8212; pyAutoMark 0.8.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyam.fixtures.clang</a></li> 
       </ul>
@@ -63,7 +63,7 @@
 
 <div class="viewcode-block" id="binary_name"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.binary_name">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">def</span> <span class="nf">binary_name</span><span class="p">(</span><span class="n">student_c_file</span><span class="p">,</span> <span class="n">mock_c_file</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;*Fixture*: The binary executable name to use for compiled tests</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;*Fixture*: The binary executable name to use for compiled tests</span>
 <span class="sd">      - file will be created in build folder&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">mock_c_file</span> <span class="ow">or</span> <span class="n">student_c_file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span></div>
 
@@ -83,13 +83,13 @@
 
 <div class="viewcode-block" id="mock_c_file"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.mock_c_file">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">def</span> <span class="nf">mock_c_file</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;*Fixture*: The mock code C file currently under test.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;*Fixture*: The mock code C file currently under test.</span>
 <span class="sd">      *Must be set in the test if using mocks*.&quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="write_header"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.write_header">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">autouse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">write_header</span><span class="p">(</span><span class="n">build_path</span><span class="p">,</span> <span class="n">student_c_file</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;*Fixture*:  creates :file:`student.h` which includes the :func:`student_c_file`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;*Fixture*:  creates :file:`student.h` which includes the :func:`student_c_file`</span>
 
 <span class="sd">    Used in Mock C code to include the students file.&quot;&quot;&quot;</span>
     <span class="n">header</span> <span class="o">=</span> <span class="n">build_path</span> <span class="o">/</span> <span class="s2">&quot;student.h&quot;</span>
@@ -110,7 +110,7 @@
 <div class="viewcode-block" id="c_compile"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.c_compile">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">def</span> <span class="nf">c_compile</span><span class="p">(</span><span class="n">student</span><span class="p">,</span> <span class="n">test_path</span><span class="p">,</span> <span class="n">build_path</span><span class="p">,</span> <span class="n">mock_c_file</span><span class="p">,</span> <span class="n">student_c_file</span><span class="p">,</span>
               <span class="n">binary_name</span><span class="p">,</span> <span class="n">compile_flags</span><span class="p">,</span> <span class="n">compiler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;*Fixture*: The compile function</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;*Fixture*: The compile function</span>
 
 <span class="sd">    The returned function takes the following arguments</span>
 
@@ -141,7 +141,7 @@
 
 <div class="viewcode-block" id="c_exec"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.c_exec">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">def</span> <span class="nf">c_exec</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">c_compile</span><span class="p">,</span> <span class="n">c_binary</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;*Fixture*: The exec function for this test suite which</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;*Fixture*: The exec function for this test suite which</span>
 <span class="sd">    will compile and execute the mock C tests.</span>
 
 <span class="sd">    Uses the timeout marker, and if set will stop student programm execution at that time.</span>
@@ -181,13 +181,13 @@
 
 <div class="viewcode-block" id="c_lint_checks"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.c_lint_checks">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">def</span> <span class="nf">c_lint_checks</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;*Fixture*: C -lint checks to apply. Overwwite in your test as required&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;*Fixture*: C -lint checks to apply. Overwwite in your test as required&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s2">&quot;performance-*,readability-*,portability-*&quot;</span></div>
 
 
 <div class="viewcode-block" id="c_lint"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.c_lint">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">def</span> <span class="nf">c_lint</span><span class="p">(</span><span class="n">student</span><span class="p">,</span> <span class="n">test_path</span><span class="p">,</span> <span class="n">build_path</span><span class="p">,</span> <span class="n">c_lint_checks</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;*Fixture*: A function to provide lint ouput on students C file</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;*Fixture*: A function to provide lint ouput on students C file</span>
 
 <span class="sd">    The returned function takes the following arguments:</span>
 
@@ -217,7 +217,7 @@
 
 
 <div class="viewcode-block" id="pytest_collect_file"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.pytest_collect_file">[docs]</a><span class="k">def</span> <span class="nf">pytest_collect_file</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Hook into pytest</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Hook into pytest</span>
 
 <span class="sd">    These are C files that start with test_ and</span>
 <span class="sd">    contain #DEFINE PYAM_TEST fileglob</span>
@@ -242,7 +242,7 @@
 
 
 <div class="viewcode-block" id="CTestFile"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CTestFile">[docs]</a><span class="k">class</span> <span class="nc">CTestFile</span><span class="p">(</span><span class="n">pytest</span><span class="o">.</span><span class="n">File</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A custom file handler class for C unit test files.</span>
 
 <span class="sd">    Attributes:</span>
@@ -306,7 +306,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="CTestFile.collect"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CTestFile.collect">[docs]</a>    <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overridden collect method to collect the results from each</span>
 <span class="sd">        C Mock unit test executable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -317,7 +317,7 @@
                 <span class="k">yield</span> <span class="n">CLintItem</span><span class="o">.</span><span class="n">from_parent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;STYLE&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CTestFile.configure"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CTestFile.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set up this CTestFIle from configuration information once it is available</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up this CTestFIle from configuration information once it is available</span>
 
 <span class="sd">            Only done once per file - retrieve cohort and student context and file under test</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -346,11 +346,11 @@
             <span class="n">fid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CTestFile.includes"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CTestFile.includes">[docs]</a>    <span class="k">def</span> <span class="nf">includes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The list of include paths to use during compilation&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The list of include paths to use during compilation&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">test_path</span><span class="p">,</span> <span class="n">CONFIG</span><span class="o">.</span><span class="n">build_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">path</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CTestFile.c_compile"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CTestFile.c_compile">[docs]</a>    <span class="k">def</span> <span class="nf">c_compile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compile the test for item - its name is set as a command line definition&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compile the test for item - its name is set as a command line definition&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">cunit</span><span class="o">.</span><span class="n">c_compile</span><span class="p">(</span><span class="n">binary</span><span class="o">=</span><span class="n">CONFIG</span><span class="o">.</span><span class="n">build_path</span> <span class="o">/</span>
                                    <span class="bp">self</span><span class="o">.</span><span class="n">test_file_path</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span>
@@ -363,7 +363,7 @@
             <span class="k">raise</span> <span class="n">err</span></div>
 
 <div class="viewcode-block" id="CTestFile.c_exec"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CTestFile.c_exec">[docs]</a>    <span class="k">def</span> <span class="nf">c_exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Execute the compiled binary for item.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the compiled binary for item.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_file_path</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span>
         <span class="n">binary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_compile</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
@@ -372,7 +372,7 @@
             <span class="k">raise</span> <span class="n">cunit</span><span class="o">.</span><span class="n">RunTimeError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span> <span class="o">+</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CTestFile.c_lint"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CTestFile.c_lint">[docs]</a>    <span class="k">def</span> <span class="nf">c_lint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Use clang-tidy to lint the file&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use clang-tidy to lint the file&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_file_path</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span>
         <span class="n">includes</span> <span class="o">=</span> <span class="p">[(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;-I</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">includes</span><span class="p">()]</span>
@@ -394,14 +394,14 @@
 
 
 <div class="viewcode-block" id="CTestItem"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CTestItem">[docs]</a><span class="k">class</span> <span class="nc">CTestItem</span><span class="p">(</span><span class="n">pytest</span><span class="o">.</span><span class="n">Item</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Pytest.Item subclass to handle each test result item.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pytest.Item subclass to handle each test result item.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="CTestItem.runtest"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CTestItem.runtest">[docs]</a>    <span class="k">def</span> <span class="nf">runtest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Execute file&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute file&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">c_exec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CTestItem.repr_failure"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CTestItem.repr_failure">[docs]</a>    <span class="k">def</span> <span class="nf">repr_failure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">excinfo</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Called when self.runtest() raises an exception.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when self.runtest() raises an exception.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">excinfo</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                       <span class="p">(</span><span class="n">cunit</span><span class="o">.</span><span class="n">RunTimeError</span><span class="p">,</span> <span class="n">cunit</span><span class="o">.</span><span class="n">CompilationError</span><span class="p">)):</span>
             <span class="k">return</span> <span class="n">excinfo</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -412,20 +412,20 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">repr_failure</span><span class="p">(</span><span class="n">excinfo</span><span class="p">,</span> <span class="n">style</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CTestItem.reportinfo"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CTestItem.reportinfo">[docs]</a>    <span class="k">def</span> <span class="nf">reportinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Short Report info for a test item&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Short Report info for a test item&quot;&quot;&quot;</span>
         <span class="n">stem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">stem</span>
         <span class="k">return</span> <span class="n">stem</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">stem</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div></div>
 
 
 <div class="viewcode-block" id="CLintItem"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CLintItem">[docs]</a><span class="k">class</span> <span class="nc">CLintItem</span><span class="p">(</span><span class="n">pytest</span><span class="o">.</span><span class="n">Item</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Pytest.Item subclass to handle each test result item.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pytest.Item subclass to handle each test result item.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="CLintItem.runtest"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CLintItem.runtest">[docs]</a>    <span class="k">def</span> <span class="nf">runtest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Execute file&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute file&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">c_lint</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLintItem.repr_failure"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CLintItem.repr_failure">[docs]</a>    <span class="k">def</span> <span class="nf">repr_failure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">excinfo</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Called when self.runtest() raises an exception.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when self.runtest() raises an exception.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">excinfo</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">cunit</span><span class="o">.</span><span class="n">LintError</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">excinfo</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">excinfo</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="ne">FileNotFoundError</span><span class="p">):</span>
@@ -433,13 +433,13 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">repr_failure</span><span class="p">(</span><span class="n">excinfo</span><span class="p">,</span> <span class="n">style</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLintItem.reportinfo"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.CLintItem.reportinfo">[docs]</a>    <span class="k">def</span> <span class="nf">reportinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Short Report info for a lint item&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Short Report info for a lint item&quot;&quot;&quot;</span>
         <span class="n">stem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">stem</span>
         <span class="k">return</span> <span class="n">stem</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">stem</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div></div>
 
 
 <div class="viewcode-block" id="pytest_collection_modifyitems"><a class="viewcode-back" href="../../../pyam.fixtures.html#pyam.fixtures.clang.pytest_collection_modifyitems">[docs]</a><span class="k">def</span> <span class="nf">pytest_collection_modifyitems</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ENsure that if we have a test item that the file collector is configured&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ENsure that if we have a test item that the file collector is configured&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="n">CTestItem</span><span class="p">,</span> <span class="n">CLintItem</span><span class="p">)):</span>
             <span class="k">try</span><span class="p">:</span>
@@ -477,7 +477,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyAutoMark 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyam.fixtures.clang</a></li> 
       </ul>

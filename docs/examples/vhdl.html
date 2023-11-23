@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>VHDL &#8212; pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</title>
+    <title>VHDL &#8212; pyAutoMark 0.8.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="python.html" title="Python"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.8.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">VHDL</a></li> 
       </ul>
     </div>  
@@ -91,22 +91,22 @@ file name must match that of the top level vhdl file and that these should match
 work will fail if they do not follow this practice. It also makes automated marking easier to have a strict specification.</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">full_adder.vhd - sutdnets full adder implementation</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
-<div class="highlight-vhdl notranslate"><div class="highlight"><pre><span></span><span class="k">library</span><span class="w"> </span><span class="nn">ieee</span><span class="p">;</span><span class="w"></span>
-<span class="k">use</span><span class="w"> </span><span class="nn">ieee.std_logic_1164.</span><span class="k">all</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-vhdl notranslate"><div class="highlight"><pre><span></span><span class="k">library</span><span class="w"> </span><span class="nn">ieee</span><span class="p">;</span>
+<span class="k">use</span><span class="w"> </span><span class="nn">ieee.std_logic_1164.</span><span class="k">all</span><span class="p">;</span>
 
-<span class="k">entity</span><span class="w"> </span><span class="nc">full_adder</span><span class="w"> </span><span class="k">is</span><span class="w"></span>
-<span class="w">    </span><span class="k">port</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">        </span><span class="n">x</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="n">y</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="n">cin</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="n">s</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="n">cout</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">std_logic</span><span class="p">);</span><span class="w"></span>
-<span class="k">end</span><span class="p">;</span><span class="w"></span>
+<span class="k">entity</span><span class="w"> </span><span class="nc">full_adder</span><span class="w"> </span><span class="k">is</span>
+<span class="w">    </span><span class="k">port</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="n">x</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span>
+<span class="w">        </span><span class="n">y</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span>
+<span class="w">        </span><span class="n">cin</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span>
+<span class="w">        </span><span class="n">s</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">std_logic</span><span class="p">;</span>
+<span class="w">        </span><span class="n">cout</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">std_logic</span><span class="p">);</span>
+<span class="k">end</span><span class="p">;</span>
 
-<span class="k">architecture</span><span class="w"> </span><span class="nc">behavioral</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nc">full_adder</span><span class="w"> </span><span class="k">is</span><span class="w"></span>
-<span class="k">begin</span><span class="w"></span>
-<span class="c1">-- students implementation goes here</span><span class="w"></span>
-<span class="k">end</span><span class="p">;</span><span class="w"></span>
+<span class="k">architecture</span><span class="w"> </span><span class="nc">behavioral</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nc">full_adder</span><span class="w"> </span><span class="k">is</span>
+<span class="k">begin</span>
+<span class="c1">-- students implementation goes here</span>
+<span class="k">end</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -115,39 +115,39 @@ development board listed but commented out - they just have to comment out the l
 <p>My testbench for  this is from the truth table - exactly the same as I expect the students to produce.</p>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">full_adder_check.vhd - Turth table based test bench for full adder</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
-<div class="highlight-vhdl notranslate"><div class="highlight"><pre><span></span><span class="k">library</span><span class="w"> </span><span class="nn">ieee</span><span class="p">;</span><span class="w"></span>
-<span class="k">use</span><span class="w"> </span><span class="nn">ieee.std_logic_1164.</span><span class="k">all</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-vhdl notranslate"><div class="highlight"><pre><span></span><span class="k">library</span><span class="w"> </span><span class="nn">ieee</span><span class="p">;</span>
+<span class="k">use</span><span class="w"> </span><span class="nn">ieee.std_logic_1164.</span><span class="k">all</span><span class="p">;</span>
 
-<span class="k">entity</span><span class="w"> </span><span class="nc">full_adder_check</span><span class="w"> </span><span class="k">is</span><span class="w"></span>
-<span class="k">end</span><span class="w"> </span><span class="nc">full_adder_check</span><span class="p">;</span><span class="w"></span>
+<span class="k">entity</span><span class="w"> </span><span class="nc">full_adder_check</span><span class="w"> </span><span class="k">is</span>
+<span class="k">end</span><span class="w"> </span><span class="nc">full_adder_check</span><span class="p">;</span>
 
-<span class="k">architecture</span><span class="w"> </span><span class="nc">testbench</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nc">full_adder_check</span><span class="w"> </span><span class="k">is</span><span class="w"></span>
-<span class="k">component</span><span class="w"> </span><span class="nc">full_adder</span><span class="w"> </span><span class="k">is</span><span class="w"></span>
-<span class="w">    </span><span class="k">port</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">    </span><span class="n">x</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">cin</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">s</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">std_logic</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">std_logic</span><span class="p">);</span><span class="w"></span>
-<span class="k">end</span><span class="w"> </span><span class="k">component</span><span class="p">;</span><span class="w"></span>
-<span class="k">signal</span><span class="w"> </span><span class="n">input</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="kt">std_logic_vector</span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="k">downto</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
-<span class="k">signal</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">std_logic_vector</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="k">downto</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
-<span class="k">begin</span><span class="w"></span>
-<span class="n">uut</span><span class="o">:</span><span class="w"> </span><span class="n">full_adder</span><span class="w"> </span><span class="k">port</span><span class="w"> </span><span class="k">map</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">input</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">input</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
-<span class="w">    </span><span class="n">cin</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">input</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
-<span class="w">    </span><span class="n">s</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">output</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span>
-<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">output</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">);</span><span class="w"></span>
+<span class="k">architecture</span><span class="w"> </span><span class="nc">testbench</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nc">full_adder_check</span><span class="w"> </span><span class="k">is</span>
+<span class="k">component</span><span class="w"> </span><span class="nc">full_adder</span><span class="w"> </span><span class="k">is</span>
+<span class="w">    </span><span class="k">port</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">x</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span>
+<span class="w">    </span><span class="n">y</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cin</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">in</span><span class="w">  </span><span class="kt">std_logic</span><span class="p">;</span>
+<span class="w">    </span><span class="n">s</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">std_logic</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="kt">std_logic</span><span class="p">);</span>
+<span class="k">end</span><span class="w"> </span><span class="k">component</span><span class="p">;</span>
+<span class="k">signal</span><span class="w"> </span><span class="n">input</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="kt">std_logic_vector</span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="k">downto</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="k">signal</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">std_logic_vector</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="k">downto</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="k">begin</span>
+<span class="n">uut</span><span class="o">:</span><span class="w"> </span><span class="n">full_adder</span><span class="w"> </span><span class="k">port</span><span class="w"> </span><span class="k">map</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">input</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">input</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cin</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">input</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+<span class="w">    </span><span class="n">s</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">output</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">output</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
 
-<span class="nc">stim_proc</span><span class="o">:</span><span class="w"> </span><span class="k">process</span><span class="w"></span>
-<span class="k">begin</span><span class="w"></span>
-<span class="w">    </span><span class="n">input</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;000&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">wait</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="n">ns</span><span class="p">;</span><span class="w"> </span><span class="k">assert</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;00&quot;</span><span class="w"> </span><span class="n">report</span><span class="w"> </span><span class="s">&quot;0+0+0 failed&quot;</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="c1">-- Other 7 tests here</span><span class="w"></span>
-<span class="w">    </span><span class="k">wait</span><span class="p">;</span><span class="w"></span>
-<span class="k">end</span><span class="w"> </span><span class="k">process</span><span class="p">;</span><span class="w"></span>
-<span class="k">end</span><span class="p">;</span><span class="w"></span>
+<span class="nc">stim_proc</span><span class="o">:</span><span class="w"> </span><span class="k">process</span>
+<span class="k">begin</span>
+<span class="w">    </span><span class="n">input</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s">&quot;000&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">wait</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="n">ns</span><span class="p">;</span><span class="w"> </span><span class="k">assert</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;00&quot;</span><span class="w"> </span><span class="n">report</span><span class="w"> </span><span class="s">&quot;0+0+0 failed&quot;</span><span class="w"> </span><span class="p">;</span>
+<span class="w">    </span><span class="c1">-- Other 7 tests here</span>
+<span class="w">    </span><span class="k">wait</span><span class="p">;</span>
+<span class="k">end</span><span class="w"> </span><span class="k">process</span><span class="p">;</span>
+<span class="k">end</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -238,10 +238,10 @@ with a generic parameter “PYAM_TEST_VALUE” set to the corresponding value.</
 </dd>
 </dl>
 <p>e.g.</p>
-<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="c1">-- PYAM_TEST &quot;UUT.vhdl&quot;</span><span class="w"></span>
-<span class="c1">-- PYAM_TIMEOUT TIMEOUT</span><span class="w"></span>
-<span class="c1">-- PYAM_TEST_VALUE VALUE1</span><span class="w"></span>
-<span class="c1">-- PYAM_TEST_VALUE VALUE2</span><span class="w"></span>
+<div class="highlight-VHDL notranslate"><div class="highlight"><pre><span></span><span class="c1">-- PYAM_TEST &quot;UUT.vhdl&quot;</span>
+<span class="c1">-- PYAM_TIMEOUT TIMEOUT</span>
+<span class="c1">-- PYAM_TEST_VALUE VALUE1</span>
+<span class="c1">-- PYAM_TEST_VALUE VALUE2</span>
 </pre></div>
 </div>
 <dl class="std option">
@@ -329,7 +329,7 @@ with a generic parameter “PYAM_TEST_VALUE” set to the corresponding value.</
         <li class="right" >
           <a href="python.html" title="Python"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pyAutoMark 0.8.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">VHDL</a></li> 
       </ul>
     </div>

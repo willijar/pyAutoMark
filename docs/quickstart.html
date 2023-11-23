@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Quick Start &#8212; pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</title>
+    <title>Quick Start &#8212; pyAutoMark 0.8.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="installation.html" title="Installing pyAutoMark"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.8.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Quick Start</a></li> 
       </ul>
     </div>  
@@ -57,11 +57,11 @@ into  a csv file.</p>
 <p>This document proivdes a quick summary of how to carry out these tasks.</p>
 <p>Once installed, pyAutoMark provides a console command <strong class="program">pyam</strong> which is used to
 carry out the various tasks. You can type</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam --help
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam<span class="w"> </span>--help
 </pre></div>
 </div>
 <p>to get the list of commands that are available</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam &lt;cmd&gt; --help
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam<span class="w"> </span>&lt;cmd&gt;<span class="w"> </span>--help
 </pre></div>
 </div>
 <p>to get help on a particular command.</p>
@@ -73,7 +73,7 @@ of your institution, department etc and configure many aspects of how pyAutoMark
 <a class="reference internal" href="glossary.html#term-cohort"><span class="xref std std-term">cohort</span></a> which is a particular set of students doing a particular assignment.</p>
 <p>pyAutoMark comes with a command <strong class="program">pyam init</strong> which sets up thisroot directory and configuration values
 from a few questions it asks you. TO use this, run:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam init
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam<span class="w"> </span>init
 </pre></div>
 </div>
 <div class="line-block">
@@ -157,19 +157,19 @@ using <a class="reference external" href="https://classroom.github.com/">Github 
 <p>The second file which is needed for each cohort a json file with other information specific for this cohort. At a minimum
 it must at least contain a “files” section listing the files the students are expected to submit,
 and a description of that file as shown below e.g.</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;design.vhd&quot;</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="p">{</span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Description of design vhdl file&quot;</span><span class="p">},</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;results.ghw&quot;</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="p">{</span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Results waveform file descritpion&quot;</span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="nt">&quot;assessment&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Assessment Title&quot;</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
-<span class="nt">&quot;github&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-practical&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/my-organisation/&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;design.vhd&quot;</span><span class="p">:</span>
+<span class="w">            </span><span class="p">{</span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Description of design vhdl file&quot;</span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;results.ghw&quot;</span><span class="p">:</span>
+<span class="w">            </span><span class="p">{</span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Results waveform file descritpion&quot;</span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="nt">&quot;assessment&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Assessment Title&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="nt">&quot;github&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-practical&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/my-organisation/&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Other information that may vary for each <a class="reference internal" href="glossary.html#term-cohort"><span class="xref std std-term">cohort</span></a> may be provided here such as the name
@@ -198,26 +198,26 @@ you can use for any temporary files generated during the test.</p>
 <h2>Retrieving the students work<a class="headerlink" href="#retrieving-the-students-work" title="Permalink to this headline">¶</a></h2>
 <p>Student submissions should be held in subdirectories of the <code class="file docutils literal notranslate"><span class="pre">cohort</span></code> subdirectory and named by the student username.
 It you are using github classroom (recommended) and have configured the github details for the cohort then the command</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam retrieve
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam<span class="w"> </span>retrieve
 </pre></div>
 </div>
 <p>will clone or pull the students work from their assignment repositories.</p>
 <p>If you have downloaded the students work from a Blackboard assignment then the command</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam extract --files ...
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam<span class="w"> </span>extract<span class="w"> </span>--files<span class="w"> </span>...
 </pre></div>
 </div>
 <p>will parse the information in the given set of files and copy them into a directory for each student.
 If the students have submitted archives (such as zip or tar.gz files) then the files will be extracted from the archives.</p>
 <p>In both the above cases the student submission date will be added to the <code class="file docutils literal notranslate"><span class="pre">students.csv</span></code> file. You can query the
 state of students with the command</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam cohort --list-students
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam<span class="w"> </span>cohort<span class="w"> </span>--list-students
 </pre></div>
 </div>
 </section>
 <section id="running-the-tests">
 <h2>Running the tests<a class="headerlink" href="#running-the-tests" title="Permalink to this headline">¶</a></h2>
 <p>The command</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam run
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam<span class="w"> </span>run
 </pre></div>
 </div>
 <p>will execute all of the tests for each student and save the output from <a class="reference external" href="https://docs.pytest.org/">pytest</a> into report files in the <code class="file docutils literal notranslate"><span class="pre">reports/cohort`</span></code>
@@ -231,7 +231,7 @@ and print any diagnostics mesages printed out by you test will be included in th
 To assist with this the results from the reports can be copied into a marking spreadsheet. The first step is to
 generate a template spreadhseet which will then be filled in for each student.</p>
 <p>The command</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam generate-template
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam<span class="w"> </span>generate-template
 </pre></div>
 </div>
 <p>will produce a template spreadsheet for you in the <code class="file docutils literal notranslate"><span class="pre">reports/cohort</span> <span class="pre">subfolder</span></code> (with the specified filenanme prefix).
@@ -240,7 +240,7 @@ The Named cell references for each test which will be marked as either “PASSED
 from the <a class="reference external" href="https://docs.pytest.org/">pytest</a> report file. The generate template is intended as a starting point for you to modify with your
 own marking shceme which might, for example, include manual entered evaluation, and provided a weighting for each test result.</p>
 <p>Once you are happy with your marking sheet type the command</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam mark
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam<span class="w"> </span>mark
 </pre></div>
 </div>
 <p>And a marking spreadsheet will be produced for each student in the <code class="file docutils literal notranslate"><span class="pre">reports/cohort</span> <span class="pre">subfolder</span></code>
@@ -249,7 +249,7 @@ own marking shceme which might, for example, include manual entered evaluation, 
 <section id="and-finally-collating-the-marks">
 <h2>And finally - collating the marks<a class="headerlink" href="#and-finally-collating-the-marks" title="Permalink to this headline">¶</a></h2>
 <p>The command</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam write-csv --csv-files ....
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyam<span class="w"> </span>write-csv<span class="w"> </span>--csv-files<span class="w"> </span>....
 </pre></div>
 </div>
 <p>will read the marks from the finished marked spreadshsset for each student and entern them into the given speadsheet csv files.</p>
@@ -323,7 +323,7 @@ own marking shceme which might, for example, include manual entered evaluation, 
         <li class="right" >
           <a href="installation.html" title="Installing pyAutoMark"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.7.3.dev1+g330ef53.d20230621 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyAutoMark 0.8.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Quick Start</a></li> 
       </ul>
     </div>
