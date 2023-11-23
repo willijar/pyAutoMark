@@ -30,6 +30,10 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
         '--subdir',
         default=None,
         help="Subdirectory in student repository to push files into")
+    parser.add_argument('--branch', 
+                        default=None,
+                        help="If specified files will be put in this branch - otherwise github.branch configuration will be used"
+                        )
     parser.add_argument(
         dest = "files", 
         nargs=argparse.REMAINDER,
@@ -43,12 +47,14 @@ def main(args=None):
     """Push files into student repositories on github (classroom).
 
     Cohort manifest be configured with:
-       github.template:
-         The name of the template repository (prefix for student repositories)
-       github.url:
-         URL to github organisation where repositories reside
+        github.template:
+            The name of the template repository (prefix for student repositories)
+        github.url:
+            URL to github organisation where repositories reside
+        github.branch:
+            Name of students main branch
 
-    Students must have 'Github Username' field in csv file."""
+    Students must have 'Github Username' field in csv file and an assessment specified."""
     if args is None:
         parser = argparse.ArgumentParser(description=__doc__)
         add_args(parser)
@@ -58,7 +64,8 @@ def main(args=None):
     cohort.start_log_section(f"Pushing {args.files}")
     students = cohort.students(args.students)
     for student in students:
-        student.github_push(files=args.files, subdir=args.subdir, reset=not(args.no_reset), branch=args.branch, msg=args.message)
+        student.github_push(files=args.files, subdir=args.subdir, reset=not(args.no_reset), 
+                            branch=args.branch or cohort.getconfig("github.branch"), msg=args.message)
 
 
 if __name__ == "__main__":

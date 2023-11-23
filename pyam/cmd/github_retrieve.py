@@ -41,6 +41,8 @@ def main(args=None):
          The name of the template repository (prefix for student repositories)
        github.url:
          URL to github organisation where repositories reside
+       github.branch:
+         Name of students main branch
 
     Students must have 'Github Username' field in csv file."""
     if args is None:
