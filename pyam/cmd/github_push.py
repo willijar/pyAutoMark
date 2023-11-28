@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2023, Dr John A.R. Williams
 # SPDX-License-Identifier: GPL-3.0-only
-"""Main ROtine for github-retirieve command"""
+"""Main Routine for github-push command"""
 import argparse
 from pyam.config import CONFIG
 from pyam.cohort import get_cohort, current_academic_year
@@ -20,8 +20,7 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
         help='Names of specific student for which tests are to be run')
     parser.add_argument("--no-reset", 
                         action="store_true",
-                        help="If specified then local repositories won't be reset and retrieved before a push."),
-    parser.add_argument("-b", "--branch", help="Name of branch to push to (if different from main"),
+                        help="If specified then local repositories won't be reset and retrieved before a push.")
     parser.add_argument(
         "-m", "--message",
         default="Push files from tutor",
