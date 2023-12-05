@@ -15,9 +15,8 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
                         help="Name of student cohort")
     parser.add_argument(
         '-s',
-        '--students',
-        nargs="*",
-        help='Names of specific student for which tests are to be run')
+        '--student',
+        help='Names of a specific student for which tests are to be run')
     parser.add_argument("--no-reset", 
                         action="store_true",
                         help="If specified then local repositories won't be reset and retrieved before a push.")
@@ -39,8 +38,6 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
         action=PathGlob,
         default=None,
         help="List of files for directories to push")
-    
-
 
 def main(args=None):
     """Push files into student repositories on github (classroom).
@@ -59,12 +56,13 @@ def main(args=None):
         add_args(parser)
         args = parser.parse_args()
     cohort = get_cohort(args.cohort)
-    cohort.start_log_section(f"Github push {args.students or 'all'}")
+    if args.student: args.student=[args.student]
+    cohort.start_log_section(f"Github push {args.student or 'all'}")
     cohort.start_log_section(f"Pushing {args.files}")
-    students = cohort.students(args.students)
+    students = cohort.students(args.student or None)
     for student in students:
         student.github_push(files=args.files, subdir=args.subdir, reset=not(args.no_reset), 
-                            branch=args.branch or cohort.getconfig("github.branch"), msg=args.message)
+                            branch=args.branch or cohort.get("github.branch"), msg=args.message)
 
 
 if __name__ == "__main__":

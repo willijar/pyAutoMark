@@ -344,7 +344,7 @@ class Student:
             self.github_retrieve(reset=True)
         if branch:
             #save current branch name and checkout specified branch
-            original_branch = self.git("branch", "--show-current").stdout
+            original_branch = self.git("branch", "--show-current",log=False)
             self.git("checkout", branch,log=False)
         destination = self.path
         if subdir:
@@ -352,7 +352,6 @@ class Student:
             if not destination.exists():
                 destination.mkdir(parents=True, exist_ok=True)
         for file in files:
-            #do stuffd
             if file.is_file():
                 shutil.copyfile(file,destination/file.name)
             elif file.is_dir():
