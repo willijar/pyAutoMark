@@ -291,9 +291,10 @@ class Student:
         if log keyword is set Logs action either as info or as an error depending on success
         """
         log=kwargs.get("log",True)
+        cwd= kwargs.get("cwd",self.path)
         try:
             # pylint: disable=W1510
-            proc=subprocess.run(("git",*args), cwd=self.path, text=True, check=True, capture_output=True)
+            proc=subprocess.run(("git",*args), cwd=cwd, text=True, check=True, capture_output=True)
             if log:
                 self.cohort.log.info(
                 f"Successful {args} {self.repository_name()}"\
@@ -311,7 +312,7 @@ class Student:
 
 
     def github_retrieve(self,reset: bool=True,branch=None) -> bool:
-        """Clone or pull asssessments for this student from their repository.
+        """Clone or pull assessments for this student from their repository.
 
         Returns:
           Success of retrieval
@@ -320,13 +321,13 @@ class Student:
             self.cohort.log.warning(f"No repository known for '{self.name()}'")
             return False
         if self.path.exists():
-            if reset: # by default do a reset hard first to ensure workarea is clean
+            if reset: # by default do a reset hard first to ensure work area is clean
                 self.git("reset","--hard",log=False)
                 if branch:
                     self.git("checkout",branch)
             return self.git("pull")
         else:
-            return self.git("git", "clone", self.repository_url(), self.path)
+            return self.git("clone", self.repository_url(), self.path, cwd=self.cohort.path)
 
     def github_push(self, files: List[Path], subdir=None, reset: bool=True, branch: str=None, msg: str = "Push from pyAutoMark"):
         """Push given set of files into student repository
