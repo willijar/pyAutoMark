@@ -27,7 +27,7 @@ def to_defined_name(nodeid: str) -> str:
 def main(args=None):
     """Generate a template marking spreadsheet
 
-    Starts from specified template or template-template.xlsx
+    Starts from specified template or template_template.xlsx
     and adds in a row per test with the description, a named cell to filled in
     as PASSED or FAILED from the students reports and a mark as per the test
     manifest.
@@ -54,7 +54,7 @@ def main(args=None):
         add_args(parser)
         args = parser.parse_args()
     cohort = get_cohort(args.cohort)
-    destination = cohort.report_path / f"{args.prefix}template.xlsx"
+    destination = cohort.report_path / f"{args.prefix}_template.xlsx"
     if not (args.overwrite) and destination.exists():
         raise FileExistsError(destination)
     cohort.start_log_section(
