@@ -28,7 +28,7 @@ def main(args=None):
         print("-" * 100)
         print(f"{'Student':40} | {'Submission Date':40} | Lateness")
         print("-" * 100)
-        for student in cohort.students():
+        for student in sorted(cohort.students(),key=lambda s: s.name(style=args.sort_order)):
             if not student.path.exists():
                 print(f"{student.name():40} | No submission")
                 continue
@@ -90,6 +90,8 @@ def add_args(parser: argparse.ArgumentParser):
     parser.add_argument('--list-hashes',
                         action="store_true",
                         help="Print hexadecimal hash for each student id")
+    parser.add_argument("--sort-order",
+                        help="Sort order for listing students")
     parser.add_argument(
         '--check-submissions',
         action="store_true",
