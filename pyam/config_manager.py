@@ -291,7 +291,15 @@ SCHEMA = {
             "description" : "Name of cell in marking template for report",
             "default": "report"
         }
-    }
+    },
+    "tests": {
+        "description": "Dictionary mapping test names to dictionaries with a description and mark for the marking template"
+    },
+    "template":{ 
+        "mapping": {
+            "description": "Dictionary mapping PASSED,FAILED and UNKNOWN to values to be used in marking."
+        }
+     }
 }
 
 

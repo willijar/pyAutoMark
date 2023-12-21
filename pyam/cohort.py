@@ -157,11 +157,7 @@ class Cohort(config.ConfigManager):
           and "mark" to provide a numerical mark for this test in the generated template.
         """
         #Load manifest data if present
-        test_manifest_path = self.test_path / "manifest.json"
-        test_manifest = {}
-        if test_manifest_path.exists():
-            with open(test_manifest_path, "r") as fid:
-                test_manifest = json.load(fid).get("tests", None)
+        tests=self.get("tests", None)
         #Ensure all tests are included by collecting from pytest
         result = run_pytest(self, '--collect-only', '-q')
         for line in result.stdout.splitlines():
@@ -169,9 +165,9 @@ class Cohort(config.ConfigManager):
                 break
             if line.startswith(self.name + "/"):
                 line = line[len(self.name) + 1:]
-            if not test_manifest.get(line):
-                test_manifest[line] = {}
-        return test_manifest
+            if not tests.get(line):
+                tests[line] = {}
+        return tests
 
 
 class Student:
