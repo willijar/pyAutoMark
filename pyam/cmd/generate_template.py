@@ -78,17 +78,19 @@ def main(args=None):
     start_cell=worksheet[coord]
     column=start_cell.column_letter
     row=0
+    mapping=cohort.get("template.mapping",{})
     for test, details in cohort.tests().items():
         start_cell.offset(row,0).value=details.get("description", test)
         cell=start_cell.offset(row,1)
-        cell.value="UNKNOWN"
+        cell.value=mapping.get("UNKNOWN","UNKNOWN")
         ref = f"{quote_sheetname(worksheet.title)}!{absolute_coordinate(f'{cell.coordinate}')}"
         defn = DefinedName(name=to_defined_name(test), attr_text=ref)
         template.defined_names.add(defn)
-        mark=details.get("mark",False)
-        if mark:
+        mark=details.get("mark",None)
+        if mark is not None:
             start_cell.offset(row,2).value=mark
         row += 1
+    worksheet.delete_rows(row+14,99)
     template.save(destination)
 
 
