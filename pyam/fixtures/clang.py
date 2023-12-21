@@ -330,6 +330,8 @@ class CTestFile(pytest.File):
         result = cunit.c_exec(binary, timeout=self.timeout)
         if result.returncode != 0:
             raise cunit.RunTimeError(result.stderr + result.stdout)
+        if len(result.stdout.strip())>0:
+            print(result.stdout,end="")
 
     def c_lint(self, item):
         """Use clang-tidy to lint the file"""
