@@ -73,7 +73,7 @@ def get_reports(cohort, students, paths, prefix) -> dict:
                     path)
     else:
         for student in students:
-            report = cohort.report_path / f"{prefix}{student.username}.txt"
+            report = cohort.report_path / f"{prefix}_{student.username}.txt"
             if not report.exists():
                 cohort.log.warning("No report file found for %s'",
                                    student.name())
