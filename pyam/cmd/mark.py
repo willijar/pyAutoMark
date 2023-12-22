@@ -42,14 +42,14 @@ def main(args=None):
         args = parser.parse_args()
     cohort = get_cohort(args.cohort)
     if not args.template:
-        args.template = str(cohort.report_path / f"{args.prefix}template.xlsx")
+        args.template = str(cohort.report_path / f"{args.prefix}_template.xlsx")
     template = openpyxl.load_workbook(args.template)
     cohort.start_log_section(f"Generating mark sheets from {args.template}")
     students = cohort.students(args.students)
     reports = get_reports(cohort, students, args.reports, args.prefix)
     for student, report in reports.items():
         fill_workbook(template, student, report)
-        report_path = cohort.report_path / f"{args.prefix}{student.username}.xlsx"
+        report_path = cohort.report_path / f"{args.prefix}_{student.username}.xlsx"
         if not (args.overwrite) and report_path.exists():
             raise FileExistsError(report_path)
         template.save(report_path)
