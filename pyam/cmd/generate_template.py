@@ -70,7 +70,7 @@ def main(args=None):
             pass
     # find start point for marks - will use worksheet[0]["B14"] if none provided
     worksheet=template.worksheets[0]
-    coord="B14"
+    coord=cohort.get("template.marking-cell-ref")
     for title,dest_coord in template.defined_names["automark"].destinations:
         worksheet=template[title]
         coord=dest_coord

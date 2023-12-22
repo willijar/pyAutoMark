@@ -298,7 +298,10 @@ SCHEMA = {
     "template":{ 
         "mapping": {
             "description": "Dictionary mapping PASSED,FAILED and UNKNOWN to values to be used in marking."
-        }
+        },
+        "marking-cell-ref":
+        {"description": "Cell reference where marking entries start in marking template",
+         "default": "B14"}
      }
 }
 
