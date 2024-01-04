@@ -54,7 +54,7 @@ def main(args=None):
         add_args(parser)
         args = parser.parse_args()
     cohort = get_cohort(args.cohort)
-    destination = cohort.report_path / f"{args.prefix}_template.xlsx"
+    destination = cohort.report_path / f"{args.prefix or cohort.get('template.prefix')}_template.xlsx"
     if not (args.overwrite) and destination.exists():
         raise FileExistsError(destination)
     cohort.start_log_section(
@@ -79,7 +79,10 @@ def main(args=None):
     column=start_cell.column_letter
     row=0
     mapping=cohort.get("template.mapping",{})
-    for test, details in cohort.tests().items():
+    items=cohort.tests().items()
+    if args.sorted:
+        items=sorted(items,key=lambda a: a[1].get("description",a[0]))
+    for test, details in items:
         start_cell.offset(row,0).value=details.get("description", test)
         cell=start_cell.offset(row,1)
         cell.value=mapping.get("UNKNOWN","UNKNOWN")
@@ -100,6 +103,11 @@ def add_args(parser=argparse.ArgumentParser(description=__doc__)):
     parser.add_argument(
         "-t","--template", type=Path, default=Path(__file__).parent.parent / "template-template.xlsx",
         help=".xlsx file to build template from"
+    )
+    parser.add_argument(
+        "--sorted",
+        action="store_true",
+        help="If set items will be in sorted order"
     )
 
 

@@ -41,12 +41,13 @@ def main(args=None):
         add_args(parser)
         args = parser.parse_args()
     cohort = get_cohort(args.cohort)
+    args.prefix = args.prefix or cohort.get('template.prefix')
     if not args.template:
         args.template = cohort.report_path / f"{args.prefix}_template.xlsx"
     template = openpyxl.load_workbook(args.template)
     cohort.start_log_section(f"Generating mark sheets from {args.template.name}")
     students = cohort.students(args.students)
-    reports = get_reports(cohort, students, args.reports, args.prefix)
+    reports = get_reports(cohort, students, args.reports, args.prefix )
     for student, report in reports.items():
         fill_workbook(template, student, report)
         report_path = cohort.report_path / f"{args.prefix}_{student.username}.xlsx"

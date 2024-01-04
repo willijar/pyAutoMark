@@ -290,6 +290,10 @@ SCHEMA = {
         "report": {
             "description" : "Name of cell in marking template for report",
             "default": "report"
+        },
+        "prefix": {
+            "description": "Default Name of prefix for generated report files",
+            "default": "report"
         }
     },
     "tests": {

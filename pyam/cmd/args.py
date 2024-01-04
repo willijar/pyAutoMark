@@ -37,5 +37,4 @@ def add_common_args(parser: argparse.ArgumentParser,
                             help="If set overwrite existing output files.")
     if has("prefix"):
         parser.add_argument('--prefix',
-                            default="report",
-                            help="Prefix to add to generated files.")
+                            help="Prefix to use for generated files.")

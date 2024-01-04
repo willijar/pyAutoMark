@@ -29,7 +29,7 @@ def main(args=None):
         if not student.path.exists():
             cohort.log.warning("No Submission Folder: '%s'.", student.name())
             continue
-        report_path = cohort.report_path / f"{args.prefix}_{student.username}.txt"
+        report_path = cohort.report_path / f"{args.prefix or cohort.get('template.prefix')}_{student.username}.txt"
         if report_path.exists():
             if args.new_only:
                 continue
