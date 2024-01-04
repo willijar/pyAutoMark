@@ -107,8 +107,11 @@ def fill_workbook(template, student, report):
     course=student.rec.get("Course")
     if course:
         set_field("student_course",course)
-    for key, value in analyse_report(report, cohort.tests(),
+    tests=cohort.tests()
+    mapping=cohort.get("template.mapping")
+    for key, value in analyse_report(report, tests,
                                      cohort.log).items():
+        value=tests[key].get("mapping",mapping).get(value,"UNKNOWN")
         set_field(to_defined_name(key), value)
 
 def analyse_report(report_path: Path, tests: dict, log=None):
