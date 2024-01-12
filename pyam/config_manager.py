@@ -296,7 +296,8 @@ SCHEMA = {
             "default": "report"
         },
         "mapping": {
-            "description": "Dictionary mapping PASSED,FAILED and UNKNOWN to values to be used in marking."
+            "description": "Dictionary mapping PASSED,FAILED and UNKNOWN to values to be used in marking.",
+            "default": {"PASSED" :"PASSED", "FAILED": "FAILED", "UNKNOWN": "UNKNOWN"}
         },
         "marking-cell-ref":
         {"description": "Cell reference where marking entries start in marking template",
