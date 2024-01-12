@@ -157,7 +157,7 @@ class Cohort(config.ConfigManager):
           and "mark" to provide a numerical mark for this test in the generated template.
         """
         #Load manifest data if present
-        tests=self.get("tests", None)
+        tests=self.get("tests", {})
         #Ensure all tests are included by collecting from pytest
         result = run_pytest(self, '--collect-only', '-q')
         for line in result.stdout.splitlines():
