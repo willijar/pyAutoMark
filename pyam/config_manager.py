@@ -294,19 +294,17 @@ SCHEMA = {
         "prefix": {
             "description": "Default Name of prefix for generated report files",
             "default": "report"
-        }
-    },
-    "tests": {
-        "description": "Dictionary mapping test names to dictionaries with a description and mark for the marking template"
-    },
-    "template":{ 
+        },
         "mapping": {
             "description": "Dictionary mapping PASSED,FAILED and UNKNOWN to values to be used in marking."
         },
         "marking-cell-ref":
         {"description": "Cell reference where marking entries start in marking template",
          "default": "B14"}
-     }
+    },
+    "tests": {
+        "description": "Dictionary mapping test names to dictionaries with a description and mark for the marking template"
+    }
 }
 
 
