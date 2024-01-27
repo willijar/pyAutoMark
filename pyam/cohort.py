@@ -339,11 +339,15 @@ class Student:
         if reset:
             #rensure we are synced with student work if reset is true
             self.github_retrieve(reset=True)
+        destination = self.path
+        if not destination.exists():
+            self.cohort.log.warning(f"No repository for '{self.name()}'")
+            return
         if branch:
             #save current branch name and checkout specified branch
             original_branch = self.git("branch", "--show-current",log=False)
             self.git("checkout", branch,log=False)
-        destination = self.path
+            self.cohort.log.info("Checking out %s branch"%branch)
         if subdir:
             destination = destination / subdir
             if not destination.exists():
@@ -353,6 +357,7 @@ class Student:
                 shutil.copyfile(file,destination/file.name)
             elif file.is_dir():
                 shutil.copytree(file,destination/file.name,copy_function=shutil.copyfile,dirs_exist_ok=True)
+            self.cohort.log.info("Copied %s"%file)
         self.git("add","--all",log=False)
         self.git("commit","-m", msg,log=False)
         self.git("push")
