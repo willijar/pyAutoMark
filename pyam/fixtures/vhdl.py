@@ -210,7 +210,7 @@ def vhdl_simulate(ghdl, student, test_path):
         if test_files is None:
             ghdl("-a", test_path / f"{top}.vhd")
         for file in student_files:
-            ghdl("-a", student.path / file)
+            ghdl("-a", student.file(file))
         if test_files is not None:
             for file in test_files:
                 ghdl("-a", test_path / file)
@@ -309,12 +309,12 @@ def vhdl_synthesise(student, build_path, vivado):
 
     def _vhdl_synthesise(top, student_files, constraints_file=None):
         if constraints_file is None:
-            constraints_file = f"{top}.xdc"
+            constraints_file = student.file(f"{top}.xdc")
         files = []
         for filename in student_files:
-            files.append(student.path / filename)
+            files.append(student.file(filename))
         bitfile = vivado(build_path / f"{top}.bit", top, files,
-                         (f"{student.path}/{constraints_file}",))
+                         (f"{constraints_file}",))
         assert bitfile.exists(), "No bitfile Generated"
 
     return _vhdl_synthesise
