@@ -421,12 +421,13 @@ class VHDLTestFile(pytest.File):
             if glob:
                 paths = list(self.student.path.glob(glob))
                 if not paths:
-                    self.cohort.log("No VHDL Test file matching '%s' found for %s",
+                    self.cohort.log.error("No VHDL Test file matching '%s' found for %s",
                                     glob, self.student.name())
-                    raise FileNotFoundError(self.student, glob)
-                self.uut_paths.append(paths[0])
+                    #raise FileNotFoundError(self.student, glob)
+                else:
+                    self.uut_paths.append(paths[0])
                 if len(paths) > 1:
-                    self.cohort.log(
+                    self.cohort.log.error(
                         "Multiple VHDL Test files matching '%s' found for %s: using %s",
                         glob, self.student.name(), self.uut_paths)
 
@@ -437,6 +438,7 @@ class VHDLTestFile(pytest.File):
         #DEBUG: print("VHDL Test File", self.path)
         #DEBUG: print("UUT Fles:",self.uut_paths)
         run_ghdl("--remove")
+        assert self.uut_paths,"No UUT file found"
         for filename in self.test_depends:
             if filename:
                 run_ghdl(command="-a", unit=self.path.with_name(filename),
