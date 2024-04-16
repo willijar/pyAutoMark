@@ -91,7 +91,7 @@ def fill_workbook(template, student, report):
                     template[title][coord] = value
         except KeyError as e:
             if required:
-                print(e)
+                print("Missing Required field",e)
     cohort = student.cohort
     set_field("student_name",student.name(None))
     set_field("student_id",student.student_id)
