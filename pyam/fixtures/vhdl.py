@@ -459,7 +459,8 @@ class VHDLTestFile(pytest.File):
         run_ghdl(command="--elab-run",
                  unit=self.path.stem,
                  build_path=CONFIG.build_path,
-                 run_options=["--assert-level=error", *run_options],
+                 run_options=["--assert-level=error", *run_options,
+                              f"--wave={CONFIG.build_path/uut.stem}.ghw"],
                  timeout=self.test_timeout)
 
 
