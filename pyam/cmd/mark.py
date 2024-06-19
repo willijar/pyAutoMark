@@ -112,7 +112,7 @@ def fill_workbook(template, student, report):
     for key, value in analyse_report(report, tests,
                                      cohort.log).items():
         value=tests[key].get("mapping",mapping).get(value,"UNKNOWN")
-        set_field(to_defined_name(key), value)
+        set_field(tests[key].get("cell",to_defined_name(key)), value)
 
 def analyse_report(report_path: Path, tests: dict, log=None):
     """Returns a dictionary of results from a report file at path"""

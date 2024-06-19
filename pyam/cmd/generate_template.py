@@ -87,7 +87,7 @@ def main(args=None):
         cell=start_cell.offset(row,1)
         cell.value=mapping.get("UNKNOWN","UNKNOWN")
         ref = f"{quote_sheetname(worksheet.title)}!{absolute_coordinate(f'{cell.coordinate}')}"
-        defn = DefinedName(name=to_defined_name(test), attr_text=ref)
+        defn = DefinedName(name=details.get("cell",to_defined_name(test)), attr_text=ref)
         template.defined_names.add(defn)
         mark=details.get("mark",None)
         if mark is not None:
