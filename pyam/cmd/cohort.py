@@ -43,10 +43,9 @@ def main(args=None):
                 else:
                     student_deadline=deadline
                 past_deadline = ""
-                if deadline:
-                    diff = (submission_time - student_deadline)
-                    if diff.days > 0:
-                        past_deadline = f"Late {diff.days} days"
+                if student_deadline and ((submission_time-student_deadline).total_seconds()>0):
+                    diff = (submission_time - student_deadline).days+1
+                    past_deadline = f"Late {diff} days"
                 if extension:
                     extension=f"(Extension: {extension})"
                 print(
